@@ -1,7 +1,7 @@
 import { supportedChainIds } from '@/constants/chains';
 import { createSlice } from '@reduxjs/toolkit';
 import { reducerNames } from '../constants/names';
-import { CommonReducerState } from '../../src/types/common';
+import { CommonReducerState } from '../types/common';
 
 export const initialState: CommonReducerState = {
   appChainId: supportedChainIds.mode,

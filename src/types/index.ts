@@ -1,4 +1,4 @@
-import { CommonReducerState } from './common';
+import { CommonReducerState } from '../../store/types/common';
 
 export type RootReducerState = {
   common: CommonReducerState;
