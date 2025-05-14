@@ -2,34 +2,16 @@
 import { POLLING_INTERVAL } from '@/constants/app/wagmi';
 import { cookieStorage, createConfig, createStorage, http } from 'wagmi';
 import { mode } from 'wagmi/chains';
-import { connectorsForWallets } from '@rainbow-me/rainbowkit';
-import {
-  frontierWallet,
-  metaMaskWallet,
-  okxWallet,
-  phantomWallet,
-  safepalWallet,
-  trustWallet,
-  walletConnectWallet,
-} from '@rainbow-me/rainbowkit/wallets';
 
-const connectors = connectorsForWallets(
-  [
-    {
-      groupName: 'Recommended',
-      wallets: [
-        metaMaskWallet,
-        walletConnectWallet,
-        trustWallet,
-        frontierWallet,
-        safepalWallet,
-        phantomWallet,
-        okxWallet,
-      ],
-    },
-  ],
-  { appName: 'Daao.ai', projectId: process.env.NEXT_PUBLIC_PROJECT_ID || '' },
-);
+// const connectors = connectorsForWallets(
+//   [
+//     {
+//       groupName: 'Recommended',
+//       wallets: [metaMaskWallet, trustWallet, frontierWallet, safepalWallet, phantomWallet, okxWallet],
+//     },
+//   ],
+//   { appName: 'Daao.ai', projectId: '762399822f3c6326e60b27c2c2085d52' },
+// );
 
 export const getWagmiConfig = () => {
   return createConfig({
@@ -41,6 +23,6 @@ export const getWagmiConfig = () => {
     syncConnectedChain: true,
     transports: { [mode.id]: http() },
     ssr: true,
-    connectors,
+    // connectors,
   });
 };
