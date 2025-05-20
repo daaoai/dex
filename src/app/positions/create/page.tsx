@@ -2,15 +2,19 @@
 
 import ConnectWalletButton from '@/components/ConnectWalletButton';
 import TokenSelectionModal from '@/components/TokenSelectorModal';
-import { supportedChainIds } from '@/constants/chains';
+import { chainsData, supportedChainIds } from '@/constants/chains';
 import { useAddLiquidity } from '@/hooks/useAddLiquidity';
 import { Token } from '@/types/tokens';
 import { ChevronDown, Settings } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
+import { useAccount } from 'wagmi';
+import { RootState } from '../../../../store';
 
 export default function NewPositions() {
+  // states
   const [showTokenModal, setShowTokenModal] = useState<{ show: boolean; tokenType: 'token0' | 'token1' }>({
     show: false,
     tokenType: 'token0',
@@ -18,6 +22,11 @@ export default function NewPositions() {
   const [token0, setToken0] = useState<Token | null>(null);
   const [token1, setToken1] = useState<Token | null>(null);
 
+  // redux
+  const { appChainId } = useSelector((state: RootState) => state.common, shallowEqual);
+
+  // hooks
+  const { address: account, chainId: accountChainId, isConnected } = useAccount();
   const { getPool } = useAddLiquidity({ chainId: supportedChainIds.monadTestnet });
 
   useEffect(() => {
@@ -160,8 +169,18 @@ export default function NewPositions() {
                 </div>
               </div>
             </div>
-
-            <ConnectWalletButton />
+            {account && isConnected && appChainId === accountChainId ? (
+              <button className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full">
+                Create position
+              </button>
+            ) : (
+              <ConnectWalletButton
+                connectButtonTailwindClasses="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
+                wrongNetworkButtonTailwindClasses="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
+                wrongNetworkButtonText={`Switch to ${chainsData[appChainId]?.name}`}
+                switchToChainId={appChainId}
+              />
+            )}
           </div>
         </div>
       </div>

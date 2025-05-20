@@ -1,5 +1,21 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-const ConnectWalletButton = () => {
+import { useSwitchChain } from 'wagmi';
+
+type ConnectWalletButtonProps = {
+  connectButtonTailwindClasses?: string;
+  wrongNetworkButtonTailwindClasses?: string;
+  wrongNetworkButtonText?: string;
+  connectButtonText?: string;
+  switchToChainId?: number;
+};
+const ConnectWalletButton = ({
+  connectButtonTailwindClasses,
+  wrongNetworkButtonTailwindClasses,
+  wrongNetworkButtonText = 'Wrong Network',
+  connectButtonText = 'Connect Wallet',
+  switchToChainId,
+}: ConnectWalletButtonProps) => {
+  const { switchChainAsync } = useSwitchChain();
   return (
     <ConnectButton.Custom>
       {({ account, chain, openAccountModal, openChainModal, openConnectModal, authenticationStatus, mounted }) => {
@@ -22,15 +38,25 @@ const ConnectWalletButton = () => {
             {(() => {
               if (!connected) {
                 return (
-                  <button onClick={openConnectModal} type="button">
-                    Connect Wallet
+                  <button onClick={openConnectModal} type="button" className={connectButtonTailwindClasses}>
+                    {connectButtonText}
                   </button>
                 );
               }
               if (chain.unsupported) {
                 return (
-                  <button onClick={openChainModal} type="button">
-                    Wrong network
+                  <button
+                    onClick={() => {
+                      if (switchToChainId) {
+                        switchChainAsync({ chainId: switchToChainId });
+                      } else {
+                        openChainModal();
+                      }
+                    }}
+                    type="button"
+                    className={wrongNetworkButtonTailwindClasses}
+                  >
+                    {wrongNetworkButtonText}
                   </button>
                 );
               }
