@@ -1,15 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { supportedChainIds } from '@/constants/chains';
+import { tokensByChainId } from '@/constants/tokens';
+import { Token } from '@/types/tokens';
 import { X } from 'lucide-react';
 import Image from 'next/image';
-import axios from 'axios';
-
-interface Token {
-  symbol: string;
-  name: string;
-  icon: string;
-}
+import { useEffect, useState } from 'react';
 
 interface TokenSelectionModalProps {
   onClose: () => void;
@@ -26,24 +22,7 @@ export default function TokenSelectionModal({ onClose, onSelect }: TokenSelectio
     const fetchTokens = async () => {
       setLoading(true);
       try {
-        const timestamp = Math.floor(Date.now() / 1000);
-        const response = await axios.get('https://monad-api.blockvision.org/testnet/api/tokens', {
-          headers: {
-            accept: 'application/json',
-            'x-api-signature': '193b690fa0de580183b0f0b8102da9ca',
-            'x-api-timestamp': timestamp.toString(),
-            'x-app-id': 'cc96c21ec5b8946b750063e2906d731a',
-            'x-visitor-id': 'cb0322c6-969e-44dc-9fab-f8db16c9c925',
-          },
-        });
-
-        const fetchedTokens =
-          response.data?.data?.map((token: { symbol: string; name: string; icon_url: string }) => ({
-            symbol: token.symbol,
-            name: token.name,
-            icon: token.icon_url || '/placeholder.svg',
-          })) || [];
-
+        const fetchedTokens = Object.values(tokensByChainId[supportedChainIds.monadTestnet]);
         setTokens(fetchedTokens);
         setFilteredTokens(fetchedTokens);
       } catch (error) {
@@ -103,12 +82,12 @@ export default function TokenSelectionModal({ onClose, onSelect }: TokenSelectio
             <div className="space-y-2">
               {filteredTokens.map((token) => (
                 <button
-                  key={token.symbol}
+                  key={token.address}
                   className="w-full bg-transparent hover:bg-gray-800 rounded-lg p-2 flex items-center gap-3"
                   onClick={() => onSelect(token)}
                 >
                   <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
-                    <Image src={token.icon} alt={token.symbol} width={20} height={20} />
+                    <Image src={token.logo || '/placeholder.svg'} alt={token.symbol} width={20} height={20} />
                   </div>
                   <div className="text-left">
                     <div className="font-medium">{token.name}</div>

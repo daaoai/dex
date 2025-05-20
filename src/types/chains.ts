@@ -1,12 +1,4 @@
-import { Hex } from 'viem';
-
-export type Token = {
-  address: Hex;
-  decimals: number;
-  symbol: string;
-  name: string;
-  logo?: string;
-};
+import { Token } from './tokens';
 
 export type ChainsConfig = {
   slug: string;

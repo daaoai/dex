@@ -1,15 +1,38 @@
 'use client';
 
-import { useState } from 'react';
+import ConnectWalletButton from '@/components/ConnectWalletButton';
+import TokenSelectionModal from '@/components/TokenSelectorModal';
+import { supportedChainIds } from '@/constants/chains';
+import { useAddLiquidity } from '@/hooks/useAddLiquidity';
+import { Token } from '@/types/tokens';
 import { ChevronDown, Settings } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import TokenSelectionModal from '@/components/TokenSelectorModal';
+import { useEffect, useState } from 'react';
 
 export default function NewPositions() {
-  const [showTokenModal, setShowTokenModal] = useState(false);
-  const [selectedToken1, setSelectedToken1] = useState({ symbol: 'ETH', name: 'Ethereum', icon: '/ethereum.svg' });
-  // const [selectedToken2, setSelectedToken2] = useState(null);
+  const [showTokenModal, setShowTokenModal] = useState<{ show: boolean; tokenType: 'token0' | 'token1' }>({
+    show: false,
+    tokenType: 'token0',
+  });
+  const [token0, setToken0] = useState<Token | null>(null);
+  const [token1, setToken1] = useState<Token | null>(null);
+
+  const { getPool } = useAddLiquidity({ chainId: supportedChainIds.monadTestnet });
+
+  useEffect(() => {
+    const fetchPool = async () => {
+      if (token0 && token1) {
+        try {
+          const poolAddress = await getPool(token0.address, token1.address, 3000);
+          console.log('Pool Address:', poolAddress);
+        } catch (error) {
+          console.error('Error fetching pool address:', error);
+        }
+      }
+    };
+    fetchPool();
+  }, [token0, token1]);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -79,26 +102,35 @@ export default function NewPositions() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <button
                 className="bg-gray-800 rounded-lg p-4 flex items-center justify-between"
-                onClick={() => setShowTokenModal(true)}
+                onClick={() => setShowTokenModal({ show: true, tokenType: 'token0' })}
               >
-                {selectedToken1 ? (
+                {token0 ? (
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
-                      <Image src="/ethereum.svg" alt="ETH" width={16} height={16} />
+                      <Image src={token0.logo || '/placeholder.svg'} alt={token0.symbol} width={16} height={16} />
                     </div>
-                    <span>{selectedToken1.symbol}</span>
+                    <span>{token0.symbol}</span>
                   </div>
                 ) : (
-                  <span>Select token</span>
+                  <span>Choose token</span>
                 )}
                 <ChevronDown className="h-5 w-5 text-gray-400" />
               </button>
 
               <button
                 className="bg-white text-black rounded-lg p-4 flex items-center justify-between"
-                onClick={() => setShowTokenModal(true)}
+                onClick={() => setShowTokenModal({ show: true, tokenType: 'token1' })}
               >
-                <span>Choose token</span>
+                {token1 ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                      <Image src={token1.logo || '/placeholder.svg'} alt={token1.symbol} width={16} height={16} />
+                    </div>
+                    <span>{token1.symbol}</span>
+                  </div>
+                ) : (
+                  <span>Choose token</span>
+                )}
                 <ChevronDown className="h-5 w-5 text-gray-600" />
               </button>
             </div>
@@ -129,19 +161,23 @@ export default function NewPositions() {
               </div>
             </div>
 
-            <button className="w-full bg-gray-800 hover:bg-gray-700 text-white py-4 rounded-lg font-medium">
-              Connect
-            </button>
+            <ConnectWalletButton />
           </div>
         </div>
       </div>
 
-      {showTokenModal && (
+      {showTokenModal.show && (
         <TokenSelectionModal
-          onClose={() => setShowTokenModal(false)}
+          onClose={() => {
+            setShowTokenModal((prev) => ({ ...prev, show: false }));
+          }}
           onSelect={(token) => {
-            setSelectedToken1(token);
-            setShowTokenModal(false);
+            if (showTokenModal.tokenType === 'token0') {
+              setToken0(token);
+            } else {
+              setToken1(token);
+            }
+            setShowTokenModal((prev) => ({ ...prev, show: false }));
           }}
         />
       )}

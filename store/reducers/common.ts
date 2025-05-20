@@ -4,7 +4,7 @@ import { reducerNames } from '../constants/names';
 import { CommonReducerState } from '../types/common';
 
 export const initialState: CommonReducerState = {
-  appChainId: supportedChainIds.mode,
+  appChainId: supportedChainIds.monadTestnet,
 };
 
 export const CommonReducer = createSlice({
