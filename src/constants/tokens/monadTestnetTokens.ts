@@ -1,4 +1,20 @@
+import { zeroAddress } from 'viem';
+
 export const monadTestnetTokens = {
+  '0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701': {
+    name: 'Wrapped Monad',
+    symbol: 'WMON',
+    logo: 'https://imagedelivery.net/cBNDGgkrsEA-b_ixIp9SkQ/I_t8rg_V_400x400.jpg/public',
+    address: '0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701',
+    decimals: 18,
+  },
+  '0x0000000000000000000000000000000000000000': {
+    name: 'Testnet MON Token',
+    symbol: 'MON',
+    logo: 'https://imagedelivery.net/cBNDGgkrsEA-b_ixIp9SkQ/mon.png/public',
+    address: zeroAddress,
+    decimals: 18,
+  },
   '0x89e4a70de5F2Ae468B18B6B6300B249387f9Adf0': {
     name: 'Fantasy MON',
     symbol: 'fMON',
@@ -46,13 +62,6 @@ export const monadTestnetTokens = {
     symbol: 'shMON',
     logo: 'https://i.imghippo.com/files/Osf1224Egs.png',
     address: '0x3a98250F98Dd388C211206983453837C8365BDc1',
-    decimals: 18,
-  },
-  '0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701': {
-    name: 'Wrapped Monad',
-    symbol: 'WMON',
-    logo: 'https://imagedelivery.net/cBNDGgkrsEA-b_ixIp9SkQ/I_t8rg_V_400x400.jpg/public',
-    address: '0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701',
     decimals: 18,
   },
   '0xf817257fed379853cDe0fa4F97AB987181B1E5Ea': {

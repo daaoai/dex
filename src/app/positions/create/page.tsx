@@ -2,13 +2,14 @@
 
 import ConnectWalletButton from '@/components/ConnectWalletButton';
 import TokenSelectionModal from '@/components/TokenSelectorModal';
-import { chainsData, supportedChainIds } from '@/constants/chains';
+import { chainsData } from '@/constants/chains';
 import { useAddLiquidity } from '@/hooks/useAddLiquidity';
+import useEffectAfterMount from '@/hooks/useEffectAfterMount';
 import { Token } from '@/types/tokens';
 import { ChevronDown, Settings } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { useAccount } from 'wagmi';
 import { RootState } from '../../../../store';
@@ -27,20 +28,15 @@ export default function NewPositions() {
 
   // hooks
   const { address: account, chainId: accountChainId, isConnected } = useAccount();
-  const { getPool } = useAddLiquidity({ chainId: supportedChainIds.monadTestnet });
+  const { fetchInitialData, handleAddLiquidity, setSrcTokenFormattedAmount } = useAddLiquidity({ chainId: appChainId });
 
-  useEffect(() => {
-    const fetchPool = async () => {
-      if (token0 && token1) {
-        try {
-          const poolAddress = await getPool(token0.address, token1.address, 3000);
-          console.log('Pool Address:', poolAddress);
-        } catch (error) {
-          console.error('Error fetching pool address:', error);
-        }
-      }
-    };
-    fetchPool();
+  // effects
+  useEffectAfterMount(() => {
+    if (token0 && token1) {
+      fetchInitialData({ token0: token0.address, token1: token1.address, fee: 3000 }).then(() => {
+        setSrcTokenFormattedAmount('0.0000001');
+      });
+    }
   }, [token0, token1]);
 
   return (
@@ -170,7 +166,10 @@ export default function NewPositions() {
               </div>
             </div>
             {account && isConnected && appChainId === accountChainId ? (
-              <button className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full">
+              <button
+                className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
+                onClick={handleAddLiquidity}
+              >
                 Create position
               </button>
             ) : (
