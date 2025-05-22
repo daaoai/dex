@@ -70,7 +70,7 @@ export default function NewPositions() {
         {/* Main content */}
         <div className="grid md:grid-cols-[1fr,2fr] gap-6">
           {/* Steps */}
-          <div className="bg-gray-900 rounded-lg p-6">
+          <div className="bg-dark-black-50 rounded-lg p-6">
             <div className="flex items-start gap-4 mb-8">
               <div className="flex flex-col items-center">
                 <div className="bg-white text-black w-10 h-10 rounded-full flex items-center justify-center font-bold">
@@ -98,7 +98,7 @@ export default function NewPositions() {
           </div>
 
           {/* Form */}
-          <div className="bg-gray-900 rounded-lg p-6">
+          <div className="bg-dark-black-50 rounded-lg p-6">
             <h2 className="text-xl font-semibold mb-4">Select pair</h2>
             <p className="text-gray-400 mb-6">
               Choose the tokens you want to provide liquidity for. You can select tokens on all supported networks.
@@ -106,7 +106,7 @@ export default function NewPositions() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <button
-                className="bg-gray-800 rounded-lg p-4 flex items-center justify-between"
+                className="bg-dark-black-300 rounded-lg p-4 flex items-center justify-between"
                 onClick={() => setShowTokenModal({ show: true, tokenType: 'token0' })}
               >
                 {token0 ? (
@@ -152,7 +152,7 @@ export default function NewPositions() {
                 The amount earned providing liquidity. Choose an amount that suits your risk tolerance and strategy.
               </p>
 
-              <div className="bg-gray-800 rounded-lg p-4">
+              <div className="bg-dark-black-300 rounded-lg p-4">
                 <div className="flex justify-between items-center">
                   <div>
                     <h4 className="font-semibold mb-1">0.3% fee tier</h4>

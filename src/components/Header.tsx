@@ -9,15 +9,14 @@ export default function Header() {
             {tab}
           </button>
         ))}
-      </nav>
-      <div className="flex items-center space-x-4">
         <input
           type="text"
           placeholder="Search Token"
-          className="px-3 py-1 rounded bg-gray-800 placeholder-gray-500 focus:outline-none"
+          className="px-3 py-1 rounded border-2 bg-dark-black-50 border-dark-black-100  placeholder-gray-500 focus:outline-none"
         />
-        <ConnectButton />
-      </div>
+      </nav>
+
+      <ConnectButton />
     </header>
   );
 }

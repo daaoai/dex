@@ -86,7 +86,7 @@ export default function TokenSelectionModal({ onClose, onSelect }: TokenSelectio
                   className="w-full bg-transparent hover:bg-gray-800 rounded-lg p-2 flex items-center gap-3"
                   onClick={() => onSelect(token)}
                 >
-                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full  flex items-center justify-center">
                     <Image src={token.logo || '/placeholder.svg'} alt={token.symbol} width={20} height={20} />
                   </div>
                   <div className="text-left">

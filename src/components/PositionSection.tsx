@@ -19,7 +19,7 @@ export default function PositionsSection() {
           Your Positions
         </Text>
         <div>
-          <Link href="/positions/create" className="bg-gray-700 hover:bg-gray-600 text-gray-100 px-4 py-2 rounded">
+          <Link href="/positions/create" className="bg-white  text-black px-4 py-2 rounded">
             + New
           </Link>
         </div>

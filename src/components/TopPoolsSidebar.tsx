@@ -9,15 +9,15 @@ export default function TopPoolsSidebar() {
         Top 3 Pools by TVL
       </Text>
       {topPools.map((p, i) => (
-        <div key={i} className="bg-gray-800 rounded-lg p-4 flex justify-between items-center">
+        <div key={i} className="bg-dark-black-50 rounded-lg p-4 flex justify-between items-center">
           <div>
-            <p className="font-medium">{p.pair}</p>
+            <p className="font-medium text-white">{p.pair}</p>
             <p className="text-sm text-gray-400">
               {p.version} • {p.fee}
             </p>
           </div>
           <div className="text-right">
-            <p>{p.apr} APR</p>
+            <p className="text-white">{p.apr} APR</p>
             <p className="text-purple-400 text-sm">{p.rewards}</p>
           </div>
         </div>
