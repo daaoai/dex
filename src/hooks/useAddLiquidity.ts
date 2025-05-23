@@ -405,8 +405,8 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
   useEffectAfterMount(() => {
     if (!poolDetails) return;
     if (selectedRange === 'full') {
-      setLowerTick(-V3PoolUtils.highestTick);
-      setUpperTick(V3PoolUtils.highestTick);
+      setLowerTick(V3PoolUtils.getLowestUsableTick({ tickSpacing: poolDetails.tickSpacing }));
+      setUpperTick(V3PoolUtils.getHighestUsableTick({ tickSpacing: poolDetails.tickSpacing }));
     } else {
       setLowerTick(currentPoolData.tick - poolDetails?.tickSpacing);
       setUpperTick(currentPoolData.tick + poolDetails?.tickSpacing);

@@ -4,11 +4,19 @@ import { formatUnits, parseUnits } from 'viem';
 export class V3PoolUtils {
   private static Q96 = Math.pow(2, 96);
   private static tickMultiplier = 1.0001;
-  static highestTick = 887272;
-  static lowestTick = -887272;
 
   public static nearestUsableTick = ({ tick, tickSpacing }: { tick: number; tickSpacing: number }) => {
     return Math.round(tick / tickSpacing) * tickSpacing;
+  };
+
+  public static getLowestUsableTick = ({ tickSpacing }: { tickSpacing: number }) => {
+    const minTick = -887272;
+    return Math.ceil(minTick / tickSpacing) * tickSpacing;
+  };
+
+  public static getHighestUsableTick = ({ tickSpacing }: { tickSpacing: number }) => {
+    const maxTick = 887272;
+    return Math.floor(maxTick / tickSpacing) * tickSpacing;
   };
 
   public static getTickFromPrice = ({
