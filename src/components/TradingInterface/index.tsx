@@ -3,9 +3,9 @@
 import { useAddLiquidity } from '@/hooks/useAddLiquidity';
 import { Token } from '@/types/tokens';
 import { useEffect, useRef, useState } from 'react';
+import PoolIcon from '../PoolLogo';
 import DepositTokens from './DepositToken';
 import RangeSelector from './RangeSelector';
-import PoolIcon from '../PoolLogo';
 
 interface CryptoTradingInterfaceProps {
   token0: Token;
@@ -41,7 +41,6 @@ const generatePriceData = (days: number, volatility = 0.05) => {
 };
 
 export default function CryptoTradingInterface({ token0, token1, chainId, fee }: CryptoTradingInterfaceProps) {
-  const [selectedRange, setSelectedRange] = useState<'full' | 'custom'>('full');
   const [selectedTimeframe, setSelectedTimeframe] = useState<string>('1D');
   const [isLoading] = useState<boolean>(false);
 
@@ -56,6 +55,8 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
     decreaseLowerTick,
     handleAddLiquidity,
     decreaseUpperTick,
+    selectedRange,
+    setSelectedRange,
     upperPrice,
     setSrcTokenFormattedAmount,
     setDstTokenFormattedAmount,
@@ -197,13 +198,6 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
     }
   }, [selectedTimeframe]);
 
-  const handleRangeSelection = (range: 'full' | 'custom') => {
-    setSelectedRange(range);
-    if (range === 'full') {
-    } else {
-    }
-  };
-
   const handleDestAmountChange = (value: string) => {
     if (value && !isNaN(parseFloat(value))) {
       setDstTokenFormattedAmount(value);
@@ -254,7 +248,7 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
           selectedTimeframe,
           currentPrice,
           priceInUsd: 0,
-          handleRangeSelection,
+          handleRangeSelection: setSelectedRange,
           setMinPrice: () => {},
           setMaxPrice: () => {},
           setSelectedTimeframe,

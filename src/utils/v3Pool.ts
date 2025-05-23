@@ -4,6 +4,8 @@ import { formatUnits, parseUnits } from 'viem';
 export class V3PoolUtils {
   private static Q96 = Math.pow(2, 96);
   private static tickMultiplier = 1.0001;
+  static highestTick = 887272;
+  static lowestTick = -887272;
 
   public static nearestUsableTick = ({ tick, tickSpacing }: { tick: number; tickSpacing: number }) => {
     return Math.round(tick / tickSpacing) * tickSpacing;

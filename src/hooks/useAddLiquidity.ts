@@ -22,10 +22,10 @@ type CurrentPoolData = {
 // const getPriceFromPercent = (percent: number, currentPrice: number) => {
 //   return currentPrice * (1 + percent / 100);
 // };
-
 export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
   const [srcTokenFormattedAmount, setSrcTokenFormattedAmount] = useState('');
   const [dstTokenFormattedAmount, setDstTokenFormattedAmount] = useState('');
+  const [selectedRange, setSelectedRange] = useState<'full' | 'custom'>('full');
   const [balances, setBalances] = useState<{ [key: string]: bigint }>({});
   // const [selectedRange, setSelectedRange] = useState(25);
   const [slippageTolerance, setSlippageTolerance] = useState(1);
@@ -359,12 +359,14 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
 
       const publicClient = getPublicClient(chainId);
 
-      // const estimateGas = await publicClient.estimateGas({
-      //   account,
-      //   to: nftManagerAddress,
-      //   value: 0n,
-      //   data: callData,
-      // });
+      const estimateGas = await publicClient.estimateGas({
+        account,
+        to: nftManagerAddress,
+        value: 0n,
+        data: callData,
+      });
+
+      console.log('Estimated gas:', estimateGas);
 
       const hash = await sendTransactionAsync({
         account,
@@ -378,7 +380,7 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
       });
 
       if (receipt?.status !== 'success') {
-        throw new Error('Swap transaction did not succeed');
+        throw new Error('Transaction failed');
       }
       // toast.success('Liquidity added successfully');
       updateTokensBalance();
@@ -395,7 +397,7 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
   useEffectAfterMount(() => {
     updateLowerPrice(lowerTick);
     updateUpperPrice(upperTick);
-  }, [lowerTick, upperTick, currentPoolData]);
+  }, [lowerTick, upperTick, currentPoolData, selectedRange]);
 
   useEffectAfterMount(() => {
     if (!Number(srcTokenFormattedAmount)) {
@@ -408,6 +410,17 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
   useEffect(() => {
     updateTokensBalance();
   }, [account, srcTokenDetails, destTokenDetails]);
+
+  useEffectAfterMount(() => {
+    if (!poolDetails) return;
+    if (selectedRange === 'full') {
+      setLowerTick(-V3PoolUtils.highestTick);
+      setUpperTick(V3PoolUtils.highestTick);
+    } else {
+      setLowerTick(currentPoolData.tick - poolDetails?.tickSpacing);
+      setUpperTick(currentPoolData.tick + poolDetails?.tickSpacing);
+    }
+  }, [selectedRange, currentPoolData, poolDetails]);
 
   const handleSwitch = () => {
     if (srcToken === 'token0') {
@@ -454,6 +467,8 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
     decreaseLowerTick,
     upperPrice,
     fetchInitialData,
+    selectedRange,
+    setSelectedRange,
     currentPrice,
     error,
     approvalStatus,
