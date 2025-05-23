@@ -1,3 +1,4 @@
+import { Button } from '@/shadcn/components/ui/button';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useSwitchChain } from 'wagmi';
 
@@ -19,8 +20,6 @@ const ConnectWalletButton = ({
   return (
     <ConnectButton.Custom>
       {({ account, chain, openAccountModal, openChainModal, openConnectModal, authenticationStatus, mounted }) => {
-        // Note: If your app doesn't use authentication, you
-        // can remove all 'authenticationStatus' checks
         const ready = mounted && authenticationStatus !== 'loading';
         const connected =
           ready && account && chain && (!authenticationStatus || authenticationStatus === 'authenticated');
@@ -81,10 +80,10 @@ const ConnectWalletButton = ({
                     )}
                     {chain.name}
                   </button>
-                  <button onClick={openAccountModal} type="button">
+                  <Button onClick={openAccountModal} type="button">
                     {account.displayName}
                     {account.displayBalance ? ` (${account.displayBalance})` : ''}
-                  </button>
+                  </Button>
                 </div>
               );
             })()}

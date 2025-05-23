@@ -1,9 +1,11 @@
 'use client';
 
+import { Button } from '@/shadcn/components/ui/button';
 import { Token } from '@/types/tokens';
 import { truncateNumber } from '@/utils/truncateNumber';
 import { LayoutGroup, motion } from 'framer-motion';
 import { RotateCcw, Search, ZoomIn } from 'lucide-react';
+import Text from '../Text';
 
 type ChartDataPoint = {
   time: number;
@@ -57,7 +59,7 @@ export default function RangeSelector({
         <LayoutGroup>
           <div className="relative bg-zinc-800 p-1 rounded-md overflow-hidden grid grid-cols-2">
             {rangeOptions.map((option) => (
-              <button
+              <Button
                 key={option}
                 onClick={() => handleRangeSelection(option)}
                 className={`py-2 rounded-md text-center transition-colors relative z-10 ${
@@ -72,25 +74,29 @@ export default function RangeSelector({
                   />
                 )}
                 <span className="relative z-10">{option === 'full' ? 'Full Range' : 'Custom Range'}</span>
-              </button>
+              </Button>
             ))}
           </div>
         </LayoutGroup>
       </div>
-      <p className="text-sm text-gray-400">
+      <Text type="p" className="text-sm text-gray-400">
         Providing full range liquidity ensures continuous market participation across all possible prices...
-      </p>
+      </Text>
       <div className="space-y-2">
         <div className="flex justify-between items-center text-sm">
           <div>
             Market price:
-            <p className="font-medium">
+            <Text type="p" className="font-medium">
               {currentPrice} {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
-            </p>
+            </Text>
           </div>
           <div className="flex space-x-2">
-            <p className="text-sm">{srcTokenDetails.symbol}</p>
-            <p className="text-sm">{destTokenDetails.symbol}</p>
+            <Text type="p" className="text-sm">
+              {srcTokenDetails.symbol}
+            </Text>
+            <Text type="p" className="text-sm">
+              {destTokenDetails.symbol}
+            </Text>
           </div>
         </div>
         <div className="relative h-40 bg-zinc-800 rounded-md overflow-hidden">
@@ -99,7 +105,7 @@ export default function RangeSelector({
         <div className="flex justify-between items-center">
           <div className="flex space-x-1">
             {['1D', '1W', '1M', '1Y', 'All time'].map((period) => (
-              <button
+              <Button
                 key={period}
                 className={`px-3 py-1 rounded-md text-xs transition-colors ${
                   selectedTimeframe === period ? 'bg-zinc-700' : 'bg-zinc-800 hover:bg-zinc-700'
@@ -107,27 +113,28 @@ export default function RangeSelector({
                 onClick={() => setSelectedTimeframe(period)}
               >
                 {period}
-              </button>
+              </Button>
             ))}
           </div>
           <div className="flex space-x-1">
-            <button className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" title="search">
+            <Button className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" title="search">
               <Search size={16} />
-            </button>
-            <button className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" title="zoom">
+            </Button>
+            <Button className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" title="zoom">
               <ZoomIn size={16} />
-            </button>
-            <button
+            </Button>
+            <Button
               className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 flex items-center"
               onClick={() => setSelectedTimeframe('1D')}
             >
               <RotateCcw size={16} />
-              <span className="ml-1 text-xs">Reset</span>
-            </button>
+              <Text type="span" className="ml-1 text-xs">
+                Reset
+              </Text>
+            </Button>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2 mt-4">
-          {/* Min Price */}
           <div className="relative bg-zinc-800 p-3 rounded-md">
             <label className="text-sm text-gray-400" htmlFor="minPrice">
               Min price
@@ -139,15 +146,14 @@ export default function RangeSelector({
               {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
             </div>
 
-            {/* Overlay controls */}
             {selectedRange !== 'full' && (
               <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
-                <button
+                <Button
                   className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
                   onClick={increaseMinPrice}
                 >
                   +
-                </button>
+                </Button>
                 <button
                   className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
                   onClick={decreaseMinPrice}
@@ -158,7 +164,6 @@ export default function RangeSelector({
             )}
           </div>
 
-          {/* Max Price */}
           <div className="relative bg-zinc-800 p-3 rounded-md">
             <label className="text-sm text-gray-400" htmlFor="maxPrice">
               Max price
@@ -173,18 +178,18 @@ export default function RangeSelector({
             {/* Overlay controls */}
             {selectedRange !== 'full' && (
               <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
-                <button
+                <Button
                   className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
                   onClick={increaseMaxPrice}
                 >
                   +
-                </button>
-                <button
+                </Button>
+                <Button
                   className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
                   onClick={decreaseMaxPrice}
                 >
                   −
-                </button>
+                </Button>
               </div>
             )}
           </div>
