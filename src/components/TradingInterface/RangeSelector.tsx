@@ -1,6 +1,7 @@
 'use client';
 
 import { Search, ZoomIn, RotateCcw } from 'lucide-react';
+import { motion, LayoutGroup } from 'framer-motion';
 
 type ChartDataPoint = {
   time: number;
@@ -39,26 +40,34 @@ export default function RangeSelector({
   setSelectedTimeframe,
   chartContainerRef,
 }: RangeSelectorProps) {
+  const rangeOptions = ['full', 'custom'] as const;
+
   return (
     <div className="bg-zinc-900 rounded-lg p-4 space-y-4">
       <h3 className="text-lg font-medium">Set price range</h3>
-      <div className="grid grid-cols-2 gap-2 bg-zinc-800 p-1 rounded-md">
-        <button
-          className={`py-2 rounded-md text-center transition-colors ${
-            selectedRange === 'full' ? 'bg-zinc-700' : 'hover:bg-zinc-700'
-          }`}
-          onClick={() => handleRangeSelection('full')}
-        >
-          Full Range
-        </button>
-        <button
-          className={`py-2 rounded-md text-center transition-colors ${
-            selectedRange === 'custom' ? 'bg-zinc-700' : 'hover:bg-zinc-700'
-          }`}
-          onClick={() => handleRangeSelection('custom')}
-        >
-          Custom Range
-        </button>
+      <div className="relative bg-zinc-800 p-1 rounded-md overflow-hidden">
+        <LayoutGroup>
+          <div className="relative bg-zinc-800 p-1 rounded-md overflow-hidden grid grid-cols-2">
+            {rangeOptions.map((option) => (
+              <button
+                key={option}
+                onClick={() => handleRangeSelection(option)}
+                className={`py-2 rounded-md text-center transition-colors relative z-10 ${
+                  selectedRange === option ? 'text-white' : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {selectedRange === option && (
+                  <motion.div
+                    layoutId="rangeToggle"
+                    className="absolute inset-0 bg-zinc-700 rounded-md z-0"
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{option === 'full' ? 'Full Range' : 'Custom Range'}</span>
+              </button>
+            ))}
+          </div>
+        </LayoutGroup>
       </div>
       <p className="text-sm text-gray-400">
         Providing full range liquidity ensures continuous market participation across all possible prices...
@@ -110,34 +119,58 @@ export default function RangeSelector({
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2 mt-4">
-          <div className="bg-zinc-800 p-3 rounded-md">
+          {/* Min Price */}
+          <div className="relative bg-zinc-800 p-3 rounded-md">
             <label className="text-sm text-gray-400" htmlFor="minPrice">
               Min price
             </label>
-            <input
-              id="minPrice"
-              type="text"
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
-              disabled={selectedRange === 'full'}
-              className="text-3xl font-bold bg-transparent outline-none w-full disabled:opacity-50"
-            />
-            <div className="text-sm text-gray-400">USDT = 1 ETH</div>
+            <div className="text-3xl font-bold mt-1">{minPrice}</div>
+            <div className="text-sm text-gray-400 mt-1">USDT = 1 ETH</div>
+
+            {/* Overlay controls */}
+            <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
+              <button
+                className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
+                onClick={() => setMinPrice(Math.max(0, parseFloat(minPrice || '0') + 0.000001).toFixed(6))}
+                disabled={selectedRange === 'full'}
+              >
+                +
+              </button>
+              <button
+                className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
+                onClick={() => setMinPrice(Math.max(0, parseFloat(minPrice || '0') - 0.000001).toFixed(6))}
+                disabled={selectedRange === 'full'}
+              >
+                −
+              </button>
+            </div>
           </div>
 
-          <div className="bg-zinc-800 p-3 rounded-md">
+          {/* Max Price */}
+          <div className="relative bg-zinc-800 p-3 rounded-md">
             <label className="text-sm text-gray-400" htmlFor="maxPrice">
               Max price
             </label>
-            <input
-              id="maxPrice"
-              type="text"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-              disabled={selectedRange === 'full'}
-              className="text-3xl font-bold bg-transparent outline-none w-full disabled:opacity-50"
-            />
-            <div className="text-sm text-gray-400">USDT = 1 ETH</div>
+            <div className="text-3xl font-bold mt-1">{maxPrice}</div>
+            <div className="text-sm text-gray-400 mt-1">USDT = 1 ETH</div>
+
+            {/* Overlay controls */}
+            <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
+              <button
+                className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
+                onClick={() => setMaxPrice(Math.max(0, parseFloat(maxPrice || '0') + 0.000001).toFixed(6))}
+                disabled={selectedRange === 'full'}
+              >
+                +
+              </button>
+              <button
+                className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
+                onClick={() => setMaxPrice(Math.max(0, parseFloat(maxPrice || '0') - 0.000001).toFixed(6))}
+                disabled={selectedRange === 'full'}
+              >
+                −
+              </button>
+            </div>
           </div>
         </div>
       </div>
