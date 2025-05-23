@@ -359,15 +359,6 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
 
       const publicClient = getPublicClient(chainId);
 
-      const estimateGas = await publicClient.estimateGas({
-        account,
-        to: nftManagerAddress,
-        value: 0n,
-        data: callData,
-      });
-
-      console.log('Estimated gas:', estimateGas);
-
       const hash = await sendTransactionAsync({
         account,
         to: nftManagerAddress,
