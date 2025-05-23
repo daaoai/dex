@@ -1,19 +1,15 @@
 'use client';
 
-import ConnectWalletButton from '@/components/ConnectWalletButton';
+import ConnectOrActionButton from '@/components/LiquidityActionButton';
 import TokenSelectionModal from '@/components/TokenSelectorModal';
-import { chainsData } from '@/constants/chains';
-import { useAddLiquidity } from '@/hooks/useAddLiquidity';
-import useEffectAfterMount from '@/hooks/useEffectAfterMount';
+import CryptoTradingInterface from '@/components/TradingInterface';
 import { Token } from '@/types/tokens';
 import { ChevronDown, Settings } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import { useAccount } from 'wagmi';
 import { RootState } from '../../../../store';
-import CryptoTradingInterface from '@/components/TradingInterface';
 
 export default function NewPositions() {
   // states
@@ -27,19 +23,6 @@ export default function NewPositions() {
 
   // redux
   const { appChainId } = useSelector((state: RootState) => state.common, shallowEqual);
-
-  // hooks
-  const { address: account, chainId: accountChainId, isConnected } = useAccount();
-  const { fetchInitialData, handleAddLiquidity, setSrcTokenFormattedAmount } = useAddLiquidity({ chainId: appChainId });
-
-  // effects
-  useEffectAfterMount(() => {
-    if (token0 && token1) {
-      fetchInitialData({ token0: token0.address, token1: token1.address, fee: 3000 }).then(() => {
-        setSrcTokenFormattedAmount('0.0000001');
-      });
-    }
-  }, [token0, token1]);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -83,7 +66,6 @@ export default function NewPositions() {
             </button>
             <div className="w-0.5 h-16 bg-gray-700 my-2" />
             <button
-              onClick={() => setStep(2)}
               className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
                 step === 2 ? 'bg-white text-black' : 'bg-gray-800 text-gray-400'
               }`}
@@ -161,25 +143,18 @@ export default function NewPositions() {
                     </div>
                   </div>
                 </div>
-                {account && isConnected && appChainId === accountChainId ? (
-                  <button
-                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
-                    onClick={handleAddLiquidity}
-                  >
-                    Create position
-                  </button>
-                ) : (
-                  <ConnectWalletButton
-                    connectButtonTailwindClasses="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
-                    wrongNetworkButtonTailwindClasses="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
-                    wrongNetworkButtonText={`Switch to ${chainsData[appChainId]?.name}`}
-                    switchToChainId={appChainId}
-                  />
-                )}
+                <ConnectOrActionButton
+                  authenticatedOnClick={() => {
+                    setStep(2);
+                  }}
+                  isDisabled={!token0 || !token1}
+                  authenticatedText="Continue"
+                />
               </div>{' '}
             </>
           ) : (
-            <CryptoTradingInterface />
+            token0 &&
+            token1 && <CryptoTradingInterface token0={token0} token1={token1} fee={3000} chainId={appChainId} />
           )}
 
           {/* Form */}

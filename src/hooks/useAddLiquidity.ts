@@ -19,15 +19,15 @@ type CurrentPoolData = {
   sqrtPriceX96: bigint;
 };
 
-const getPriceFromPercent = (percent: number, currentPrice: number) => {
-  return currentPrice * (1 + percent / 100);
-};
+// const getPriceFromPercent = (percent: number, currentPrice: number) => {
+//   return currentPrice * (1 + percent / 100);
+// };
 
 export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
   const [srcTokenFormattedAmount, setSrcTokenFormattedAmount] = useState('');
   const [dstTokenFormattedAmount, setDstTokenFormattedAmount] = useState('');
   const [balances, setBalances] = useState<{ [key: string]: bigint }>({});
-  const [selectedRange, setSelectedRange] = useState(25);
+  // const [selectedRange, setSelectedRange] = useState(25);
   const [slippageTolerance, setSlippageTolerance] = useState(1);
   const [srcToken, setSrcToken] = useState<'token0' | 'token1'>('token0');
   const [lowerPrice, setLowerPrice] = useState(0);
@@ -55,12 +55,9 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
   const destTokenDetails = srcToken === 'token0' ? poolDetails?.token1 : poolDetails?.token0;
   const nftManagerAddress = contractAddresses[chainId].nftManager;
 
-  const updateCurrentPoolData = async () => {
+  const updateCurrentPoolData = async (poolAddress: Hex) => {
     try {
-      if (!poolDetails?.address) {
-        return;
-      }
-      const pool = new UniswapV3Pool(chainId, poolDetails?.address);
+      const pool = new UniswapV3Pool(chainId, poolAddress);
       setIsDataLoading(true);
       const { currentTick, sqrtPriceX96 } = await pool.slot0();
 
@@ -82,42 +79,42 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
     }
   };
 
-  const updateTicks = () => {
-    if (!poolDetails) return;
-    const token0Details = poolDetails.token0;
-    const token1Details = poolDetails.token1;
-    const currentPrice = V3PoolUtils.getPriceFromSqrtRatio({
-      decimal0: token0Details.decimals,
-      decimal1: token1Details.decimals,
-      sqrtPriceX96: currentPoolData.sqrtPriceX96,
-    });
-    const lowerPrice = getPriceFromPercent(-selectedRange, currentPrice);
-    const upperPrice = getPriceFromPercent(selectedRange, currentPrice);
-    const lowerTick = V3PoolUtils.nearestUsableTick({
-      tick: V3PoolUtils.getTickFromPrice({
-        decimal0: token0Details.decimals,
-        decimal1: token1Details.decimals,
-        price: lowerPrice,
-        tickSpacing: poolDetails.tickSpacing,
-      }),
-      tickSpacing: poolDetails.tickSpacing,
-    });
+  // const updateTicks = () => {
+  //   if (!poolDetails) return;
+  //   const token0Details = poolDetails.token0;
+  //   const token1Details = poolDetails.token1;
+  //   const currentPrice = V3PoolUtils.getPriceFromSqrtRatio({
+  //     decimal0: token0Details.decimals,
+  //     decimal1: token1Details.decimals,
+  //     sqrtPriceX96: currentPoolData.sqrtPriceX96,
+  //   });
+  //   const lowerPrice = getPriceFromPercent(-selectedRange, currentPrice);
+  //   const upperPrice = getPriceFromPercent(selectedRange, currentPrice);
+  //   const lowerTick = V3PoolUtils.nearestUsableTick({
+  //     tick: V3PoolUtils.getTickFromPrice({
+  //       decimal0: token0Details.decimals,
+  //       decimal1: token1Details.decimals,
+  //       price: lowerPrice,
+  //       tickSpacing: poolDetails.tickSpacing,
+  //     }),
+  //     tickSpacing: poolDetails.tickSpacing,
+  //   });
 
-    const upperTick = V3PoolUtils.nearestUsableTick({
-      tick: V3PoolUtils.getTickFromPrice({
-        decimal0: token0Details.decimals,
-        decimal1: token1Details.decimals,
-        price: upperPrice,
-        tickSpacing: poolDetails.tickSpacing,
-      }),
-      tickSpacing: poolDetails.tickSpacing,
-    });
-    setLowerTick(lowerTick);
-    setUpperTick(upperTick);
-    updateCurrentPrice(currentPoolData.sqrtPriceX96);
-    updateLowerPrice(lowerTick);
-    updateUpperPrice(upperTick);
-  };
+  //   const upperTick = V3PoolUtils.nearestUsableTick({
+  //     tick: V3PoolUtils.getTickFromPrice({
+  //       decimal0: token0Details.decimals,
+  //       decimal1: token1Details.decimals,
+  //       price: upperPrice,
+  //       tickSpacing: poolDetails.tickSpacing,
+  //     }),
+  //     tickSpacing: poolDetails.tickSpacing,
+  //   });
+  //   setLowerTick(lowerTick);
+  //   setUpperTick(upperTick);
+  //   updateCurrentPrice(currentPoolData.sqrtPriceX96);
+  //   updateLowerPrice(lowerTick);
+  //   updateUpperPrice(upperTick);
+  // };
 
   const fetchInitialData = async ({ token0, token1, fee }: { token0: Hex; token1: Hex; fee: number }) => {
     try {
@@ -147,7 +144,11 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
       };
       setPoolDetails(poolDetails);
       if (poolAddress !== zeroAddress) {
-        await updateCurrentPoolData();
+        const currentPoolData = await updateCurrentPoolData(poolAddress);
+        if (currentPoolData) {
+          setLowerTick(currentPoolData.currentTick - poolDetails.tickSpacing);
+          setUpperTick(currentPoolData.currentTick + poolDetails.tickSpacing);
+        }
       } else {
         // set default values
         const price = 1;
@@ -162,6 +163,8 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
           tick: currentTick,
           sqrtPriceX96,
         });
+        setLowerTick(currentTick - poolDetails.tickSpacing);
+        setUpperTick(currentTick + poolDetails.tickSpacing);
       }
     } catch (error) {
       console.error('Error fetching price:', error);
@@ -272,6 +275,24 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
     return tx;
   };
 
+  const increaseUpperTick = async () => {
+    if (!poolDetails) return;
+    setUpperTick((prev) => prev + poolDetails.tickSpacing);
+  };
+
+  const decreaseUpperTick = async () => {
+    if (!poolDetails) return;
+    setUpperTick((prev) => prev - poolDetails.tickSpacing);
+  };
+  const increaseLowerTick = async () => {
+    if (!poolDetails) return;
+    setLowerTick((prev) => prev + poolDetails.tickSpacing);
+  };
+  const decreaseLowerTick = async () => {
+    if (!poolDetails) return;
+    setLowerTick((prev) => prev - poolDetails.tickSpacing);
+  };
+
   const handleAddLiquidity = async () => {
     try {
       if (!account || !accountChainId) {
@@ -372,8 +393,9 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
   };
 
   useEffectAfterMount(() => {
-    updateTicks();
-  }, [selectedRange, currentPoolData, srcToken]);
+    updateLowerPrice(lowerTick);
+    updateUpperPrice(upperTick);
+  }, [lowerTick, upperTick, currentPoolData]);
 
   useEffectAfterMount(() => {
     if (!Number(srcTokenFormattedAmount)) {
@@ -399,8 +421,8 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (isDataLoading || txnInProgress) return;
-      updateCurrentPoolData();
+      if (isDataLoading || txnInProgress || !poolDetails?.address) return;
+      updateCurrentPoolData(poolDetails.address);
     }, 30000);
     return () => clearInterval(interval);
   }, [isDataLoading, txnInProgress]);
@@ -415,9 +437,7 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
     dstTokenFormattedAmount,
     getDstTokenAmount,
     setDstTokenFormattedAmount,
-    selectedRange,
     isDataLoading,
-    setSelectedRange,
     slippageTolerance,
     setSlippageTolerance,
     srcToken,
@@ -428,6 +448,10 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
     currentPoolData,
     poolDetails,
     lowerPrice,
+    increaseUpperTick,
+    decreaseUpperTick,
+    increaseLowerTick,
+    decreaseLowerTick,
     upperPrice,
     fetchInitialData,
     currentPrice,

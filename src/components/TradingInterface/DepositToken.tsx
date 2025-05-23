@@ -1,28 +1,26 @@
 'use client';
 
+import { Token } from '@/types/tokens';
+import ConnectOrActionButton from '../LiquidityActionButton';
+import Image from 'next/image';
+
 interface DepositTokensProps {
-  ethAmount: string;
-  usdtAmount: string;
-  handleEthAmountChange: (value: string) => void;
-  handleUsdtAmountChange: (value: string) => void;
-  calculateEthUsdValue: () => string;
-  calculateUsdtUsdValue: () => string;
-  walletConnected: boolean;
+  srcTokenDetails: Token;
+  destTokenDetails: Token;
+  srcTokenAmount: string;
+  destTokenAmount: string;
+  handleSrcTokenAmountChange: (value: string) => void;
   isLoading: boolean;
-  connectWallet: () => void;
   handleDeposit: () => void;
 }
 
 export default function DepositTokens({
-  ethAmount,
-  usdtAmount,
-  handleEthAmountChange,
-  handleUsdtAmountChange,
-  calculateEthUsdValue,
-  calculateUsdtUsdValue,
-  walletConnected,
+  srcTokenDetails,
+  destTokenDetails,
+  srcTokenAmount,
+  destTokenAmount,
+  handleSrcTokenAmountChange,
   isLoading,
-  connectWallet,
   handleDeposit,
 }: DepositTokensProps) {
   return (
@@ -34,63 +32,58 @@ export default function DepositTokens({
         <div className="flex justify-between items-center">
           <input
             type="text"
-            value={ethAmount}
-            onChange={(e) => handleEthAmountChange(e.target.value)}
-            aria-label="ETH Amount"
+            // value={srcTokenAmount}
+            onChange={(e) => handleSrcTokenAmountChange(e.target.value)}
+            aria-label={srcTokenDetails.symbol + ' Amount'}
             className="text-3xl font-bold bg-transparent outline-none w-full"
           />
 
           <div className="flex items-center">
-            <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center mr-2">
-              <span className="text-xs">Ξ</span>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center">
+              <Image
+                src={srcTokenDetails.logo || '/placeholder.svg'}
+                alt={srcTokenDetails.symbol}
+                width={20}
+                height={20}
+              />
             </div>
-            <span>ETH</span>
+            <span>{srcTokenDetails.symbol}</span>
           </div>
         </div>
-        <div className="text-sm text-gray-400 mt-2">${calculateEthUsdValue()}</div>
+        <div className="text-sm text-gray-400 mt-2">${srcTokenAmount}</div>
       </div>
 
       <div className="bg-zinc-800 p-4 rounded-md">
         <div className="flex justify-between items-center">
           <input
             type="text"
-            value={usdtAmount}
-            onChange={(e) => handleUsdtAmountChange(e.target.value)}
-            aria-label="USDT Amount"
+            value={destTokenAmount || ''}
+            readOnly
+            onChange={() => {}}
+            aria-label={destTokenDetails.symbol + ' Amount'}
             className="text-3xl font-bold bg-transparent outline-none w-full"
           />
 
           <div className="flex items-center">
-            <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-2">
-              <span className="text-xs">$</span>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center">
+              <Image
+                src={destTokenDetails.logo || '/placeholder.svg'}
+                alt={destTokenDetails.symbol}
+                width={20}
+                height={20}
+              />
             </div>
-            <span>USDT</span>
+            <span>{destTokenDetails.symbol}</span>
           </div>
         </div>
-        <div className="text-sm text-gray-400 mt-2">${calculateUsdtUsdValue()}</div>
+        <div className="text-sm text-gray-400 mt-2">${destTokenAmount}</div>
       </div>
 
-      {!walletConnected ? (
-        <button
-          className={`w-full py-4 rounded-md text-center transition-colors ${
-            isLoading ? 'bg-zinc-700' : 'bg-zinc-800 hover:bg-zinc-700'
-          }`}
-          onClick={connectWallet}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Connecting...' : 'Connect Wallet'}
-        </button>
-      ) : (
-        <button
-          className={`w-full py-4 rounded-md text-center transition-colors ${
-            isLoading ? 'bg-zinc-700' : 'bg-green-600 hover:bg-green-700'
-          }`}
-          onClick={handleDeposit}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Processing...' : 'Deposit Liquidity'}
-        </button>
-      )}
+      <ConnectOrActionButton
+        authenticatedOnClick={handleDeposit}
+        isDisabled={isLoading}
+        authenticatedText="Create Position"
+      />
     </div>
   );
 }

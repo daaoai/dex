@@ -1,7 +1,9 @@
 'use client';
 
-import { Search, ZoomIn, RotateCcw } from 'lucide-react';
-import { motion, LayoutGroup } from 'framer-motion';
+import { Token } from '@/types/tokens';
+import { truncateNumber } from '@/utils/truncateNumber';
+import { LayoutGroup, motion } from 'framer-motion';
+import { RotateCcw, Search, ZoomIn } from 'lucide-react';
 
 type ChartDataPoint = {
   time: number;
@@ -14,29 +16,35 @@ type ChartAPI = {
 
 interface RangeSelectorProps {
   selectedRange: 'full' | 'custom';
-  minPrice: string;
-  maxPrice: string;
-  selectedTimeframe: string;
+  srcTokenDetails: Token;
+  destTokenDetails: Token;
   currentPrice: number;
-  priceInUsd: number;
+  minPrice: number;
+  maxPrice: number;
+  selectedTimeframe: string;
   handleRangeSelection: (range: 'full' | 'custom') => void;
-  setMinPrice: (value: string) => void;
-  setMaxPrice: (value: string) => void;
+  increaseMinPrice: () => void;
+  increaseMaxPrice: () => void;
+  decreaseMinPrice: () => void;
+  decreaseMaxPrice: () => void;
   setSelectedTimeframe: (timeframe: string) => void;
   chartRef: React.MutableRefObject<ChartAPI | null>;
   chartContainerRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export default function RangeSelector({
+  srcTokenDetails,
+  destTokenDetails,
   selectedRange,
   minPrice,
   maxPrice,
   selectedTimeframe,
   currentPrice,
-  priceInUsd,
   handleRangeSelection,
-  setMinPrice,
-  setMaxPrice,
+  increaseMinPrice,
+  increaseMaxPrice,
+  decreaseMinPrice,
+  decreaseMaxPrice,
   setSelectedTimeframe,
   chartContainerRef,
 }: RangeSelectorProps) {
@@ -77,12 +85,12 @@ export default function RangeSelector({
           <div>
             Market price:
             <p className="font-medium">
-              {currentPrice.toFixed(6)} ETH = 1 USDC (${priceInUsd.toFixed(3)})
+              {currentPrice} {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
             </p>
           </div>
           <div className="flex space-x-2">
-            <p className="text-sm">USDC</p>
-            <p className="text-sm">ETH</p>
+            <p className="text-sm">{srcTokenDetails.symbol}</p>
+            <p className="text-sm">{destTokenDetails.symbol}</p>
           </div>
         </div>
         <div className="relative h-40 bg-zinc-800 rounded-md overflow-hidden">
@@ -124,26 +132,30 @@ export default function RangeSelector({
             <label className="text-sm text-gray-400" htmlFor="minPrice">
               Min price
             </label>
-            <div className="text-3xl font-bold mt-1">{minPrice}</div>
-            <div className="text-sm text-gray-400 mt-1">USDT = 1 ETH</div>
+            <div className="text-3xl font-bold mt-1">
+              {selectedRange === 'full' ? '0' : truncateNumber(minPrice, 4)}
+            </div>
+            <div className="text-sm text-gray-400 mt-1">
+              {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
+            </div>
 
             {/* Overlay controls */}
-            <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
-              <button
-                className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
-                onClick={() => setMinPrice(Math.max(0, parseFloat(minPrice || '0') + 0.000001).toFixed(6))}
-                disabled={selectedRange === 'full'}
-              >
-                +
-              </button>
-              <button
-                className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
-                onClick={() => setMinPrice(Math.max(0, parseFloat(minPrice || '0') - 0.000001).toFixed(6))}
-                disabled={selectedRange === 'full'}
-              >
-                −
-              </button>
-            </div>
+            {selectedRange !== 'full' && (
+              <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
+                <button
+                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
+                  onClick={increaseMinPrice}
+                >
+                  +
+                </button>
+                <button
+                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
+                  onClick={decreaseMinPrice}
+                >
+                  −
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Max Price */}
@@ -151,26 +163,30 @@ export default function RangeSelector({
             <label className="text-sm text-gray-400" htmlFor="maxPrice">
               Max price
             </label>
-            <div className="text-3xl font-bold mt-1">{maxPrice}</div>
-            <div className="text-sm text-gray-400 mt-1">USDT = 1 ETH</div>
+            <div className="text-3xl font-bold mt-1">
+              {selectedRange === 'full' ? '∞' : truncateNumber(maxPrice, 4)}
+            </div>
+            <div className="text-sm text-gray-400 mt-1">
+              {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
+            </div>
 
             {/* Overlay controls */}
-            <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
-              <button
-                className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
-                onClick={() => setMaxPrice(Math.max(0, parseFloat(maxPrice || '0') + 0.000001).toFixed(6))}
-                disabled={selectedRange === 'full'}
-              >
-                +
-              </button>
-              <button
-                className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
-                onClick={() => setMaxPrice(Math.max(0, parseFloat(maxPrice || '0') - 0.000001).toFixed(6))}
-                disabled={selectedRange === 'full'}
-              >
-                −
-              </button>
-            </div>
+            {selectedRange !== 'full' && (
+              <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
+                <button
+                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
+                  onClick={increaseMaxPrice}
+                >
+                  +
+                </button>
+                <button
+                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
+                  onClick={decreaseMaxPrice}
+                >
+                  −
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
