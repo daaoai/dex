@@ -52,9 +52,7 @@ export default function NewPositions() {
           </div>
         </div>
 
-        {/* Main content */}
         <div className="grid md:grid-cols-[1fr,2fr] gap-6">
-          {/* Steps */}
           <div className="flex flex-col items-center">
             <button
               onClick={() => setStep(1)}
@@ -64,14 +62,23 @@ export default function NewPositions() {
             >
               1
             </button>
-            <div className="w-0.5 h-16 bg-gray-700 my-2" />
+            <div className="mt-2 text-center">
+              <div className="text-sm font-medium text-gray-400">Step 1</div>
+              <div className="text-base font-semibold text-white">Select token pair and fees</div>
+            </div>
+            <div className="w-0.5 h-16 bg-gray-700 my-4" />
             <button
+              onClick={() => setStep(2)}
               className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
                 step === 2 ? 'bg-white text-black' : 'bg-gray-800 text-gray-400'
               }`}
             >
               2
             </button>
+            <div className="mt-2 text-center">
+              <div className="text-sm font-medium text-gray-500">Step 2</div>
+              <div className="text-base font-semibold text-gray-500">Select price range and deposit amounts</div>
+            </div>
           </div>
 
           {step === 1 ? (

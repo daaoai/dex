@@ -1,25 +1,37 @@
+import { REWARD_CONTENT } from '@/content/reward';
 import Text from './Text';
 
 export default function RewardsSummary() {
   return (
-    <div
-      className="rounded-lg p-6 flex-1 bg-cover bg-center relative"
-      style={{
-        backgroundImage: "url('/rewardSummaryFrame.svg')", // make sure this is a .png, not .svh
-      }}
+    <section
+      aria-label="Rewards Summary"
+      className="relative flex-1 rounded-lg p-6 bg-cover bg-center"
+      style={{ backgroundImage: `url('${REWARD_CONTENT.backgroundImage}')` }}
     >
-      <div className="flex justify-between items-center mb-4">
+      <header className="flex justify-between items-center mb-4">
         <div>
-          <h2 className="text-4xl text-pink-500 font-bold">0 UNI</h2>
-          <p className="text-gray-400">Rewards earned</p>
+          <h2 className="text-4xl font-bold text-pink-500">{REWARD_CONTENT.rewards.amount}</h2>
+          <p className="text-gray-400">{REWARD_CONTENT.rewards.label}</p>
         </div>
-        <button className="bg-black text-pink-500 px-4 py-2 rounded">Collect rewards</button>
-      </div>
+        <button
+          type="button"
+          className="px-4 py-2 rounded bg-black text-pink-500 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-pink-500"
+        >
+          {REWARD_CONTENT.actions.collect}
+        </button>
+      </header>
 
-      <button className="text-white hover:underline mb-1">Find pools with UNI rewards &rarr;</button>
-      <Text type="p" className="text-white">
-        Eligible pools have token rewards so you can earn more.
-      </Text>
-    </div>
+      <div>
+        <a
+          href="#"
+          className="inline-block mb-1 text-white hover:underline focus:outline-none focus:ring-2 focus:ring-white"
+        >
+          {REWARD_CONTENT.actions.explore}
+        </a>
+        <Text type="p" className="text-white">
+          {REWARD_CONTENT.description}
+        </Text>
+      </div>
+    </section>
   );
 }

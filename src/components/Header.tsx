@@ -1,3 +1,4 @@
+import { Button } from '@/shadcn/components/ui/button';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function Header() {
@@ -5,9 +6,9 @@ export default function Header() {
     <header className="flex items-center justify-between">
       <nav className="space-x-6 text-gray-400">
         {['Trade', 'Explore', 'Pool'].map((tab) => (
-          <button key={tab} className="hover:text-white">
+          <Button key={tab} className="hover:text-white">
             {tab}
-          </button>
+          </Button>
         ))}
         <input
           type="text"
