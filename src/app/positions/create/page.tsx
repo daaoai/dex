@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { useAccount } from 'wagmi';
 import { RootState } from '../../../../store';
+import CryptoTradingInterface from '@/components/TradingInterface';
 
 export default function NewPositions() {
   // states
@@ -22,6 +23,7 @@ export default function NewPositions() {
   });
   const [token0, setToken0] = useState<Token | null>(null);
   const [token1, setToken1] = useState<Token | null>(null);
+  const [step, setStep] = useState<1 | 2>(1);
 
   // redux
   const { appChainId } = useSelector((state: RootState) => state.common, shallowEqual);
@@ -70,117 +72,117 @@ export default function NewPositions() {
         {/* Main content */}
         <div className="grid md:grid-cols-[1fr,2fr] gap-6">
           {/* Steps */}
-          <div className="bg-dark-black-50 rounded-lg p-6">
-            <div className="flex items-start gap-4 mb-8">
-              <div className="flex flex-col items-center">
-                <div className="bg-white text-black w-10 h-10 rounded-full flex items-center justify-center font-bold">
-                  1
-                </div>
-                <div className="w-0.5 h-16 bg-gray-700 my-2"></div>
-              </div>
-              <div>
-                <h3 className="text-gray-400 mb-1">Step 1</h3>
-                <p className="font-medium">Select token pair and fees</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex flex-col items-center">
-                <div className="bg-gray-800 text-gray-400 w-10 h-10 rounded-full flex items-center justify-center font-bold">
-                  2
-                </div>
-              </div>
-              <div>
-                <h3 className="text-gray-400 mb-1">Step 2</h3>
-                <p className="font-medium text-gray-400">Select price range and deposit amounts</p>
-              </div>
-            </div>
+          <div className="flex flex-col items-center">
+            <button
+              onClick={() => setStep(1)}
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
+                step === 1 ? 'bg-white text-black' : 'bg-gray-800 text-gray-400'
+              }`}
+            >
+              1
+            </button>
+            <div className="w-0.5 h-16 bg-gray-700 my-2" />
+            <button
+              onClick={() => setStep(2)}
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
+                step === 2 ? 'bg-white text-black' : 'bg-gray-800 text-gray-400'
+              }`}
+            >
+              2
+            </button>
           </div>
 
-          {/* Form */}
-          <div className="bg-dark-black-50 rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Select pair</h2>
-            <p className="text-gray-400 mb-6">
-              Choose the tokens you want to provide liquidity for. You can select tokens on all supported networks.
-            </p>
+          {step === 1 ? (
+            <>
+              <div className="bg-dark-black-50 rounded-lg p-6">
+                <h2 className="text-xl font-semibold mb-4">Select pair</h2>
+                <p className="text-gray-400 mb-6">
+                  Choose the tokens you want to provide liquidity for. You can select tokens on all supported networks.
+                </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <button
-                className="bg-dark-black-300 rounded-lg p-4 flex items-center justify-between"
-                onClick={() => setShowTokenModal({ show: true, tokenType: 'token0' })}
-              >
-                {token0 ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
-                      <Image src={token0.logo || '/placeholder.svg'} alt={token0.symbol} width={16} height={16} />
-                    </div>
-                    <span>{token0.symbol}</span>
-                  </div>
-                ) : (
-                  <span>Choose token</span>
-                )}
-                <ChevronDown className="h-5 w-5 text-gray-400" />
-              </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <button
+                    className="bg-dark-black-300 rounded-lg p-4 flex items-center justify-between"
+                    onClick={() => setShowTokenModal({ show: true, tokenType: 'token0' })}
+                  >
+                    {token0 ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                          <Image src={token0.logo || '/placeholder.svg'} alt={token0.symbol} width={16} height={16} />
+                        </div>
+                        <span>{token0.symbol}</span>
+                      </div>
+                    ) : (
+                      <span>Choose token</span>
+                    )}
+                    <ChevronDown className="h-5 w-5 text-gray-400" />
+                  </button>
 
-              <button
-                className="bg-white text-black rounded-lg p-4 flex items-center justify-between"
-                onClick={() => setShowTokenModal({ show: true, tokenType: 'token1' })}
-              >
-                {token1 ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
-                      <Image src={token1.logo || '/placeholder.svg'} alt={token1.symbol} width={16} height={16} />
-                    </div>
-                    <span>{token1.symbol}</span>
-                  </div>
-                ) : (
-                  <span>Choose token</span>
-                )}
-                <ChevronDown className="h-5 w-5 text-gray-600" />
-              </button>
-            </div>
-
-            <div className="mb-6">
-              <button className="text-gray-400 hover:text-white flex items-center gap-2">
-                Add a Hook <span className="text-gray-600">(Advanced)</span>
-              </button>
-            </div>
-
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold mb-2">Fee tier</h3>
-              <p className="text-gray-400 mb-4">
-                The amount earned providing liquidity. Choose an amount that suits your risk tolerance and strategy.
-              </p>
-
-              <div className="bg-dark-black-300 rounded-lg p-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h4 className="font-semibold mb-1">0.3% fee tier</h4>
-                    <p className="text-gray-400">The % you will earn in fees</p>
-                  </div>
-                  <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-                    More
-                    <ChevronDown className="h-4 w-4" />
+                  <button
+                    className="bg-white text-black rounded-lg p-4 flex items-center justify-between"
+                    onClick={() => setShowTokenModal({ show: true, tokenType: 'token1' })}
+                  >
+                    {token1 ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                          <Image src={token1.logo || '/placeholder.svg'} alt={token1.symbol} width={16} height={16} />
+                        </div>
+                        <span>{token1.symbol}</span>
+                      </div>
+                    ) : (
+                      <span>Choose token</span>
+                    )}
+                    <ChevronDown className="h-5 w-5 text-gray-600" />
                   </button>
                 </div>
-              </div>
-            </div>
-            {account && isConnected && appChainId === accountChainId ? (
-              <button
-                className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
-                onClick={handleAddLiquidity}
-              >
-                Create position
-              </button>
-            ) : (
-              <ConnectWalletButton
-                connectButtonTailwindClasses="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
-                wrongNetworkButtonTailwindClasses="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
-                wrongNetworkButtonText={`Switch to ${chainsData[appChainId]?.name}`}
-                switchToChainId={appChainId}
-              />
-            )}
-          </div>
+
+                <div className="mb-6">
+                  <button className="text-gray-400 hover:text-white flex items-center gap-2">
+                    Add a Hook <span className="text-gray-600">(Advanced)</span>
+                  </button>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="text-xl font-semibold mb-2">Fee tier</h3>
+                  <p className="text-gray-400 mb-4">
+                    The amount earned providing liquidity. Choose an amount that suits your risk tolerance and strategy.
+                  </p>
+
+                  <div className="bg-dark-black-300 rounded-lg p-4">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h4 className="font-semibold mb-1">0.3% fee tier</h4>
+                        <p className="text-gray-400">The % you will earn in fees</p>
+                      </div>
+                      <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                        More
+                        <ChevronDown className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {account && isConnected && appChainId === accountChainId ? (
+                  <button
+                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
+                    onClick={handleAddLiquidity}
+                  >
+                    Create position
+                  </button>
+                ) : (
+                  <ConnectWalletButton
+                    connectButtonTailwindClasses="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
+                    wrongNetworkButtonTailwindClasses="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
+                    wrongNetworkButtonText={`Switch to ${chainsData[appChainId]?.name}`}
+                    switchToChainId={appChainId}
+                  />
+                )}
+              </div>{' '}
+            </>
+          ) : (
+            <CryptoTradingInterface />
+          )}
+
+          {/* Form */}
         </div>
       </div>
 
