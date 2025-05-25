@@ -16,34 +16,28 @@ export const multicallWithSameAbi = async ({
 }) => {
   if (contracts.length && contracts.length === allMethods.length && contracts.length === allParams.length) {
     const results: unknown[] = [];
-
     const publicClient = getPublicClient(chainId);
 
-    while (contracts.length > 0) {
-      const chunk = contracts.splice(0, 200);
+    for (let i = 0; i < contracts.length; i += 200) {
+      const contractsChunk = contracts.slice(i, i + 200);
+      const methodsChunk = allMethods.slice(i, i + 200);
+      const paramsChunk = allParams.slice(i, i + 200);
+
       const multiCallResults = (await publicClient.multicall({
-        contracts: chunk.map((contract, idx) => {
-          return {
-            address: contract,
-            abi,
-            functionName: allMethods[idx],
-            args: allParams[idx],
-          };
-        }),
+        contracts: contractsChunk.map((contract, idx) => ({
+          address: contract,
+          abi,
+          functionName: methodsChunk[idx],
+          args: paramsChunk[idx],
+        })),
       })) as MulticallResponse[];
-      const response = multiCallResults.map((result) => {
-        const val = result.result;
-        return val;
-      });
-      response.forEach((result) => {
-        results.push(result);
-      });
+
+      results.push(...multiCallResults.map((result) => result.result));
     }
     return results;
   }
   return [];
 };
-
 export const multicallForSameContract = async ({
   chainId,
   params,
@@ -58,26 +52,22 @@ export const multicallForSameContract = async ({
   functionNames: string[];
 }) => {
   const results: unknown[] = [];
-
   const publicClient = getPublicClient(chainId);
 
-  while (params.length > 0) {
-    const chunk = params.splice(0, 200);
+  for (let i = 0; i < params.length; i += 200) {
+    const paramsChunk = params.slice(i, i + 200);
+    const functionNamesChunk = functionNames.slice(i, i + 200);
+
     const multiCallResults = (await publicClient.multicall({
-      contracts: chunk.map((param, index) => {
-        return {
-          address,
-          abi,
-          functionName: functionNames[index],
-          args: param,
-        };
-      }),
+      contracts: paramsChunk.map((param, index) => ({
+        address,
+        abi,
+        functionName: functionNamesChunk[index],
+        args: param,
+      })),
     })) as MulticallResponse[];
-    const response = multiCallResults.map((result) => {
-      const val = result.result;
-      return val;
-    });
-    results.push(...response);
+
+    results.push(...multiCallResults.map((result) => result.result));
   }
   return results;
 };

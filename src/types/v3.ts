@@ -1,13 +1,14 @@
 import { Hex } from 'viem';
+import { Token } from './tokens';
 
 export type GetUserNFTIdsRequest = {
   account: Hex;
   chainId: number;
-  poolAddress: Hex;
   nftManagerAddress: Hex;
 };
 
 export type GetUserNFTsForPoolRequest = GetUserNFTIdsRequest & {
+  poolAddress: Hex;
   token0: Hex;
   token1: Hex;
   fee: number;
@@ -19,7 +20,7 @@ export type GetNFTDetailsRequest = {
   nftManagerAddress: Hex;
 };
 
-export type V3Position = {
+export type V3PositionRaw = {
   id: bigint;
   nonce: bigint;
   operator: Hex;
@@ -36,7 +37,24 @@ export type V3Position = {
   tokensOwed1: bigint;
 };
 
-export type V3PoolDetails = {
+export interface V3Position {
+  token0: Hex;
+  token1: Hex;
+  poolAddress: Hex;
+  amount0: bigint;
+  amount1: bigint;
+  liquidity: bigint;
+  token0Details: Token;
+  token1Details: Token;
+  liquidityUsd: string;
+  tokenId: bigint;
+  fee: number;
+  tickLower: number;
+  tickUpper: number;
+  apr: number;
+}
+
+export type V3PoolRawData = {
   token0: Hex;
   token1: Hex;
   fee: number;
@@ -45,6 +63,12 @@ export type V3PoolDetails = {
     sqrtPriceX96: bigint;
     currentTick: number;
   };
+};
+
+export type V3PoolDetails = Omit<V3PoolRawData, 'token0' | 'token1'> & {
+  token0: Token;
+  token1: Token;
+  address: Hex;
 };
 
 export type AddLiquidityParams = {
@@ -64,18 +88,11 @@ export type AddLiquidityParams = {
   sqrtPriceX96: bigint;
 };
 
-export type PoolDetails = {
-  address: Hex;
-  token0: {
-    address: Hex;
-    decimals: number;
-    symbol: string;
-  };
-  token1: {
-    address: Hex;
-    decimals: number;
-    symbol: string;
-  };
-  fee: number;
-  tickSpacing: number;
+export type DecreaseLiquidityParams = {
+  recipient: Hex;
+  nftId: bigint;
+  liquidityToRemove: bigint;
+  amount0Min: bigint;
+  amount1Min: bigint;
+  burn: boolean;
 };

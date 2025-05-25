@@ -1,6 +1,6 @@
 'use client';
 
-import { useAddLiquidity } from '@/hooks/useAddLiquidity';
+import { useCreatePosition } from '@/hooks/useCreatePosition';
 import { Token } from '@/types/tokens';
 import { useEffect, useRef, useState } from 'react';
 import PoolIcon from '../PoolLogo';
@@ -61,7 +61,7 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
     setSrcTokenFormattedAmount,
     setDstTokenFormattedAmount,
     fetchInitialData,
-  } = useAddLiquidity({ chainId });
+  } = useCreatePosition({ chainId });
 
   useEffect(() => {
     fetchInitialData({
