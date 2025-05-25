@@ -2,6 +2,8 @@
 import '@rainbow-me/rainbowkit/styles.css';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { ToastContainer } from 'react-toastify'; // Import ToastContainer
+import 'react-toastify/dist/ReactToastify.css';
 import './globals.css';
 import ProviderWrapper from '@/wagmi/ProviderWrapper';
 
@@ -24,6 +26,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
+        <ToastContainer />
         <ProviderWrapper>{children}</ProviderWrapper>
       </body>
     </html>

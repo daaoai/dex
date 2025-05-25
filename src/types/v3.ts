@@ -69,10 +69,12 @@ export type PoolDetails = {
   token0: {
     address: Hex;
     decimals: number;
+    symbol: string;
   };
   token1: {
     address: Hex;
     decimals: number;
+    symbol: string;
   };
   fee: number;
   tickSpacing: number;

@@ -1,4 +1,5 @@
 import { contractAddresses } from '@/constants/addresses';
+import { chainsData } from '@/constants/chains';
 import { supportedFeeAndTickSpacing } from '@/constants/fee';
 import { UniswapNFTManager } from '@/contracts/uniswap/nftManager';
 import { UniswapV3Factory } from '@/contracts/uniswap/v3Factory';
@@ -10,6 +11,7 @@ import { getPublicClient } from '@/utils/publicClient';
 import { getMinAmount } from '@/utils/slippage';
 import { V3PoolUtils } from '@/utils/v3Pool';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { erc20Abi, Hex, parseUnits, zeroAddress } from 'viem';
 import { useAccount, useSendTransaction, useSwitchChain, useWriteContract } from 'wagmi';
 import useEffectAfterMount from './useEffectAfterMount';
@@ -78,43 +80,6 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
       setIsDataLoading(false);
     }
   };
-
-  // const updateTicks = () => {
-  //   if (!poolDetails) return;
-  //   const token0Details = poolDetails.token0;
-  //   const token1Details = poolDetails.token1;
-  //   const currentPrice = V3PoolUtils.getPriceFromSqrtRatio({
-  //     decimal0: token0Details.decimals,
-  //     decimal1: token1Details.decimals,
-  //     sqrtPriceX96: currentPoolData.sqrtPriceX96,
-  //   });
-  //   const lowerPrice = getPriceFromPercent(-selectedRange, currentPrice);
-  //   const upperPrice = getPriceFromPercent(selectedRange, currentPrice);
-  //   const lowerTick = V3PoolUtils.nearestUsableTick({
-  //     tick: V3PoolUtils.getTickFromPrice({
-  //       decimal0: token0Details.decimals,
-  //       decimal1: token1Details.decimals,
-  //       price: lowerPrice,
-  //       tickSpacing: poolDetails.tickSpacing,
-  //     }),
-  //     tickSpacing: poolDetails.tickSpacing,
-  //   });
-
-  //   const upperTick = V3PoolUtils.nearestUsableTick({
-  //     tick: V3PoolUtils.getTickFromPrice({
-  //       decimal0: token0Details.decimals,
-  //       decimal1: token1Details.decimals,
-  //       price: upperPrice,
-  //       tickSpacing: poolDetails.tickSpacing,
-  //     }),
-  //     tickSpacing: poolDetails.tickSpacing,
-  //   });
-  //   setLowerTick(lowerTick);
-  //   setUpperTick(upperTick);
-  //   updateCurrentPrice(currentPoolData.sqrtPriceX96);
-  //   updateLowerPrice(lowerTick);
-  //   updateUpperPrice(upperTick);
-  // };
 
   const fetchInitialData = async ({ token0, token1, fee }: { token0: Hex; token1: Hex; fee: number }) => {
     try {
@@ -296,11 +261,11 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
   const handleAddLiquidity = async () => {
     try {
       if (!account || !accountChainId) {
-        // toast.error('Please connect wallet to proceed');
+        toast.error('Please connect wallet to proceed');
         return;
       }
       if (!poolDetails || !srcTokenDetails || !destTokenDetails) {
-        // toast.error('Pool not found');
+        toast.error('Pool not found');
         return;
       }
 
@@ -309,13 +274,13 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
           await switchChainAsync({ chainId });
         } catch (error) {
           console.error('Error switching chain:', error);
-          // toast.error(`Please switch to ${chainsData[chainId].slug} network to proceed`);
+          toast.error(`Please switch to ${chainsData[chainId].slug} network to proceed`);
           return;
         }
       }
 
       if (!Number(srcTokenFormattedAmount) || !Number(dstTokenFormattedAmount)) {
-        // toast.error('Please enter valid amounts');
+        toast.error('Please enter valid amounts');
         return;
       }
 
@@ -328,8 +293,13 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
           ? parseUnits(dstTokenFormattedAmount, destTokenDetails.decimals)
           : parseUnits(srcTokenFormattedAmount, srcTokenDetails.decimals);
 
-      if (amount0 > balances[poolDetails.token0.address] || amount1 > balances[poolDetails.token1.address]) {
-        // toast.error('Not enough balance');
+      if (amount0 > balances[poolDetails.token0.address]) {
+        toast.error(`Not enough balance for ${poolDetails.token0.symbol}`);
+        return;
+      }
+
+      if (amount1 > balances[poolDetails.token1.address]) {
+        toast.error(`Not enough balance for ${poolDetails.token1.symbol}`);
         return;
       }
 
@@ -373,13 +343,13 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
       if (receipt?.status !== 'success') {
         throw new Error('Transaction failed');
       }
-      // toast.success('Liquidity added successfully');
+      toast.success('Liquidity added successfully');
       updateTokensBalance();
       setSrcTokenFormattedAmount('');
       setDstTokenFormattedAmount('');
     } catch (error) {
       console.error('Transaction failed:', error);
-      // toast.error('Transaction failed');
+      toast.error('Transaction failed');
     } finally {
       setTxnInProgress(false);
     }
