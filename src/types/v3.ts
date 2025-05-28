@@ -49,6 +49,7 @@ export interface V3Position {
   liquidityUsd: string;
   tokenId: bigint;
   fee: number;
+  tickSpacing: number;
   tickLower: number;
   tickUpper: number;
   apr: number;
@@ -71,7 +72,7 @@ export type V3PoolDetails = Omit<V3PoolRawData, 'token0' | 'token1'> & {
   address: Hex;
 };
 
-export type AddLiquidityParams = {
+export type CreatePositionParams = {
   poolAddress: Hex;
   token0: Hex;
   token1: Hex;

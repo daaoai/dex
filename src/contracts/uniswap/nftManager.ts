@@ -1,7 +1,7 @@
 import { uniswapV3NftManagerAbi } from '@/abi/uniswap/nftManager';
 import { multicallForSameContract } from '@/helper/multicall';
 import {
-  AddLiquidityParams,
+  CreatePositionParams,
   DecreaseLiquidityParams,
   GetNFTDetailsRequest,
   GetUserNFTIdsRequest,
@@ -27,7 +27,7 @@ export class UniswapNFTManager {
     deadline,
     fee,
     poolAddress,
-  }: AddLiquidityParams) => {
+  }: CreatePositionParams) => {
     const mintCallData = encodeFunctionData({
       abi: uniswapV3NftManagerAbi,
       functionName: 'mint',
@@ -256,6 +256,35 @@ export class UniswapNFTManager {
       abi: uniswapV3NftManagerAbi,
       functionName: 'multicall',
       args: [args],
+    });
+  };
+
+  public static generateAddLiquidityCallData = ({
+    tokenId,
+    amount0Desired,
+    amount1Desired,
+    amount0Min,
+    amount1Min,
+  }: {
+    tokenId: bigint;
+    amount0Desired: bigint;
+    amount1Desired: bigint;
+    amount0Min: bigint;
+    amount1Min: bigint;
+  }): Hex => {
+    return encodeFunctionData({
+      abi: uniswapV3NftManagerAbi,
+      functionName: 'increaseLiquidity',
+      args: [
+        {
+          amount0Desired,
+          amount0Min,
+          amount1Desired,
+          amount1Min,
+          tokenId,
+          deadline: getDeadline(60 * 60), // 1 hour from now
+        },
+      ],
     });
   };
 }
