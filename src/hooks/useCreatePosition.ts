@@ -6,7 +6,7 @@ import { UniswapV3Factory } from '@/contracts/uniswap/v3Factory';
 import { UniswapV3Pool } from '@/contracts/uniswap/v3Pool';
 import { getTokensBalance } from '@/helper/balance';
 import { getTokenDetails } from '@/helper/erc20';
-import { PoolDetails } from '@/types/v3';
+import { V3PoolDetails } from '@/types/v3';
 import { getPublicClient } from '@/utils/publicClient';
 import { getMinAmount } from '@/utils/slippage';
 import { V3PoolUtils } from '@/utils/v3Pool';
@@ -24,7 +24,7 @@ type CurrentPoolData = {
 // const getPriceFromPercent = (percent: number, currentPrice: number) => {
 //   return currentPrice * (1 + percent / 100);
 // };
-export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
+export const useCreatePosition = ({ chainId }: { chainId: number }) => {
   const [srcTokenFormattedAmount, setSrcTokenFormattedAmount] = useState('');
   const [dstTokenFormattedAmount, setDstTokenFormattedAmount] = useState('');
   const [selectedRange, setSelectedRange] = useState<'full' | 'custom'>('full');
@@ -37,7 +37,7 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
   const [currentPrice, setCurrentPrice] = useState(0);
   const [lowerTick, setLowerTick] = useState(0);
   const [upperTick, setUpperTick] = useState(0);
-  const [poolDetails, setPoolDetails] = useState<PoolDetails | null>(null);
+  const [poolDetails, setPoolDetails] = useState<Omit<V3PoolDetails, 'slot0'> | null>(null);
   const [currentPoolData, setCurrentPoolData] = useState<CurrentPoolData>({
     tick: 0,
     sqrtPriceX96: 0n,
@@ -308,9 +308,7 @@ export const useAddLiquidity = ({ chainId }: { chainId: number }) => {
       await approveToken(amount0, poolDetails.token0.address);
       await approveToken(amount1, poolDetails.token1.address);
 
-      const nftManager = new UniswapNFTManager();
-
-      const callData = nftManager.generateMintCallData({
+      const callData = UniswapNFTManager.generateMintCallData({
         amount0Desired: amount0,
         amount1Desired: amount1,
         amount0Min: getMinAmount(amount0, Number(slippageTolerance)),

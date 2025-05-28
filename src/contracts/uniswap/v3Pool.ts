@@ -1,6 +1,6 @@
 import { uniswapV3PoolAbi } from '@/abi/uniswap/v3Pool';
-import { multicallForSameContract } from '@/helper/multicall';
-import { V3PoolDetails } from '@/types/v3';
+import { multicallForSameContract, multicallWithSameAbi } from '@/helper/multicall';
+import { V3PoolRawData } from '@/types/v3';
 import { getPublicClient } from '@/utils/publicClient';
 import { Abi, Hex, PublicClient } from 'viem';
 
@@ -30,7 +30,7 @@ export class UniswapV3Pool {
     };
   };
 
-  getV3PoolDetails = async (): Promise<V3PoolDetails> => {
+  getV3PoolDetails = async (): Promise<V3PoolRawData> => {
     const methods = ['token0', 'token1', 'slot0', 'tickSpacing', 'fee'];
     const multicallRes = (await multicallForSameContract({
       abi: this.abi,
@@ -50,5 +50,39 @@ export class UniswapV3Pool {
       tickSpacing: multicallRes[3],
       fee: multicallRes[4],
     };
+  };
+
+  public static getV3PoolsDetails = async (chainId: number, poolAddresses: Hex[]): Promise<V3PoolRawData[]> => {
+    const methods = ['token0', 'token1', 'slot0', 'tickSpacing', 'fee'];
+
+    // Create arrays of methods and empty params for each pool
+    const allMethods: string[] = [];
+    const allParams: unknown[][] = [];
+    poolAddresses.forEach(() => {
+      methods.forEach((method) => {
+        allMethods.push(method);
+        allParams.push([]);
+      });
+    });
+
+    const multicallRes = await multicallWithSameAbi({
+      abi: uniswapV3PoolAbi,
+      chainId,
+      allMethods,
+      allParams,
+      contracts: poolAddresses.map((address) => Array(methods.length).fill(address)).flat(),
+    });
+
+    // Map results to pool details in chunks
+    return Array.from({ length: poolAddresses.length }, (_, i) => ({
+      token0: multicallRes[i * methods.length] as Hex,
+      token1: multicallRes[i * methods.length + 1] as Hex,
+      slot0: {
+        sqrtPriceX96: (multicallRes[i * methods.length + 2] as [bigint, number])[0],
+        currentTick: (multicallRes[i * methods.length + 2] as [bigint, number])[1],
+      },
+      tickSpacing: multicallRes[i * methods.length + 3] as number,
+      fee: multicallRes[i * methods.length + 4] as number,
+    }));
   };
 }
