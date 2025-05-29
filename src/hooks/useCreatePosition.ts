@@ -258,7 +258,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     setLowerTick((prev) => prev - poolDetails.tickSpacing);
   };
 
-  const handleAddLiquidity = async () => {
+  const createPosition = async () => {
     try {
       if (!account || !accountChainId) {
         toast.error('Please connect wallet to proceed');
@@ -410,14 +410,18 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     getDstTokenAmount,
     setDstTokenFormattedAmount,
     isDataLoading,
+    setLowerTick,
+    setUpperTick,
     slippageTolerance,
     setSlippageTolerance,
     srcToken,
     txnInProgress,
     setSrcToken,
     handleSwitch,
-    handleAddLiquidity,
+    createPosition,
     currentPoolData,
+    setPoolDetails,
+    updateCurrentPoolData,
     poolDetails,
     lowerPrice,
     increaseUpperTick,
@@ -428,6 +432,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     fetchInitialData,
     selectedRange,
     setSelectedRange,
+    setCurrentPoolData,
     currentPrice,
     error,
     approvalStatus,

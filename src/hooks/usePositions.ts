@@ -6,15 +6,12 @@ import { getTokenDetails } from '@/helper/erc20';
 import { Token } from '@/types/tokens';
 import { V3PoolDetails, V3Position, V3PositionRaw } from '@/types/v3';
 import { V3PoolUtils } from '@/utils/v3Pool';
-import { useEffect, useState } from 'react';
 import { formatUnits, Hex } from 'viem';
 import { useAccount } from 'wagmi';
 
 export const usePositions = (chainId: number) => {
   const { address } = useAccount();
   const { nftManager, v3Factory } = contractAddresses[chainId];
-  const [positions, setPositions] = useState<V3Position[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const formatPositionDetails = (position: V3PositionRaw, poolDetails: V3PoolDetails): V3Position => {
     const { amount0, amount1 } = V3PoolUtils.getTokenAmountsForLiquidity({
@@ -44,85 +41,128 @@ export const usePositions = (chainId: number) => {
     };
   };
 
-  useEffect(() => {
-    const fetchPositions = async () => {
-      if (!address || !chainId || !nftManager) {
-        setPositions([]);
-        setLoading(false);
-        return;
-      }
+  const fetchPositions = async (): Promise<V3Position[]> => {
+    if (!address || !chainId || !nftManager) {
+      return [];
+    }
 
-      try {
-        const positions = await UniswapNFTManager.getUserNFTs({
-          account: address,
-          chainId,
-          nftManagerAddress: nftManager,
-        });
+    try {
+      const positions = await UniswapNFTManager.getUserNFTs({
+        account: address,
+        chainId,
+        nftManagerAddress: nftManager,
+      });
 
-        const tokensForDetails = new Set<Hex>();
-        positions.forEach((pos) => {
-          tokensForDetails.add(pos.token0);
-          tokensForDetails.add(pos.token1);
-        });
+      const tokensForDetails = new Set<Hex>();
+      positions.forEach((pos) => {
+        tokensForDetails.add(pos.token0);
+        tokensForDetails.add(pos.token1);
+      });
 
-        const tokenDetailsRes = await Promise.all(
-          Array.from(tokensForDetails).map(async (tokenAddress) => {
-            return getTokenDetails({ address: tokenAddress, chainId });
-          }),
-        );
+      const tokenDetailsRes = await Promise.all(
+        Array.from(tokensForDetails).map(async (tokenAddress) => {
+          return getTokenDetails({ address: tokenAddress, chainId });
+        }),
+      );
 
-        const tokenDetails = tokenDetailsRes.reduce(
-          (acc, details) => {
-            if (details) {
-              acc[details.address] = details;
-            }
-            return acc;
+      const tokenDetails = tokenDetailsRes.reduce(
+        (acc, details) => {
+          if (details) {
+            acc[details.address] = details;
+          }
+          return acc;
+        },
+        {} as Record<string, Token>,
+      );
+
+      const poolAddresses = await UniswapV3Factory.getPoolsAddresses(
+        chainId,
+        v3Factory,
+        positions.map((pos) => ({
+          token0: pos.token0,
+          token1: pos.token1,
+          fee: pos.fee,
+        })),
+      );
+
+      const poolDetails = await UniswapV3Pool.getV3PoolsDetails(chainId, poolAddresses);
+
+      const formattedPositions = positions.map((pos, index) => {
+        const token0Details = tokenDetails[pos.token0];
+        const token1Details = tokenDetails[pos.token1];
+        const poolDetail = poolDetails[index];
+
+        return formatPositionDetails(pos, {
+          ...poolDetail,
+          fee: pos.fee,
+          token0: token0Details,
+          token1: token1Details,
+          address: poolAddresses[index],
+          slot0: {
+            sqrtPriceX96: poolDetail.slot0.sqrtPriceX96,
+            currentTick: poolDetail.slot0.currentTick,
           },
-          {} as Record<string, Token>,
-        );
-
-        const poolAddresses = await UniswapV3Factory.getPoolsAddresses(
-          chainId,
-          v3Factory,
-          positions.map((pos) => ({
-            token0: pos.token0,
-            token1: pos.token1,
-            fee: pos.fee,
-          })),
-        );
-
-        const poolDetails = await UniswapV3Pool.getV3PoolsDetails(chainId, poolAddresses);
-
-        const formattedPositions = positions.map((pos, index) => {
-          const token0Details = tokenDetails[pos.token0];
-          const token1Details = tokenDetails[pos.token1];
-          const poolDetail = poolDetails[index];
-
-          return formatPositionDetails(pos, {
-            ...poolDetail,
-            fee: pos.fee,
-            token0: token0Details,
-            token1: token1Details,
-            address: poolAddresses[index],
-            slot0: {
-              sqrtPriceX96: poolDetail.slot0.sqrtPriceX96,
-              currentTick: poolDetail.slot0.currentTick,
-            },
-            tickSpacing: poolDetail.tickSpacing,
-          });
+          tickSpacing: poolDetail.tickSpacing,
         });
+      });
+      return formattedPositions;
+    } catch (error) {
+      console.error('Error fetching positions:', error);
+      return [];
+    }
+  };
 
-        setPositions(formattedPositions);
-      } catch (error) {
-        console.error('Error fetching positions:', error);
-        setPositions([]);
-      } finally {
-        setLoading(false);
+  const fetchPositionWithId = async (tokenId: bigint): Promise<V3Position | null> => {
+    if (!address || !chainId || !nftManager) {
+      return null;
+    }
+    try {
+      const position = await UniswapNFTManager.getNFTDetails({
+        nftId: tokenId,
+        chainId,
+        nftManagerAddress: nftManager,
+      });
+      if (!position) {
+        return null;
       }
-    };
 
-    fetchPositions();
-  }, [address, chainId, nftManager, v3Factory]);
+      const [poolAddress, token0Details, token1Details] = await Promise.all([
+        UniswapV3Factory.getPoolAddress({
+          tokenA: position.token0,
+          tokenB: position.token1,
+          fee: position.fee,
+          factoryAddress: contractAddresses[chainId].v3Factory,
+          chainId,
+        }),
+        getTokenDetails({ address: position.token0, chainId }),
+        getTokenDetails({ address: position.token1, chainId }),
+      ]);
 
-  return { positions, loading };
+      if (!poolAddress) {
+        console.error(`Pool not found for token ID ${tokenId}`);
+        return null;
+      }
+
+      const poolDetails = (await UniswapV3Pool.getV3PoolsDetails(chainId, [poolAddress]))[0];
+
+      if (!poolDetails) {
+        console.error(`Pool details not found for address ${poolAddress}`);
+        return null;
+      }
+
+      const formattedPosition = formatPositionDetails(position, {
+        ...poolDetails,
+        fee: position.fee,
+        token0: token0Details,
+        token1: token1Details,
+        address: poolAddress,
+      });
+      return formattedPosition;
+    } catch (error) {
+      console.error('Error fetching position with ID:', error);
+      return null;
+    }
+  };
+
+  return { fetchPositions, fetchPositionWithId };
 };

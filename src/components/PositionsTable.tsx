@@ -2,6 +2,8 @@ import { supportedChainIds } from '@/constants/chains';
 import useRemoveLiquidity from '@/hooks/useRemoveLiquidity';
 import { V3Position } from '@/types/v3';
 import { truncateNumber } from '@/utils/truncateNumber';
+import { useState } from 'react';
+import IncreaseLiquidityModal from './IncreaseLiquidityModal';
 
 interface PositionsTableProps {
   positions: V3Position[];
@@ -10,6 +12,8 @@ interface PositionsTableProps {
 
 export default function PositionsTable({ positions, loading }: PositionsTableProps) {
   const { decreaseLiquidity } = useRemoveLiquidity({ chainId: supportedChainIds.monadTestnet });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState<V3Position | null>(null);
   if (loading) {
     return (
       <div className="overflow-auto rounded-lg bg-gray-800 p-4">
@@ -52,22 +56,44 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
               <td className="px-4 py-2 text-white">{`${position.tickLower} - ${position.tickUpper}`}</td>
               <td className="px-4 py-2 text-white">{truncateNumber(position.liquidity.toString())}</td>
               <td className="px-4 py-2 text-white">
-                <button
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
-                  onClick={() =>
-                    decreaseLiquidity({
-                      position,
-                      percent: 50, // Example: Decrease by 50%
-                    })
-                  }
-                >
-                  Decrease Liquidity
-                </button>
+                <div className="flex space-x-2">
+                  <button
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-2 rounded"
+                    onClick={() => {
+                      setSelectedPosition(position);
+                      setModalOpen(true);
+                    }}
+                  >
+                    Increase Liquidity
+                  </button>
+                  <button
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                    onClick={() =>
+                      decreaseLiquidity({
+                        position,
+                        percent: 50, // Example: Decrease by 50%
+                      })
+                    }
+                  >
+                    Decrease Liquidity
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {selectedPosition && (
+        <IncreaseLiquidityModal
+          isOpen={modalOpen}
+          onClose={() => {
+            setModalOpen(false);
+            setSelectedPosition(null);
+          }}
+          position={selectedPosition}
+        />
+      )}
     </div>
   );
 }

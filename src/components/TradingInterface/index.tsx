@@ -53,7 +53,7 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
     increaseLowerTick,
     increaseUpperTick,
     decreaseLowerTick,
-    handleAddLiquidity,
+    createPosition,
     decreaseUpperTick,
     selectedRange,
     setSelectedRange,
@@ -264,7 +264,7 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
           handleDestTokenAmountChange: handleDestAmountChange,
           handleSrcTokenAmountChange: handleSrcAmountChange,
           srcTokenAmount: srcTokenFormattedAmount,
-          handleDeposit: handleAddLiquidity,
+          handleDeposit: createPosition,
           srcTokenDetails: token0,
           isLoading,
         }}
