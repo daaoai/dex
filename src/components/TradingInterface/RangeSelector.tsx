@@ -59,7 +59,6 @@ export default function RangeSelector({
   const [selectedTab, setSelectedTab] = useState<string>(activeTab.id || '1d');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const chartRef = useRef<any>(null);
-
   useEffect(() => {
     if (selectedTab !== activeTab.id) {
       const newActiveTab = tabs.find((tab) => tab.id === selectedTab);
@@ -151,7 +150,7 @@ export default function RangeSelector({
         </div>
         <div className="relative bg-zinc-800 rounded-md overflow-hidden">
           <LineGraphView
-            tokenName={'ethereum'}
+            tokenName={destTokenDetails.coingeckoId}
             tokenState={tokenState}
             setTokenState={setTokenState}
             tabs={tabs}
