@@ -35,6 +35,8 @@ export type V3PositionRaw = {
   feeGrowthInside1LastX128: bigint;
   tokensOwed0: bigint;
   tokensOwed1: bigint;
+  feeEarned0: bigint;
+  feeEarned1: bigint;
 };
 
 export interface V3Position {
@@ -48,6 +50,8 @@ export interface V3Position {
   token1Details: Token;
   liquidityUsd: string;
   tokenId: bigint;
+  feeEarned0: bigint;
+  feeEarned1: bigint;
   fee: number;
   tickSpacing: number;
   tickLower: number;

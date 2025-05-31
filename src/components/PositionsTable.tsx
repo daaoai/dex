@@ -1,9 +1,11 @@
 import { supportedChainIds } from '@/constants/chains';
+import useHarvestLiquidtiy from '@/hooks/useHarvestLiquidity';
 import useRemoveLiquidity from '@/hooks/useRemoveLiquidity';
 import { V3Position } from '@/types/v3';
 import { truncateNumber } from '@/utils/truncateNumber';
 import { useState } from 'react';
 import IncreaseLiquidityModal from './IncreaseLiquidityModal';
+import { formatUnits } from 'viem';
 
 interface PositionsTableProps {
   positions: V3Position[];
@@ -12,6 +14,7 @@ interface PositionsTableProps {
 
 export default function PositionsTable({ positions, loading }: PositionsTableProps) {
   const { decreaseLiquidity } = useRemoveLiquidity({ chainId: supportedChainIds.monadTestnet });
+  const { harvestLiquidity } = useHarvestLiquidtiy({ chainId: supportedChainIds.monadTestnet });
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<V3Position | null>(null);
   if (loading) {
@@ -35,7 +38,7 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
       <table className="min-w-full text-left">
         <thead className="border-b border-gray-700">
           <tr>
-            {['ID', 'Token Pair', 'Fee Tier', 'Tick Range', 'Liquidity', 'Fees Earned'].map((h) => (
+            {['ID', 'Token Pair', 'Fee Tier', 'Fee Earned', 'Liquidity', 'Fees Earned'].map((h) => (
               <th key={h} className="px-4 py-2 text-gray-400 bg-dark-black-300">
                 {h}
               </th>
@@ -53,7 +56,7 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
                 {`${position.token0Details.symbol}-${position.token1Details.symbol}`}
               </td>
               <td className="px-4 py-2 text-white">{position.fee / 10000}%</td>
-              <td className="px-4 py-2 text-white">{`${position.tickLower} - ${position.tickUpper}`}</td>
+              <td className="px-4 py-2 text-white">{`${formatUnits(position.feeEarned0, position.token0Details.decimals)} ${position.token0Details.symbol} / ${formatUnits(position.feeEarned1, position.token1Details.decimals)} ${position.token1Details.symbol}`}</td>
               <td className="px-4 py-2 text-white">{truncateNumber(position.liquidity.toString())}</td>
               <td className="px-4 py-2 text-white">
                 <div className="flex space-x-2">
@@ -76,6 +79,16 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
                     }
                   >
                     Decrease Liquidity
+                  </button>
+                  <button
+                    className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded"
+                    onClick={() =>
+                      harvestLiquidity({
+                        position,
+                      })
+                    }
+                  >
+                    Harvest Liquidity
                   </button>
                 </div>
               </td>

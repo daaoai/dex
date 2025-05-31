@@ -10,7 +10,7 @@ import {
 } from '@/types/v3';
 import { getDeadline } from '@/utils/deadline';
 import { getPublicClient } from '@/utils/publicClient';
-import { encodeFunctionData, Hex, maxUint128, zeroAddress } from 'viem';
+import { decodeAbiParameters, encodeFunctionData, Hex, maxUint128, zeroAddress } from 'viem';
 
 export class UniswapNFTManager {
   public static generateMintCallData = ({
@@ -85,6 +85,103 @@ export class UniswapNFTManager {
     return nftIds;
   };
 
+  public static getFeeToCollect = async ({
+    tokenId,
+    account,
+    chainId,
+    nftManagerAddress,
+  }: {
+    tokenId: bigint;
+    account: Hex;
+    chainId: number;
+    nftManagerAddress: Hex;
+  }) => {
+    const publicClient = getPublicClient(chainId);
+
+    const collectCallData = encodeFunctionData({
+      abi: uniswapV3NftManagerAbi,
+      functionName: 'collect',
+      args: [
+        {
+          tokenId,
+          recipient: account,
+          amount0Max: maxUint128,
+          amount1Max: maxUint128,
+        },
+      ],
+    });
+    const res = await publicClient.call({
+      data: collectCallData,
+      account,
+      to: nftManagerAddress,
+    });
+
+    const [feesEarnedToken0, feesEarnedToken1] = decodeAbiParameters(
+      [
+        { type: 'uint256', name: 'amount0Max' },
+        { type: 'uint256', name: 'amount1Max' },
+      ],
+      res.data as Hex,
+    );
+
+    return {
+      feesEarnedToken0,
+      feesEarnedToken1,
+    };
+  };
+
+  public static getFeeToCollectForNFTs = async ({
+    nftIds,
+    account,
+    chainId,
+    nftManagerAddress,
+  }: {
+    nftIds: bigint[];
+    account: Hex;
+    chainId: number;
+    nftManagerAddress: Hex;
+  }) => {
+    const multicallData = nftIds.map((nftId) =>
+      encodeFunctionData({
+        abi: uniswapV3NftManagerAbi,
+        functionName: 'collect',
+        args: [
+          {
+            tokenId: nftId,
+            recipient: account,
+            amount0Max: maxUint128,
+            amount1Max: maxUint128,
+          },
+        ],
+      }),
+    );
+    const callData = encodeFunctionData({
+      abi: uniswapV3NftManagerAbi,
+      functionName: 'multicall',
+      args: [multicallData],
+    });
+    const publicClient = getPublicClient(chainId);
+    const res = await publicClient.call({
+      data: callData,
+      account,
+      to: nftManagerAddress,
+    });
+
+    const decodeType = Array.from({ length: nftIds.length }, () => [
+      { type: 'uint256', name: 'amount0Max' },
+      { type: 'uint256', name: 'amount1Max' },
+    ]).flat();
+
+    const results = decodeAbiParameters(decodeType, res.data as Hex) as bigint[];
+
+    const feesEarned = nftIds.map((nftId, index) => ({
+      id: nftId,
+      feeEarned0: results[index * 2],
+      feeEarned1: results[index * 2 + 1],
+    }));
+    return feesEarned;
+  };
+
   public static getUserNFTsForPool = async ({
     account,
     chainId,
@@ -93,42 +190,20 @@ export class UniswapNFTManager {
     token1,
     nftManagerAddress,
   }: GetUserNFTsForPoolRequest): Promise<V3PositionRaw[]> => {
-    const nftIds = await this.getUserNFTIds({ account, chainId, nftManagerAddress });
-    const userNfts = (await multicallForSameContract({
-      abi: uniswapV3NftManagerAbi,
-      address: nftManagerAddress,
+    const userNfts = await this.getUserNFTs({
+      account,
       chainId,
-      functionNames: new Array(nftIds.length).fill('positions'),
-      params: nftIds.map((nftId) => [nftId]),
-    })) as [bigint, Hex, Hex, Hex, number, number, number, bigint, bigint, bigint, bigint, bigint][];
-
-    const userNftsWithId: V3PositionRaw[] = [];
-
-    userNfts.forEach((nft, index) => {
-      {
-        if (nft[2] !== token0 || nft[3] !== token1 || nft[4] !== fee) {
-          return;
-        }
-        userNftsWithId.push({
-          id: nftIds[index],
-          nonce: nft[0],
-          operator: nft[1],
-          token0: nft[2],
-          token1: nft[3],
-          fee: nft[4],
-          tickSpacing: 0, // Uniswap V3 does not use tick spacing in the same way as Velodrome
-          tickLower: nft[5],
-          tickUpper: nft[6],
-          liquidity: nft[7],
-          feeGrowthInside0LastX128: nft[8],
-          feeGrowthInside1LastX128: nft[9],
-          tokensOwed0: nft[10],
-          tokensOwed1: nft[11],
-        });
-      }
+      nftManagerAddress,
     });
 
-    return userNftsWithId;
+    const filteredNfts = userNfts.filter(
+      (nft) =>
+        nft.token0.toLowerCase() === token0.toLowerCase() &&
+        nft.token1.toLowerCase() === token1.toLowerCase() &&
+        nft.fee === fee,
+    );
+
+    return filteredNfts;
   };
 
   public static getUserNFTs = async ({
@@ -141,13 +216,21 @@ export class UniswapNFTManager {
     nftManagerAddress: Hex;
   }): Promise<V3PositionRaw[]> => {
     const nftIds = await this.getUserNFTIds({ account, chainId, nftManagerAddress });
-    const userNfts = (await multicallForSameContract({
-      abi: uniswapV3NftManagerAbi,
-      address: nftManagerAddress,
-      chainId,
-      functionNames: new Array(nftIds.length).fill('positions'),
-      params: nftIds.map((nftId) => [nftId]),
-    })) as [bigint, Hex, Hex, Hex, number, number, number, bigint, bigint, bigint, bigint, bigint][];
+    const [userNfts, feesEarned] = await Promise.all([
+      multicallForSameContract({
+        abi: uniswapV3NftManagerAbi,
+        address: nftManagerAddress,
+        chainId,
+        functionNames: new Array(nftIds.length).fill('positions'),
+        params: nftIds.map((nftId) => [nftId]),
+      }) as Promise<[bigint, Hex, Hex, Hex, number, number, number, bigint, bigint, bigint, bigint, bigint][]>,
+      this.getFeeToCollectForNFTs({
+        nftIds,
+        account,
+        chainId,
+        nftManagerAddress,
+      }),
+    ]);
 
     const userNftsWithId: V3PositionRaw[] = [];
 
@@ -168,6 +251,8 @@ export class UniswapNFTManager {
           feeGrowthInside1LastX128: nft[9],
           tokensOwed0: nft[10],
           tokensOwed1: nft[11],
+          feeEarned0: feesEarned[index].feeEarned0,
+          feeEarned1: feesEarned[index].feeEarned1,
         });
       }
     });
@@ -187,6 +272,13 @@ export class UniswapNFTManager {
       functionName: 'positions',
       args: [nftId],
     });
+
+    const feeEarned = await this.getFeeToCollect({
+      tokenId: nftId,
+      account: zeroAddress, // Using zero address to just get the fees without collecting
+      chainId,
+      nftManagerAddress,
+    });
     return {
       id: nftId,
       nonce: res[0],
@@ -202,6 +294,8 @@ export class UniswapNFTManager {
       feeGrowthInside1LastX128: res[9],
       tokensOwed0: res[10],
       tokensOwed1: res[11],
+      feeEarned0: feeEarned.feesEarnedToken0,
+      feeEarned1: feeEarned.feesEarnedToken1,
     };
   };
 
@@ -283,6 +377,31 @@ export class UniswapNFTManager {
           amount1Min,
           tokenId,
           deadline: getDeadline(60 * 60), // 1 hour from now
+        },
+      ],
+    });
+  };
+
+  public static generateCollectCallData = ({
+    tokenId,
+    recipient,
+    amount0Max = maxUint128,
+    amount1Max = maxUint128,
+  }: {
+    tokenId: bigint;
+    recipient: Hex;
+    amount0Max?: bigint;
+    amount1Max?: bigint;
+  }): Hex => {
+    return encodeFunctionData({
+      abi: uniswapV3NftManagerAbi,
+      functionName: 'collect',
+      args: [
+        {
+          tokenId,
+          recipient,
+          amount0Max,
+          amount1Max,
         },
       ],
     });
