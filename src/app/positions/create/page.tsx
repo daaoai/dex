@@ -25,10 +25,10 @@ export default function NewPositions() {
   const { appChainId } = useSelector((state: RootState) => state.common, shallowEqual);
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="container mx-auto px-4 py-6">
+    <div className="min-h-screen bg-black text-white px-20">
+      <div className="max-w-[1000px] mx-auto px-4 py-6">
         <div className="flex items-center gap-2 text-sm mb-4">
-          <Link href="#" className="text-gray-400 hover:text-white">
+          <Link href="/positions" className="text-gray-400 hover:text-white cursor-pointer">
             Your positions
           </Link>
           <span className="text-gray-600">
@@ -53,37 +53,41 @@ export default function NewPositions() {
         </div>
 
         <div className="grid md:grid-cols-[1fr,2fr] gap-6">
-          <div className="flex flex-col items-center">
-            <button
-              onClick={() => setStep(1)}
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                step === 1 ? 'bg-white text-black' : 'bg-gray-800 text-gray-400'
-              }`}
-            >
-              1
-            </button>
-            <div className="mt-2 text-center">
-              <div className="text-sm font-medium text-gray-400">Step 1</div>
-              <div className="text-base font-semibold text-white">Select token pair and fees</div>
+          <div className="bg-background-6 rounded-xl p-6 w-full max-w-xs self-start border-2 border-stroke-2">
+            <div className="flex items-start gap-4 cursor-pointer" onClick={() => setStep(1)}>
+              <div
+                className={`w-10 h-10 min-w-[40px] rounded-md flex items-center justify-center font-semibold text-sm ${
+                  step === 1 ? 'bg-white text-black' : 'bg-[#2A2A2A] text-gray-400'
+                }`}
+              >
+                1
+              </div>
+              <div>
+                <div className="text-sm text-gray-400">Step 1</div>
+                <div className="text-base font-medium text-white">Select token pair and fees</div>
+              </div>
             </div>
-            <div className="w-0.5 h-16 bg-gray-700 my-4" />
-            <button
-              onClick={() => setStep(2)}
-              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                step === 2 ? 'bg-white text-black' : 'bg-gray-800 text-gray-400'
-              }`}
-            >
-              2
-            </button>
-            <div className="mt-2 text-center">
-              <div className="text-sm font-medium text-gray-500">Step 2</div>
-              <div className="text-base font-semibold text-gray-500">Select price range and deposit amounts</div>
+
+            <div className="h-8 border-l border-gray-700 ml-5" />
+
+            <div className="flex items-start gap-4 cursor-pointer" onClick={() => setStep(2)}>
+              <div
+                className={`w-10 h-10 min-w-[40px] rounded-md flex items-center justify-center font-semibold text-sm ${
+                  step === 2 ? 'bg-white text-black' : 'bg-[#2A2A2A] text-gray-400'
+                }`}
+              >
+                2
+              </div>
+              <div>
+                <div className="text-sm text-gray-400">Step 2</div>
+                <div className="text-base font-medium text-gray-500">Select price range and deposit amounts</div>
+              </div>
             </div>
           </div>
 
           {step === 1 ? (
             <>
-              <div className="bg-dark-black-50 rounded-lg p-6">
+              <div className="bg-background border-2 border-stroke-2 rounded-lg p-6">
                 <h2 className="text-xl font-semibold mb-4">Select pair</h2>
                 <p className="text-gray-400 mb-6">
                   Choose the tokens you want to provide liquidity for. You can select tokens on all supported networks.
@@ -163,8 +167,6 @@ export default function NewPositions() {
             token0 &&
             token1 && <CryptoTradingInterface token0={token0} token1={token1} fee={3000} chainId={appChainId} />
           )}
-
-          {/* Form */}
         </div>
       </div>
 

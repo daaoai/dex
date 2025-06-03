@@ -1,19 +1,42 @@
-import { Button } from '@/shadcn/components/ui/button';
+'use client';
+
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
+const navLinks = [
+  { name: 'Trade', href: '/trade' },
+  { name: 'Explore', href: '/explore' },
+  { name: 'Pool', href: '/positions' },
+];
+
 export default function Header() {
+  const pathname = usePathname();
+
   return (
-    <header className="flex items-center justify-between">
-      <nav className="space-x-6 text-gray-400">
-        {['Trade', 'Explore', 'Pool'].map((tab) => (
-          <Button key={tab} className="hover:text-white">
-            {tab}
-          </Button>
+    <header className="flex items-center justify-between bg-black p-4">
+      <nav className="flex items-center space-x-6">
+        <Link href="/">
+          <Image src="/synthari-logo.svg" alt="Logo" width={120} height={120} className="inline-block" />
+        </Link>
+
+        {navLinks.map(({ name, href }) => (
+          <Link
+            key={href}
+            href={href}
+            className={`font-semibold ${
+              pathname === href ? 'text-white' : 'text-gray-400'
+            } hover:text-white transition-colors`}
+          >
+            {name}
+          </Link>
         ))}
+
         <input
           type="text"
           placeholder="Search Token"
-          className="px-3 py-1 rounded border-2 bg-dark-black-50 border-dark-black-100  placeholder-gray-500 focus:outline-none"
+          className="ml-4 px-3 py-1 rounded border-2 bg-[#0a0a0a] border-[#1a1a1a] placeholder-gray-500 focus:outline-none"
         />
       </nav>
 

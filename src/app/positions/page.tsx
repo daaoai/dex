@@ -1,6 +1,8 @@
 'use client';
-
+import PositionsSection from '@/components/PositionSection';
 import PositionsTable from '@/components/PositionsTable';
+import RewardsSummary from '@/components/RewardSummary';
+import TopPoolsSidebar from '@/components/TopPoolsSidebar';
 import { usePositions } from '@/hooks/usePositions';
 import { V3Position } from '@/types/v3';
 import { useEffect, useState } from 'react';
@@ -24,9 +26,18 @@ export default function PositionsPage() {
   }, []);
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold mb-6 text-white">Your Liquidity Positions</h1>
-      <PositionsTable positions={positions} loading={loading} />
-    </div>
+    <section className="flex flex-col gap-12 bg-background-3 p-6 px-20">
+      <div className="flex w-full gap-8">
+        <div className="flex flex-col gap-8 flex-1">
+          <RewardsSummary />
+          <PositionsSection />
+          <PositionsTable positions={positions} loading={loading} />
+        </div>
+        <div className="w-2/5">
+          <TopPoolsSidebar />
+        </div>
+      </div>
+      <div className="w-full"></div>
+    </section>
   );
 }

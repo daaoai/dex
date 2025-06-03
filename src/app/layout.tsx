@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify'; // Import ToastContainer
 import 'react-toastify/dist/ReactToastify.css';
 import './globals.css';
 import ProviderWrapper from '@/wagmi/ProviderWrapper';
+import Header from '@/components/Header';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -27,7 +28,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning>
         <ToastContainer />
-        <ProviderWrapper>{children}</ProviderWrapper>
+        <ProviderWrapper>
+          <Header />
+          {children}
+        </ProviderWrapper>
       </body>
     </html>
   );

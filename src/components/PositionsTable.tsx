@@ -1,9 +1,10 @@
-import { supportedChainIds } from '@/constants/chains';
-import useRemoveLiquidity from '@/hooks/useRemoveLiquidity';
+'use client';
+
 import { V3Position } from '@/types/v3';
 import { truncateNumber } from '@/utils/truncateNumber';
-import { useState } from 'react';
-import IncreaseLiquidityModal from './IncreaseLiquidityModal';
+import { useRouter } from 'next/navigation';
+import clsx from 'clsx';
+import PositionRecordShimmer from './shimmer/PositionRecordShimmer';
 
 interface PositionsTableProps {
   positions: V3Position[];
@@ -11,89 +12,65 @@ interface PositionsTableProps {
 }
 
 export default function PositionsTable({ positions, loading }: PositionsTableProps) {
-  const { decreaseLiquidity } = useRemoveLiquidity({ chainId: supportedChainIds.monadTestnet });
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedPosition, setSelectedPosition] = useState<V3Position | null>(null);
+  const router = useRouter();
+
   if (loading) {
     return (
-      <div className="overflow-auto rounded-lg bg-gray-800 p-4">
-        <p className="text-white">Loading positions...</p>
+      <div className="space-y-4">
+        {[...Array(3)].map((_, i) => (
+          <PositionRecordShimmer key={i} />
+        ))}
       </div>
     );
   }
 
   if (positions.length === 0) {
-    return (
-      <div className="overflow-auto rounded-lg bg-gray-800 p-4">
-        <p className="text-white">No positions found</p>
-      </div>
-    );
+    return <p className="text-white p-4 bg-gray-800 rounded-lg">No positions found</p>;
   }
 
   return (
-    <div className="overflow-auto rounded-lg bg-gray-800">
-      <table className="min-w-full text-left">
-        <thead className="border-b border-gray-700">
-          <tr>
-            {['ID', 'Token Pair', 'Fee Tier', 'Tick Range', 'Liquidity', 'Fees Earned'].map((h) => (
-              <th key={h} className="px-4 py-2 text-gray-400 bg-dark-black-300">
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {positions.map((position) => (
-            <tr
-              key={position.tokenId.toString()}
-              className="border-b border-gray-700 hover:bg-gray-700 bg-dark-black-10"
-            >
-              <td className="px-4 py-2 bg-dark-black-300 text-white">#{position.tokenId.toString()}</td>
-              <td className="px-4 py-2 flex items-center text-white space-x-2 bg-dark-black-300">
-                {`${position.token0Details.symbol}-${position.token1Details.symbol}`}
-              </td>
-              <td className="px-4 py-2 text-white">{position.fee / 10000}%</td>
-              <td className="px-4 py-2 text-white">{`${position.tickLower} - ${position.tickUpper}`}</td>
-              <td className="px-4 py-2 text-white">{truncateNumber(position.liquidity.toString())}</td>
-              <td className="px-4 py-2 text-white">
-                <div className="flex space-x-2">
-                  <button
-                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-2 rounded"
-                    onClick={() => {
-                      setSelectedPosition(position);
-                      setModalOpen(true);
-                    }}
-                  >
-                    Increase Liquidity
-                  </button>
-                  <button
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
-                    onClick={() =>
-                      decreaseLiquidity({
-                        position,
-                        percent: 50, // Example: Decrease by 50%
-                      })
-                    }
-                  >
-                    Decrease Liquidity
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="space-y-4">
+      {positions.map((position) => (
+        <div
+          key={position.tokenId.toString()}
+          className={clsx(
+            'bg-grey-3 rounded-xl p-4 shadow-md flex flex-col cursor-pointer hover:bg-gray-800 transition',
+          )}
+          onClick={() => router.push(`/positions/${position.tokenId}`)}
+        >
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gray-700 rounded-full" />
+            <div>
+              <div className="text-white font-semibold text-lg">
+                {position.token0Details.symbol} / {position.token1Details.symbol}
+              </div>
+              <div className="text-green-500 text-sm">In range</div>
+            </div>
+            <div className="bg-gray-700 text-white text-xs px-2 py-1 rounded ml-2">v3 {position.fee / 10000}%</div>
+          </div>
 
-      {selectedPosition && (
-        <IncreaseLiquidityModal
-          isOpen={modalOpen}
-          onClose={() => {
-            setModalOpen(false);
-            setSelectedPosition(null);
-          }}
-          position={selectedPosition}
-        />
-      )}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 text-white">
+            <div>
+              <div className="text-sm text-gray-400">Position</div>
+              <div>${truncateNumber(position.liquidity.toString())}</div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-400">Fees</div>
+              <div>$0.00</div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-400">APR</div>
+              <div>64.39%</div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-400">Range</div>
+              <div>
+                {position.tickLower} - {position.tickUpper}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
