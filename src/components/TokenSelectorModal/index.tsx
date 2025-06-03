@@ -56,13 +56,9 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
   }, [searchQuery, tokens]);
 
   return (
-    <ModalWrapper
-      isOpen={isOpen}
-      onClose={onClose}
-      className="w-full max-w-md max-h-[90vh] bg-gray-900 p-4 overflow-auto"
-    >
+    <ModalWrapper isOpen={isOpen} onClose={onClose} className="w-full max-w-md max-h-[90vh]  p-4 overflow-auto">
       <div className="w-full">
-        <div className="bg-gray-900 rounded-lg w-full max-w-md max-h-[90vh] overflow-auto">
+        <div className="bg-background rounded-lg w-full max-w-md max-h-[90vh] overflow-auto">
           <div className="p-4 flex justify-between items-center border-b border-gray-800">
             <h2 className="text-xl font-semibold">Select Token</h2>
             <button onClick={onClose} className="text-gray-400 hover:text-white">

@@ -95,7 +95,7 @@ export default function NewPositions() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <button
-                    className="bg-dark-black-300 rounded-lg p-4 flex items-center justify-between"
+                    className="bg-grey-3 rounded-lg p-4 flex items-center justify-between"
                     onClick={() => setShowTokenModal({ show: true, tokenType: 'token0' })}
                   >
                     {token0 ? (
