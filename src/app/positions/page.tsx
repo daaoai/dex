@@ -31,7 +31,7 @@ export default function PositionsPage() {
 
   return (
     <section className="flex flex-col gap-12 bg-background-3 p-6 px-20">
-      <div className="flex w-full gap-8">
+      <div className="flex w-full gap-20">
         <div className="flex flex-col gap-8 flex-1">
           <RewardsSummary />
           <PositionsSection />

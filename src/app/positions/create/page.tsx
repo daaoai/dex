@@ -26,7 +26,7 @@ export default function NewPositions() {
 
   return (
     <div className="min-h-screen bg-black text-white px-20">
-      <div className="max-w-[1000px] mx-auto px-4 py-6">
+      <div className="max-w-[1200px] mx-auto px-4 py-6">
         <div className="flex items-center gap-2 text-sm mb-4">
           <Link href="/positions" className="text-gray-400 hover:text-white cursor-pointer">
             Your positions
@@ -52,7 +52,7 @@ export default function NewPositions() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-[1fr,2fr] gap-6">
+        <div className="grid md:grid-cols-[1fr,2fr] gap-8">
           <div className="bg-background-6 rounded-xl p-6 w-full max-w-xs self-start border-2 border-stroke-2">
             <div className="flex items-start gap-4 cursor-pointer" onClick={() => setStep(1)}>
               <div
@@ -95,7 +95,7 @@ export default function NewPositions() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <button
-                    className="bg-dark-black-300 rounded-lg p-4 flex items-center justify-between"
+                    className="bg-grey-3 rounded-lg p-4 flex items-center justify-between"
                     onClick={() => setShowTokenModal({ show: true, tokenType: 'token0' })}
                   >
                     {token0 ? (
@@ -141,7 +141,7 @@ export default function NewPositions() {
                     The amount earned providing liquidity. Choose an amount that suits your risk tolerance and strategy.
                   </p>
 
-                  <div className="bg-dark-black-300 rounded-lg p-4">
+                  <div className="bg-dark-black-300 rounded-lg">
                     <div className="flex justify-between items-center">
                       <div>
                         <h4 className="font-semibold mb-1">0.3% fee tier</h4>
@@ -172,9 +172,8 @@ export default function NewPositions() {
 
       {showTokenModal.show && (
         <TokenSelectionModal
-          onClose={() => {
-            setShowTokenModal((prev) => ({ ...prev, show: false }));
-          }}
+          isOpen={showTokenModal.show}
+          onClose={() => setShowTokenModal((prev) => ({ ...prev, show: false }))}
           onSelect={(token) => {
             if (showTokenModal.tokenType === 'token0') {
               setToken0(token);
