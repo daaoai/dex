@@ -8,9 +8,11 @@ export default function RewardsSummary() {
       className="relative flex-1 rounded-lg p-6 bg-cover bg-center"
       style={{ backgroundImage: `url('${REWARD_CONTENT.backgroundImage}')` }}
     >
-      <header className="flex justify-between items-center mb-4">
+      <header className="flex justify-between items-center mb-12">
         <div>
-          <h2 className="text-4xl font-bold text-pink-500">{REWARD_CONTENT.rewards.amount}</h2>
+          <h2 className="bg-gradient-purple bg-clip-text text-gradient-purple font-semibold text-4xl">
+            {REWARD_CONTENT.rewards.amount}
+          </h2>
           <p className="text-gray-400">{REWARD_CONTENT.rewards.label}</p>
         </div>
         <button

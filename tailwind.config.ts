@@ -38,6 +38,11 @@ const config: Config = {
       backgroundImage: {
         dots: 'radial-gradient(rgb(0 0 0 / 6%) 1px, transparent 2px)',
         'btn-gradient': 'linear-gradient(to right, #492AFF, #F49167)',
+        'gradient-purple': 'linear-gradient(90deg, #3F21FC, #916DF5)',
+
+      },
+      textColor: {
+        'gradient-purple': 'transparent',
       },
       fontFamily: {
         sans: ['Urbanist', 'sans-serif'],

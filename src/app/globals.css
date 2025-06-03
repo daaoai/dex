@@ -56,3 +56,38 @@ body {
   --color-secondary-2: #49b063;
   --color-secondary-3: #0d1220;
 }
+
+@layer utilities {
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -200%;
+    height: 100%;
+    width: 200%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(86, 148, 255, 0.12),
+      /* subtle electric blue glow */ transparent
+    );
+    animation: shimmer 1.4s infinite;
+    filter: blur(4px) brightness(1.3);
+  }
+}
+
+@layer utilities {
+  .bg-custom-dark {
+    background-color: #131417;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -200%;
+  }
+
+  100% {
+    left: 100%;
+  }
+}
