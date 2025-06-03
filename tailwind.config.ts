@@ -16,9 +16,11 @@ const config: Config = {
         'background-3': 'var(--color-background-3)',
         'background-4': 'var(--color-background-4)',
         'background-5': 'var(--color-background-5)',
+        'background-6': 'var(--color-background-6)',
 
         grey: 'var(--color-grey)',
         'grey-2': 'var(--color-grey-2)',
+        'grey-3': 'var(--color-grey-3)',
 
         stroke: 'var(--color-stroke)',
         'stroke-2': 'var(--color-stroke-2)',
@@ -31,9 +33,11 @@ const config: Config = {
         secondary: 'var(--color-secondary)',
         'secondary-2': 'var(--color-secondary-2)',
         'secondary-3': 'var(--color-secondary-3)',
+        black: 'var(--color-black)',
       },
       backgroundImage: {
         dots: 'radial-gradient(rgb(0 0 0 / 6%) 1px, transparent 2px)',
+        'btn-gradient': 'linear-gradient(to right, #492AFF, #F49167)',
       },
       fontFamily: {
         sans: ['Urbanist', 'sans-serif'],

@@ -12,9 +12,13 @@ body {
   --color-background-3: #0b0d10;
   --color-background-4: #1f2125;
   --color-background-5: #1f2530;
+  --color-background-6: #060708;
+
+  --color-black: #000000;
 
   --color-grey: #8f97a6;
   --color-grey-2: #68707d;
+  --color-grey-3: #131417;
 
   --color-stroke: #68707d;
   --color-stroke-2: #1f2530;
@@ -30,6 +34,7 @@ body {
 }
 
 .light {
+  --color-black: #000000;
   --color-background: #ffffff;
   --color-background-2: #f8f8f8;
   --color-background-3: #f4f4f4;

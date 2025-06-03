@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 
-const Home = () => {
+const Trade = () => {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen bg-gray-950">
       <div className="bg-gray-900 rounded-xl shadow-lg p-8 flex flex-col items-center">
@@ -16,4 +16,5 @@ const Home = () => {
     </main>
   );
 };
-export default Home;
+
+export default Trade;
