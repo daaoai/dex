@@ -61,6 +61,7 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
     setSrcTokenFormattedAmount,
     setDstTokenFormattedAmount,
     fetchInitialData,
+    txnState,
   } = useCreatePosition({ chainId });
 
   useEffect(() => {
@@ -265,6 +266,7 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
           handleSrcTokenAmountChange: handleSrcAmountChange,
           srcTokenAmount: srcTokenFormattedAmount,
           handleDeposit: createPosition,
+          txnState,
           srcTokenDetails: token0,
           isLoading,
         }}

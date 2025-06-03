@@ -9,6 +9,7 @@ interface DepositTokensProps {
   destTokenDetails: Token;
   srcTokenAmount: string;
   destTokenAmount: string;
+  txnState: 'approvingToken0' | 'approvingToken1' | 'waitingForConfirmation' | null;
   handleSrcTokenAmountChange: (value: string) => void;
   isLoading: boolean;
   handleDeposit: () => void;
@@ -21,6 +22,7 @@ export default function DepositTokens({
   destTokenAmount,
   handleSrcTokenAmountChange,
   isLoading,
+  txnState,
   handleDeposit,
 }: DepositTokensProps) {
   return (
@@ -82,7 +84,15 @@ export default function DepositTokens({
       <ConnectOrActionButton
         authenticatedOnClick={handleDeposit}
         isDisabled={isLoading}
-        authenticatedText="Create Position"
+        authenticatedText={
+          txnState === 'approvingToken0'
+            ? `Approving ${srcTokenDetails.symbol}`
+            : txnState === 'approvingToken1'
+              ? `Approving ${destTokenDetails.symbol}`
+              : txnState === 'waitingForConfirmation'
+                ? 'Waiting for confirmation...'
+                : 'Create Position'
+        }
       />
     </div>
   );

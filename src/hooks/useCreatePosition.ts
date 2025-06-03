@@ -44,6 +44,9 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
   });
 
   const [txnInProgress, setTxnInProgress] = useState(false);
+  const [txnState, setTxnState] = useState<'approvingToken0' | 'approvingToken1' | 'waitingForConfirmation' | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [approvalStatus] = useState<string | null>(null);
   const [isDataLoading, setIsDataLoading] = useState(true);
@@ -212,6 +215,12 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
 
   const approveToken = async (amount: bigint, token: Hex) => {
     if (!account) return;
+    if (token === poolDetails?.token0.address) {
+      setTxnState('approvingToken0');
+    }
+    if (token === poolDetails?.token1.address) {
+      setTxnState('approvingToken1');
+    }
     const publicClient = getPublicClient(chainId);
     const spender = nftManagerAddress;
     const allowance = await publicClient.readContract({
@@ -326,6 +335,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
       });
 
       const publicClient = getPublicClient(chainId);
+      setTxnState('waitingForConfirmation');
 
       const hash = await sendTransactionAsync({
         account,
@@ -350,6 +360,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
       toast.error('Transaction failed');
     } finally {
       setTxnInProgress(false);
+      setTxnState(null);
     }
   };
 
@@ -434,6 +445,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     setSelectedRange,
     setCurrentPoolData,
     currentPrice,
+    txnState,
     error,
     approvalStatus,
   };
