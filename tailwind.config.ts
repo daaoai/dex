@@ -1,76 +1,6 @@
 import type { Config } from 'tailwindcss';
 
-const lightColors = {
-  white: {
-    50: '#fefefe',
-    100: '#fcfcfc',
-    200: '#fafafa',
-    300: '#f8f8f8',
-    400: '#f6f6f6',
-    500: '#f4f4f4',
-    600: '#dedede',
-    700: '#dadada',
-    800: '#b8b8b8',
-    900: '#868686',
-  },
-  black: {
-    10: '#000000',
-    50: '#0F0F0F',
-    100: '#1A1A1A',
-    200: '#1F1F1F',
-    300: '#1C1C1C',
-    400: '#ACACAC',
-    500: '#64758B',
-  },
-  pink: {
-    10: '#E232B1',
-    50: '#32192B',
-    100: '#261722',
-  },
-  purple: {
-    10: '#A457FF',
-    50: '#730CEF',
-    100: '#5108A7',
-    200: '#241B31',
-  },
-};
-
-const darkColors = {
-  white: {
-    50: '#fefefe',
-    100: '#fcfcfc',
-    200: '#fafafa',
-    300: '#f8f8f8',
-    400: '#f6f6f6',
-    500: '#f4f4f4',
-    600: '#dedede',
-    700: '#dadada',
-    800: '#b8b8b8',
-    900: '#868686',
-  },
-  black: {
-    10: '#000000',
-    50: '#0F0F0F',
-    100: '#1A1A1A',
-    200: '#1F1F1F',
-    300: '#1C1C1C',
-    400: '#ACACAC',
-    500: '#64758B',
-  },
-  pink: {
-    10: '#E232B1',
-    50: '#32192B',
-    100: '#261722',
-  },
-  purple: {
-    10: '#A457FF',
-    50: '#730CEF',
-    100: '#5108A7',
-    200: '#241B31',
-  },
-};
-
-export default {
+const config: Config = {
   darkMode: 'class',
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -81,8 +11,26 @@ export default {
   theme: {
     extend: {
       colors: {
-        light: lightColors,
-        dark: darkColors,
+        background: 'var(--color-background)',
+        'background-2': 'var(--color-background-2)',
+        'background-3': 'var(--color-background-3)',
+        'background-4': 'var(--color-background-4)',
+        'background-5': 'var(--color-background-5)',
+
+        grey: 'var(--color-grey)',
+        'grey-2': 'var(--color-grey-2)',
+
+        stroke: 'var(--color-stroke)',
+        'stroke-2': 'var(--color-stroke-2)',
+
+        primary: 'var(--color-primary)',
+        'primary-2': 'var(--color-primary-2)',
+        'primary-3': 'var(--color-primary-3)',
+        'primary-4': 'var(--color-primary-4)',
+
+        secondary: 'var(--color-secondary)',
+        'secondary-2': 'var(--color-secondary-2)',
+        'secondary-3': 'var(--color-secondary-3)',
       },
       backgroundImage: {
         dots: 'radial-gradient(rgb(0 0 0 / 6%) 1px, transparent 2px)',
@@ -93,4 +41,6 @@ export default {
     },
   },
   plugins: [],
-} satisfies Config;
+};
+
+export default config;
