@@ -36,7 +36,7 @@ const useRemoveLiquidity = ({ chainId }: { chainId: number }) => {
 
     let { amount0, amount1 } = position;
 
-    const liquidityToRemove = (position.liquidity * BigInt(percent)) / 100n;
+    const liquidityToRemove = (BigInt(position.liquidity) * BigInt(percent)) / 100n;
 
     if (percent < 100) {
       const pool = new UniswapV3Pool(chainId, position.poolAddress);
@@ -47,19 +47,19 @@ const useRemoveLiquidity = ({ chainId }: { chainId: number }) => {
         upperTick: position.tickUpper,
         sqrtPriceX96: slot0.sqrtPriceX96,
       });
-      amount0 = updatedAmounts.amount0;
-      amount1 = updatedAmounts.amount1;
+      amount0 = updatedAmounts.amount0.toString();
+      amount1 = updatedAmounts.amount1.toString();
     }
 
-    const amount0Min = getMinAmount(amount0, 0.5);
-    const amount1Min = getMinAmount(amount1, 0.5);
+    const amount0Min = getMinAmount(BigInt(amount0), 0.5);
+    const amount1Min = getMinAmount(BigInt(amount1), 0.5);
 
     const callData = UniswapNFTManager.generateDecreaseAndCollectCallData({
       amount0Min,
       amount1Min,
       burn: percent === 100,
       liquidityToRemove,
-      nftId: position.tokenId,
+      nftId: BigInt(position.tokenId),
       recipient: account,
     });
     if (accountChainId !== chainId) {

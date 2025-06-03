@@ -7,7 +7,7 @@ export const initialState: CommonReducerState = {
   appChainId: supportedChainIds.monadTestnet,
 };
 
-export const CommonReducer = createSlice({
+const CommonReducer = createSlice({
   name: reducerNames.common,
   initialState,
   reducers: {

@@ -6,13 +6,16 @@ import useRemoveLiquidity from '@/hooks/useRemoveLiquidity';
 import { supportedChainIds } from '@/constants/chains';
 import { V3Position } from '@/types/v3';
 import IncreaseLiquidityModal from '@/components/IncreaseLiquidityModal';
+import { shallowEqual, useSelector } from 'react-redux';
+import { RootState } from '../../../../store';
 
 export default function PositionDetails() {
   const params = useParams();
   const id = params.id as string;
-  const [position] = useState<V3Position | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const { decreaseLiquidity } = useRemoveLiquidity({ chainId: supportedChainIds.monadTestnet });
+
+  const { positions } = useSelector((state: RootState) => state.position, shallowEqual);
 
   useEffect(() => {
     if (!id) return;
@@ -24,7 +27,11 @@ export default function PositionDetails() {
     //   .then(data => setPosition(data));
   }, [id]);
 
-  if (!position) return <div>Loading...</div>;
+  const position = positions.find((pos: V3Position) => pos.tokenId.toString() === id);
+
+  if (!position) {
+    return <div className="text-white p-4 bg-gray-800 rounded-lg">Position not found</div>;
+  }
 
   return (
     <div className="p-6 bg-gray-900 rounded-xl shadow-md max-w-2xl mx-auto mt-8">

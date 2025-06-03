@@ -237,8 +237,8 @@ export class UniswapNFTManager {
     userNfts.forEach((nft, index) => {
       {
         userNftsWithId.push({
-          id: nftIds[index],
-          nonce: nft[0],
+          tokenId: nftIds[index],
+          // nonce: nft[0],
           operator: nft[1],
           token0: nft[2],
           token1: nft[3],
@@ -247,10 +247,10 @@ export class UniswapNFTManager {
           tickLower: nft[5],
           tickUpper: nft[6],
           liquidity: nft[7],
-          feeGrowthInside0LastX128: nft[8],
-          feeGrowthInside1LastX128: nft[9],
-          tokensOwed0: nft[10],
-          tokensOwed1: nft[11],
+          // feeGrowthInside0LastX128: nft[8],
+          // feeGrowthInside1LastX128: nft[9],
+          // tokensOwed0: nft[10],
+          // tokensOwed1: nft[11],
           feeEarned0: feesEarned[index].feeEarned0,
           feeEarned1: feesEarned[index].feeEarned1,
         });
@@ -280,8 +280,8 @@ export class UniswapNFTManager {
       nftManagerAddress,
     });
     return {
-      id: nftId,
-      nonce: res[0],
+      tokenId: nftId,
+      // nonce: res[0],
       operator: res[1],
       token0: res[2],
       token1: res[3],
@@ -290,10 +290,10 @@ export class UniswapNFTManager {
       tickLower: res[5],
       tickUpper: res[6],
       liquidity: res[7],
-      feeGrowthInside0LastX128: res[8],
-      feeGrowthInside1LastX128: res[9],
-      tokensOwed0: res[10],
-      tokensOwed1: res[11],
+      // feeGrowthInside0LastX128: res[8],
+      // feeGrowthInside1LastX128: res[9],
+      // tokensOwed0: res[10],
+      // tokensOwed1: res[11],
       feeEarned0: feeEarned.feesEarnedToken0,
       feeEarned1: feeEarned.feesEarnedToken1,
     };

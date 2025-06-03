@@ -36,7 +36,7 @@ const useHarvestLiquidity = ({ chainId }: { chainId: number }) => {
     }
 
     const callData = UniswapNFTManager.generateCollectCallData({
-      tokenId: position.tokenId,
+      tokenId: BigInt(position.tokenId),
       recipient: account,
     });
     try {
