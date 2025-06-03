@@ -55,7 +55,7 @@ export default function TokenSelectionModal({ onClose, onSelect }: TokenSelectio
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 rounded-lg w-full max-w-md max-h-[90vh] overflow-auto">
+      <div className="bg-[#15171C] rounded-lg w-full max-w-md max-h-[90vh] overflow-auto">
         <div className="p-4 flex justify-between items-center border-b border-gray-800">
           <h2 className="text-xl font-semibold">Select Token</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white">
@@ -72,7 +72,7 @@ export default function TokenSelectionModal({ onClose, onSelect }: TokenSelectio
               placeholder="Search Token"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-gray-800 text-white rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-gray-700"
+              className="w-full bg-black text-white rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-gray-700 "
             />
           </div>
 
