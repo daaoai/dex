@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Button } from '@/shadcn/components/ui/button';
 import { Token } from '@/types/tokens';
 import { truncateNumber } from '@/utils/truncateNumber';
 import { LayoutGroup, motion } from 'framer-motion';
-import { RotateCcw, Search, ZoomIn } from 'lucide-react';
+import { RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import Text from '../ui/Text';
+import { LineGraphView } from './line-graph';
+import { useEffect, useState, useRef } from 'react';
 
 type ChartDataPoint = {
   time: number;
@@ -23,13 +26,11 @@ interface RangeSelectorProps {
   currentPrice: number;
   minPrice: number;
   maxPrice: number;
-  selectedTimeframe: string;
   handleRangeSelection: (range: 'full' | 'custom') => void;
   increaseMinPrice: () => void;
   increaseMaxPrice: () => void;
   decreaseMinPrice: () => void;
   decreaseMaxPrice: () => void;
-  setSelectedTimeframe: (timeframe: string) => void;
   chartRef: React.MutableRefObject<ChartAPI | null>;
   chartContainerRef: React.RefObject<HTMLDivElement | null>;
 }
@@ -40,16 +41,35 @@ export default function RangeSelector({
   selectedRange,
   minPrice,
   maxPrice,
-  selectedTimeframe,
   currentPrice,
   handleRangeSelection,
   increaseMinPrice,
   increaseMaxPrice,
   decreaseMinPrice,
   decreaseMaxPrice,
-  setSelectedTimeframe,
-  chartContainerRef,
 }: RangeSelectorProps) {
+  const tabs = [
+    { id: '1d', duration: 1 },
+    { id: '3d', duration: 3 },
+    { id: '1m', duration: 30 },
+    { id: '6m', duration: 1800 },
+    { id: '1y', duration: 365 },
+    { id: 'max', duration: 3650 },
+  ];
+  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [selectedTab, setSelectedTab] = useState<string>(activeTab.id || '1d');
+  const chartRef = useRef<any>(null);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [tokenState, setTokenState] = useState(0);
+
+  useEffect(() => {
+    if (selectedTab !== activeTab.id) {
+      const newActiveTab = tabs.find((tab) => tab.id === selectedTab);
+      if (newActiveTab) setActiveTab(newActiveTab);
+    }
+  }, [selectedTab, activeTab]);
+
+  const handleTabClick = (tabId: string) => setSelectedTab(tabId);
   const rangeOptions = ['full', 'custom'] as const;
 
   return (
@@ -57,7 +77,7 @@ export default function RangeSelector({
       <h3 className="text-lg font-medium">Set price range</h3>
       <div className="relative bg-zinc-800 p-1 rounded-md overflow-hidden">
         <LayoutGroup>
-          <div className="relative bg-zinc-800 p-1 rounded-md overflow-hidden grid grid-cols-2">
+          <div className="grid grid-cols-2">
             {rangeOptions.map((option) => (
               <Button
                 key={option}
@@ -79,6 +99,7 @@ export default function RangeSelector({
           </div>
         </LayoutGroup>
       </div>
+
       <Text type="p" className="text-sm text-gray-400">
         Providing full range liquidity ensures continuous market participation across all possible prices...
       </Text>
@@ -91,41 +112,60 @@ export default function RangeSelector({
             </Text>
           </div>
           <div className="flex space-x-2">
-            <Text type="p" className="text-sm">
-              {srcTokenDetails.symbol}
-            </Text>
-            <Text type="p" className="text-sm">
-              {destTokenDetails.symbol}
-            </Text>
+            <Text type="p">{srcTokenDetails.symbol}</Text>
+            <Text type="p">{destTokenDetails.symbol}</Text>
           </div>
         </div>
-        <div className="relative h-40 bg-zinc-800 rounded-md overflow-hidden">
-          <div ref={chartContainerRef} className="w-full h-full" />
+        <div className="relative h-[160px] rounded-md overflow-hidden bg-zinc-800">
+          <motion.div
+            className="absolute inset-0 origin-center"
+            animate={{ scale: isZoomed ? 1.5 : 1 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+          >
+            <LineGraphView
+              tokenName={destTokenDetails.coingeckoId}
+              tokenState={tokenState}
+              setTokenState={setTokenState}
+              tabs={tabs}
+              activeTabId={activeTab.id.toString()}
+              chartRef={chartRef}
+            />
+          </motion.div>
         </div>
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mt-2">
           <div className="flex space-x-1">
-            {['1D', '1W', '1M', '1Y', 'All time'].map((period) => (
+            {tabs.map((tab) => (
               <Button
-                key={period}
-                className={`px-3 py-1 rounded-md text-xs transition-colors ${
-                  selectedTimeframe === period ? 'bg-zinc-700' : 'bg-zinc-800 '
+                key={tab.id}
+                className={`px-3 py-1 rounded-md text-xs ${
+                  activeTab.id === tab.id ? 'bg-zinc-700' : 'bg-zinc-800 hover:bg-zinc-700'
                 }`}
-                onClick={() => setSelectedTimeframe(period)}
+                onClick={() => handleTabClick(tab.id)}
               >
-                {period}
+                {tab.id}
               </Button>
             ))}
           </div>
           <div className="flex space-x-1">
-            <Button className="bg-zinc-800 p-1 rounded-md " title="search">
-              <Search size={16} />
+            <Button className="bg-zinc-800 p-1 rounded-md" title="search" onClick={() => setIsZoomed(false)}>
+              <ZoomOut size={16} />
             </Button>
-            <Button className="bg-zinc-800 p-1 rounded-md " title="zoom">
+            <Button
+              className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700"
+              title="zoom"
+              onClick={() => setIsZoomed(true)}
+            >
               <ZoomIn size={16} />
             </Button>
             <Button
-              className="bg-zinc-800 p-1 rounded-md  flex items-center"
-              onClick={() => setSelectedTimeframe('1D')}
+              className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 flex items-center"
+              onClick={() => {
+                setIsZoomed(false);
+                if (chartRef.current) {
+                  chartRef.current.chartInstance.resetZoom();
+                  setSelectedTab('1d');
+                }
+              }}
             >
               <RotateCcw size={16} />
               <Text type="span" className="ml-1 text-xs">
@@ -136,58 +176,38 @@ export default function RangeSelector({
         </div>
         <div className="grid grid-cols-2 gap-2 mt-4">
           <div className="relative bg-zinc-800 p-3 rounded-md">
-            <label className="text-sm text-gray-400" htmlFor="minPrice">
-              Min price
-            </label>
+            <label className="text-sm text-gray-400">Min price</label>
             <div className="text-3xl font-bold mt-1">
               {selectedRange === 'full' ? '0' : truncateNumber(minPrice, 4)}
             </div>
             <div className="text-sm text-gray-400 mt-1">
               {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
             </div>
-
             {selectedRange !== 'full' && (
               <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
-                <Button
-                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700  rounded-md"
-                  onClick={increaseMinPrice}
-                >
+                <Button className="w-7 h-7 text-lg font-bold bg-zinc-700" onClick={increaseMinPrice}>
                   +
                 </Button>
-                <button
-                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700  rounded-md"
-                  onClick={decreaseMinPrice}
-                >
+                <Button className="w-7 h-7 text-lg font-bold bg-zinc-700" onClick={decreaseMinPrice}>
                   −
-                </button>
+                </Button>
               </div>
             )}
           </div>
-
           <div className="relative bg-zinc-800 p-3 rounded-md">
-            <label className="text-sm text-gray-400" htmlFor="maxPrice">
-              Max price
-            </label>
+            <label className="text-sm text-gray-400">Max price</label>
             <div className="text-3xl font-bold mt-1">
               {selectedRange === 'full' ? '∞' : truncateNumber(maxPrice, 4)}
             </div>
             <div className="text-sm text-gray-400 mt-1">
               {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
             </div>
-
-            {/* Overlay controls */}
             {selectedRange !== 'full' && (
               <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
-                <Button
-                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700  rounded-md"
-                  onClick={increaseMaxPrice}
-                >
+                <Button className="w-7 h-7 text-lg font-bold bg-zinc-700" onClick={increaseMaxPrice}>
                   +
                 </Button>
-                <Button
-                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700  rounded-md"
-                  onClick={decreaseMaxPrice}
-                >
+                <Button className="w-7 h-7 text-lg font-bold bg-zinc-700" onClick={decreaseMaxPrice}>
                   −
                 </Button>
               </div>

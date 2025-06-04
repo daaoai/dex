@@ -4,6 +4,7 @@ export const monadTestnetTokens = {
   '0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701': {
     name: 'Wrapped Monad',
     symbol: 'WMON',
+    coingeckoId: undefined,
     logo: 'https://imagedelivery.net/cBNDGgkrsEA-b_ixIp9SkQ/I_t8rg_V_400x400.jpg/public',
     address: '0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701',
     decimals: 18,
@@ -11,6 +12,7 @@ export const monadTestnetTokens = {
   '0x0000000000000000000000000000000000000000': {
     name: 'Testnet MON Token',
     symbol: 'MON',
+    coingeckoId: undefined,
     logo: 'https://imagedelivery.net/cBNDGgkrsEA-b_ixIp9SkQ/mon.png/public',
     address: zeroAddress,
     decimals: 18,
@@ -18,6 +20,7 @@ export const monadTestnetTokens = {
   '0x89e4a70de5F2Ae468B18B6B6300B249387f9Adf0': {
     name: 'Fantasy MON',
     symbol: 'fMON',
+    coingeckoId: undefined,
     logo: 'https://docs.monad.xyz/img/monad_logo.png',
     address: '0x89e4a70de5F2Ae468B18B6B6300B249387f9Adf0',
     decimals: 18,
@@ -25,6 +28,7 @@ export const monadTestnetTokens = {
   '0xb2f82D0f38dc453D596Ad40A37799446Cc89274A': {
     name: 'aPriori Monad LST',
     symbol: 'aprMON',
+    coingeckoId: undefined,
     logo: 'https://pbs.twimg.com/profile_images/1821177411796410369/GtzmUXok_400x400.jpg',
     address: '0xb2f82D0f38dc453D596Ad40A37799446Cc89274A',
     decimals: 18,
@@ -32,6 +36,7 @@ export const monadTestnetTokens = {
   '0xE0590015A873bF326bd645c3E1266d4db41C4E6B': {
     name: 'Chog',
     symbol: 'CHOG',
+    coingeckoId: undefined,
     logo: 'https://imagedelivery.net/tWwhAahBw7afBzFUrX5mYQ/5d1206c2-042c-4edc-9f8b-dcef2e9e8f00/public',
     address: '0xE0590015A873bF326bd645c3E1266d4db41C4E6B',
     decimals: 18,
@@ -39,6 +44,7 @@ export const monadTestnetTokens = {
   '0xfe140e1dCe99Be9F4F15d657CD9b7BF622270C50': {
     name: 'Moyaki',
     symbol: 'YAKI',
+    coingeckoId: undefined,
     logo: 'https://imagedelivery.net/tWwhAahBw7afBzFUrX5mYQ/6679b698-a845-412b-504b-23463a3e1900/public',
     address: '0xfe140e1dCe99Be9F4F15d657CD9b7BF622270C50',
     decimals: 18,
@@ -46,6 +52,7 @@ export const monadTestnetTokens = {
   '0x0F0BDEbF0F83cD1EE3974779Bcb7315f9808c714': {
     name: 'Molandak',
     symbol: 'DAK',
+    coingeckoId: undefined,
     logo: 'https://imagedelivery.net/tWwhAahBw7afBzFUrX5mYQ/27759359-9374-4995-341c-b2636a432800/public',
     address: '0x0F0BDEbF0F83cD1EE3974779Bcb7315f9808c714',
     decimals: 18,
@@ -53,6 +60,7 @@ export const monadTestnetTokens = {
   '0xaEef2f6B429Cb59C9B2D7bB2141ADa993E8571c3': {
     name: 'gMON',
     symbol: 'gMON',
+    coingeckoId: undefined,
     logo: 'https://www.magmastaking.xyz/gMON.png',
     address: '0xaEef2f6B429Cb59C9B2D7bB2141ADa993E8571c3',
     decimals: 18,
@@ -60,6 +68,7 @@ export const monadTestnetTokens = {
   '0x3a98250F98Dd388C211206983453837C8365BDc1': {
     name: 'ShMonad',
     symbol: 'shMON',
+    coingeckoId: undefined,
     logo: 'https://i.imghippo.com/files/Osf1224Egs.png',
     address: '0x3a98250F98Dd388C211206983453837C8365BDc1',
     decimals: 18,
@@ -67,6 +76,7 @@ export const monadTestnetTokens = {
   '0xf817257fed379853cDe0fa4F97AB987181B1E5Ea': {
     name: 'USD Coin',
     symbol: 'USDC',
+    coingeckoId: 'usd-coin',
     logo: 'https://imagedelivery.net/cBNDGgkrsEA-b_ixIp9SkQ/usdc.png/public',
     address: '0xf817257fed379853cDe0fa4F97AB987181B1E5Ea',
     decimals: 6,
@@ -74,6 +84,7 @@ export const monadTestnetTokens = {
   '0xe1d2439b75fb9746E7Bc6cB777Ae10AA7f7ef9c5': {
     name: 'Kintsu Staked Monad',
     symbol: 'sMON',
+    coingeckoId: undefined,
     logo: 'https://kintsu-logos.s3.us-east-1.amazonaws.com/sMON.svg',
     address: '0xe1d2439b75fb9746E7Bc6cB777Ae10AA7f7ef9c5',
     decimals: 18,
@@ -81,6 +92,7 @@ export const monadTestnetTokens = {
   '0x268E4E24E0051EC27b3D27A95977E71cE6875a05': {
     name: 'Bean Exchange',
     symbol: 'BEAN',
+    coingeckoId: undefined,
     logo: 'https://w3-images.s3.ap-southeast-1.amazonaws.com/bean_logo.jpg',
     address: '0x268E4E24E0051EC27b3D27A95977E71cE6875a05',
     decimals: 18,
@@ -88,6 +100,7 @@ export const monadTestnetTokens = {
   '0x5D876D73f4441D5f2438B1A3e2A51771B337F27A': {
     name: 'USD Coin',
     symbol: 'USDC',
+    coingeckoId: 'usd-coin',
     logo: 'https://cdn.sanity.io/images/g5wr62lr/production/99f1ab890cb46639d383709d8a501c1165868fe7-400x400.png',
     address: '0x5D876D73f4441D5f2438B1A3e2A51771B337F27A',
     decimals: 6,
@@ -95,6 +108,7 @@ export const monadTestnetTokens = {
   '0x88b8E2161DEDC77EF4ab7585569D2415a1C1055D': {
     name: 'Tether USD',
     symbol: 'USDT',
+    coingeckoId: 'tether',
     logo: 'https://imagedelivery.net/cBNDGgkrsEA-b_ixIp9SkQ/images.png/public',
     address: '0x88b8E2161DEDC77EF4ab7585569D2415a1C1055D',
     decimals: 6,
@@ -102,6 +116,7 @@ export const monadTestnetTokens = {
   '0x4aa50E8208095d9594d18E8e3008ABB811125dCE': {
     name: 'Moon',
     symbol: 'MOON',
+    coingeckoId: undefined,
     logo: 'https://raw.githubusercontent.com/ZkSwapFinance/brand-kit/refs/heads/main/Moon.png',
     address: '0x4aa50E8208095d9594d18E8e3008ABB811125dCE',
     decimals: 18,
@@ -109,6 +124,7 @@ export const monadTestnetTokens = {
   '0xBdd352f339e27E07089039Ba80029f9135F6146F': {
     name: 'USD Moon',
     symbol: 'USDm',
+    coingeckoId: undefined,
     logo: 'https://raw.githubusercontent.com/ZkSwapFinance/brand-kit/refs/heads/main/USD%20Moon.png',
     address: '0xBdd352f339e27E07089039Ba80029f9135F6146F',
     decimals: 6,
@@ -116,6 +132,7 @@ export const monadTestnetTokens = {
   '0xB5a30b0FDc5EA94A52fDc42e3E9760Cb8449Fb37': {
     name: 'Wrapped ETH',
     symbol: 'WETH',
+    coingeckoId: 'weth',
     logo: 'https://imagedelivery.net/cBNDGgkrsEA-b_ixIp9SkQ/weth.jpg/public',
     address: '0xB5a30b0FDc5EA94A52fDc42e3E9760Cb8449Fb37',
     decimals: 18,
@@ -123,6 +140,7 @@ export const monadTestnetTokens = {
   '0x0EfeD4D9fB7863ccC7bb392847C08dCd00FE9bE2': {
     name: 'muBOND',
     symbol: 'muBOND',
+    coingeckoId: undefined,
     logo: 'https://alpha.clober.io/mubond.svg',
     address: '0x0EfeD4D9fB7863ccC7bb392847C08dCd00FE9bE2',
     decimals: 18,
@@ -130,6 +148,7 @@ export const monadTestnetTokens = {
   '0xCc5B42F9d6144DFDFb6fb3987a2A916af902F5f8': {
     name: 'AI Jarvis',
     symbol: 'JAI',
+    coingeckoId: undefined,
     logo: 'https://javis-agent.s3.ap-southeast-1.amazonaws.com/uploads/avatars/Javis-logo.png',
     address: '0xCc5B42F9d6144DFDFb6fb3987a2A916af902F5f8',
     decimals: 6,
@@ -137,6 +156,7 @@ export const monadTestnetTokens = {
   '0x0C0c92FcF37Ae2CBCc512e59714Cd3a1A1cbc411': {
     name: 'Monda',
     symbol: 'MONDA',
+    coingeckoId: undefined,
     logo: 'https://pbs.twimg.com/profile_images/1898733671798157312/SKe2XB43_400x400.jpg',
     address: '0x0C0c92FcF37Ae2CBCc512e59714Cd3a1A1cbc411',
     decimals: 18,
@@ -144,6 +164,7 @@ export const monadTestnetTokens = {
   '0xcf5a6076cfa32686c0Df13aBaDa2b40dec133F1d': {
     name: 'Wrapped BTC',
     symbol: 'WBTC',
+    coingeckoId: 'wrapped-bitcoin',
     logo: 'https://imagedelivery.net/cBNDGgkrsEA-b_ixIp9SkQ/wbtc.png/public',
     address: '0xcf5a6076cfa32686c0Df13aBaDa2b40dec133F1d',
     decimals: 8,
