@@ -94,7 +94,7 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
                 {filteredTokens.map((token) => (
                   <Button
                     key={token.address}
-                    className="w-full bg-transparent rounded-lg p-2 flex items-center gap-3"
+                    className="w-full bg-transparent rounded-lg p-2 flex  justify-start items-center gap-3"
                     onClick={() => onSelect(token)}
                   >
                     <div className="w-8 h-8 rounded-full  flex items-center justify-center">

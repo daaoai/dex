@@ -19,27 +19,6 @@ type ChartAPI = {
   updateData: (newData: ChartDataPoint[]) => void;
 };
 
-const generatePriceData = (days: number, volatility = 0.05) => {
-  const data = [];
-  const basePrice = 0.00041;
-  let currentPrice = basePrice;
-  const now = new Date();
-
-  for (let i = days; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
-    const change = (Math.random() - 0.5) * volatility;
-    currentPrice = currentPrice * (1 + change);
-    if (currentPrice < 0.0001) currentPrice = 0.0001;
-
-    data.push({
-      time: date.getTime() / 1000,
-      value: currentPrice,
-    });
-  }
-  return data;
-};
-
 export default function CryptoTradingInterface({ token0, token1, chainId, fee }: CryptoTradingInterfaceProps) {
   const [isLoading] = useState<boolean>(false);
 
