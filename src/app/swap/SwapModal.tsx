@@ -3,10 +3,17 @@
 import { useState } from 'react';
 import { ArrowDown, ChevronDown, Settings } from 'lucide-react';
 import Image from 'next/image';
+import { useAccount, useChainId } from 'wagmi';
+
 import { Token } from '@/types/tokens';
 import TokenSelectionModal from '@/components/TokenSelectorModal';
 import { Button } from '@/shadcn/components/ui/button';
 import { useSwap } from '@/hooks/useSwap';
+import { fetchTokenBalance } from '@/helper/erc20';
+
+const formatBalance = (value: bigint, decimals: number, precision = 4) => {
+  return (Number(value) / 10 ** decimals).toFixed(precision);
+};
 
 export default function SwapModal() {
   const [srcToken, setSrcToken] = useState<Token>({
@@ -27,21 +34,39 @@ export default function SwapModal() {
 
   const [srcAmount, setSrcAmount] = useState('');
   const [destAmount, setDestAmount] = useState('');
+  const [srcBalance, setSrcBalance] = useState<bigint | null>(null);
+  const [destBalance, setDestBalance] = useState<bigint | null>(null);
   const [loading, setLoading] = useState(false);
   const [showSelector, setShowSelector] = useState(false);
   const [selectType, setSelectType] = useState<'src' | 'dest' | null>(null);
-  const [slippage] = useState(5.5); //5.50% slippage default
+  const [slippage] = useState(5.5);
 
-  const { swapExactIn } = useSwap({ chainId: 10143 });
+  const { address: account } = useAccount();
+  const chainId = useChainId();
+  const { swapExactIn } = useSwap({ chainId: chainId });
 
   const openSelector = (type: 'src' | 'dest') => {
     setSelectType(type);
     setShowSelector(true);
   };
 
-  const handleTokenSelect = (token: Token) => {
-    if (selectType === 'src') setSrcToken(token);
-    if (selectType === 'dest') setDestToken(token);
+  const handleTokenSelect = async (token: Token) => {
+    if (!account) return;
+
+    if (selectType === 'src') {
+      setSrcToken(token);
+      setSrcBalance(null); // reset
+      const balance = await fetchTokenBalance({ token: token.address, account, chainId: 10143 });
+      setSrcBalance(balance);
+    }
+
+    if (selectType === 'dest') {
+      setDestToken(token);
+      setDestBalance(null); // reset
+      const balance = await fetchTokenBalance({ token: token.address, account, chainId: 10143 });
+      setDestBalance(balance);
+    }
+
     setShowSelector(false);
   };
 
@@ -72,6 +97,8 @@ export default function SwapModal() {
       </div>
 
       {showSelector && <TokenSelectionModal onClose={() => setShowSelector(false)} onSelect={handleTokenSelect} />}
+
+      {/* SELL Section */}
       <div className="bg-black border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-colors">
         <div className="flex justify-between items-center mb-3">
           <span className="text-zinc-400 text-sm font-medium">Sell</span>
@@ -105,14 +132,20 @@ export default function SwapModal() {
 
         <div className="flex justify-between items-center">
           <span className="text-zinc-500 text-sm">$0.00</span>
-          <span className="text-zinc-500 text-sm">Balance: 0 {srcToken.symbol}</span>
+          <span className="text-zinc-500 text-sm">
+            {srcBalance !== null ? `Balance: ${formatBalance(srcBalance, srcToken.decimals)} ${srcToken.symbol}` : ''}
+          </span>
         </div>
       </div>
+
+      {/* Arrow Icon */}
       <div className="flex justify-center -mt-3.5 -mb-6">
         <button className="bg-zinc-800 hover:bg-zinc-700 p-3 rounded-xl border-black border-4 transition-all duration-200 hover:border-zinc-600">
           <ArrowDown className="w-5 h-5 text-zinc-400" />
         </button>
       </div>
+
+      {/* BUY Section */}
       <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-colors mb-4">
         <div className="flex justify-between items-center mb-3">
           <span className="text-zinc-400 text-sm font-medium">Buy</span>
@@ -146,9 +179,15 @@ export default function SwapModal() {
 
         <div className="flex justify-between items-center">
           <span className="text-zinc-500 text-sm">$0.00</span>
-          <span className="text-zinc-500 text-sm">Balance: 0</span>
+          <span className="text-zinc-500 text-sm">
+            {destBalance !== null
+              ? `Balance: ${formatBalance(destBalance, destToken.decimals)} ${destToken.symbol}`
+              : ''}
+          </span>
         </div>
       </div>
+
+      {/* Swap Button */}
       <button
         onClick={handleSwap}
         disabled={loading}
