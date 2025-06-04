@@ -46,8 +46,6 @@ export default function SwapModal({
   return (
     <div className="bg-transparent border border-zinc-700 rounded-2xl p-2 w-full max-w-md mx-auto shadow-2xl">
       {showSelector && <TokenSelectionModal onClose={() => setShowSelector(false)} onSelect={handleSelect} />}
-
-      {/* Sell Section */}
       <div className="bg-black border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-colors">
         <div>
           <div className="flex justify-between items-center mb-3">
@@ -60,7 +58,7 @@ export default function SwapModal({
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                     sellPercentage === percentage || (percentage === 'Max' && sellPercentage === 100)
                       ? 'bg-zinc-700 text-white border border-zinc-600'
-                      : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-300 rounded-[30px]'
+                      : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-300 rounded-[7.5]'
                   }`}
                 >
                   {percentage}%
@@ -68,17 +66,17 @@ export default function SwapModal({
               ))}
             </div>
           </div>
-          <div className="flex justify-between items-start mb-3 ">
+          <div className="flex justify-between items-start mb-3">
             <input
               type="text"
               value={srcTokenAmount || '0'}
               onChange={(e) => handleSrcTokenAmountChange(e.target.value)}
               placeholder="0"
-              className="text-3xl font-light bg-transparent text-white outline-none placeholder-zinc-500 w-[150px]"
+              className="text-3xl font-light bg-transparent text-white outline-none placeholder-zinc-500 w-36"
             />
             <button
               onClick={() => openSelector('src')}
-              className="flex items-center gap-2 bg-none hover:bg-zinc-600 text-white px-3 py-2 bg-transparent border border-white/30 rounded-[25px] w-fit"
+              className="flex items-center gap-2 hover:bg-zinc-600 text-white px-3 py-2 bg-transparent border border-white/30 rounded-[6.5] w-fit"
             >
               {srcTokenDetails.logo && (
                 <Image
@@ -99,16 +97,11 @@ export default function SwapModal({
           </div>
         </div>
       </div>
-
-      {/* Swap Arrow */}
-      <div className="flex justify-center -mt-[14px] -mb-[23px]">
-        <button className="bg-zinc-800 hover:bg-zinc-700 p-3 rounded-xl border-black border-[4px] transition-all duration-200 hover:border-zinc-600">
+      <div className="flex justify-center -mt-3.5 -mb-6">
+        <button className="bg-zinc-800 hover:bg-zinc-700 p-3 rounded-xl border-black border-4 transition-all duration-200 hover:border-zinc-600">
           <ArrowDown className="w-5 h-5 text-zinc-400" />
         </button>
       </div>
-
-      {/* Buy Section */}
-
       <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-colors mb-4">
         <div>
           <div className="flex justify-between items-center mb-3">
@@ -120,11 +113,11 @@ export default function SwapModal({
               value={destTokenAmount || '0'}
               readOnly
               placeholder="0"
-              className="text-3xl font-light bg-transparent text-white outline-none  placeholder-zinc-500 w-[150px]"
+              className="text-3xl font-light bg-transparent text-white outline-none placeholder-zinc-500 w-36"
             />
             <button
               onClick={() => openSelector('dest')}
-              className="bg-[#4425FB] hover:bg-blue-700 px-4 py-2.5 text-white font-medium transition-all duration-200 flex items-center gap-2 border border-blue-500 hover:border-blue-400 w-fit rounded-[30px] "
+              className="bg-blue-700 hover:bg-blue-600 px-4 py-2.5 text-white font-medium transition-all duration-200 flex items-center gap-2 w-fit rounded-[7.5]"
             >
               {destTokenDetails.logo && (
                 <Image
@@ -132,7 +125,7 @@ export default function SwapModal({
                   alt={destTokenDetails.symbol ? `${destTokenDetails.symbol} logo` : ''}
                   width={20}
                   height={20}
-                  className="w-5 h-5 rounded-full "
+                  className="w-5 h-5 rounded-full"
                 />
               )}
               {destTokenDetails.symbol || 'Select Token'}
@@ -145,8 +138,6 @@ export default function SwapModal({
           </div>
         </div>
       </div>
-
-      {/* Continue Button */}
       <button
         onClick={handleSwap}
         disabled={isLoading}
