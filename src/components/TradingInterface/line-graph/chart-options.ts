@@ -85,17 +85,15 @@ export const gradientPlugin = {
 
     chart.data.datasets.forEach((dataset: any) => {
       if (!dataset.gradient || dataset.lastHeight !== bottom) {
-        // Create gradient only if it hasn't been created or if chart height changed
         const gradient = ctx.createLinearGradient(0, top, 0, bottom);
-
-        dataset.backgroundColor = gradient; // Apply gradient to dataset fill
-        dataset.borderColor = "#ff38c7"; // Ensure line color is solid
-        dataset.gradient = gradient; // Store reference
+        dataset.backgroundColor = gradient; 
+        dataset.borderColor = "#ff38c7";
+        dataset.gradient = gradient;
         dataset.lastHeight = bottom;
       }
     });
 
-    chart.update(); // Force re-render
+    chart.update();
   },
 };
 
@@ -123,7 +121,7 @@ export const crosshairPlugin = {
       ctx.strokeStyle = "#999999";
       ctx.stroke();
 
-      // Draw vertical crosshair (without label)
+      // Draw vertical crosshair
       ctx.beginPath();
       ctx.moveTo(x, chart.chartArea.top);
       ctx.lineTo(x, chart.chartArea.bottom);
@@ -143,10 +141,10 @@ export const endOfLineLegendPlugin = {
     const meta = chart.getDatasetMeta(0);
     if (!meta || !meta.data.length) return;
 
-    const lastPoint = meta.data[meta.data.length - 1]; // Correctly fetch last point
+    const lastPoint = meta.data[meta.data.length - 1]; 
     if (!lastPoint) return;
 
-    const position = lastPoint._model; // Chart.js v2 uses _model for positions
+    const position = lastPoint._model;
     const x = position.x;
     const y = position.y;
 
@@ -168,7 +166,7 @@ export const endOfLineLegendPlugin = {
     ctx.save();
 
     // Draw rounded rectangle (background)
-    ctx.fillStyle = "#4B40EE"; // Same as line color
+    ctx.fillStyle = "#4B40EE"; 
     ctx.beginPath();
     ctx.moveTo(x, y - boxHeight / 2);
     ctx.lineTo(x + boxWidth - borderRadius, y - boxHeight / 2);
@@ -182,7 +180,7 @@ export const endOfLineLegendPlugin = {
     ctx.fill();
 
     // Draw text
-    ctx.fillStyle = "#FFFFFF"; // White text
+    ctx.fillStyle = "#FFFFFF";
     ctx.font = `${fontSize}px Arial`; 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
