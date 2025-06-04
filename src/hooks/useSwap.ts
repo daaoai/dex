@@ -131,7 +131,6 @@ export const useSwap = ({ chainId }: { chainId: number }) => {
       });
 
       const receipt = await getPublicClient(chainId).waitForTransactionReceipt({ hash });
-      console.log(receipt)
       if (receipt.status !== 'success') throw new Error('Swap failed');
 
       toast.success('Swap successful');
@@ -141,7 +140,97 @@ export const useSwap = ({ chainId }: { chainId: number }) => {
     }
   };
 
+  const swapExactOut = async ({
+  tokenIn,
+  tokenOut,
+  amountOut,
+  amountInMax,
+  slippage,
+}: {
+  tokenIn: Token;
+  tokenOut: Token;
+  amountOut: string;
+  amountInMax: string;
+  slippage: number;
+}) => {
+  try {
+    if (!account) throw new Error('Wallet not connected');
+    if (walletChainId !== chainId) {
+      await switchChainAsync({ chainId });
+    }
+
+    const routerAddress = contractAddresses[chainId].swapRouter;
+    const amountOutParsed = parseUnits(amountOut, tokenOut.decimals);
+    const maxAmountIn = getMinAmount(parseUnits(amountInMax, tokenIn.decimals), slippage);
+    const deadline = BigInt(Math.floor(Date.now() / 1000) + 60 * 5); // 5 minutes
+
+    await approveIfNeeded({
+      amount: maxAmountIn,
+      token: tokenIn.address,
+      spender: routerAddress,
+    });
+
+    const callData = encodeFunctionData({
+      abi: [
+        {
+          name: 'exactOutputSingle',
+          type: 'function',
+          stateMutability: 'payable',
+          inputs: [
+            {
+              name: 'params',
+              type: 'tuple',
+              components: [
+                { name: 'tokenIn', type: 'address' },
+                { name: 'tokenOut', type: 'address' },
+                { name: 'fee', type: 'uint24' },
+                { name: 'recipient', type: 'address' },
+                { name: 'deadline', type: 'uint256' },
+                { name: 'amountOut', type: 'uint256' },
+                { name: 'amountInMaximum', type: 'uint256' },
+                { name: 'sqrtPriceLimitX96', type: 'uint160' },
+              ],
+            },
+          ],
+          outputs: [{ name: 'amountIn', type: 'uint256' }],
+        },
+      ],
+      functionName: 'exactOutputSingle',
+      args: [
+        {
+          tokenIn: tokenIn.address,
+          tokenOut: tokenOut.address,
+          fee: 3000,
+          recipient: account,
+          deadline,
+          amountOut: amountOutParsed,
+          amountInMaximum: maxAmountIn,
+          sqrtPriceLimitX96: 0n,
+        },
+      ],
+    });
+
+    const hash = await sendTransactionAsync({
+      account,
+      to: routerAddress,
+      data: callData,
+      value: 0n,
+      chainId,
+    });
+
+    const receipt = await getPublicClient(chainId).waitForTransactionReceipt({ hash });
+
+    if (receipt.status !== 'success') throw new Error('Swap failed');
+
+    toast.success('Swap successful');
+  } catch (err) {
+    console.error(err);
+    toast.error('Swap failed');
+  }
+};
+
   return {
     swapExactIn,
+    swapExactOut
   };
 };
