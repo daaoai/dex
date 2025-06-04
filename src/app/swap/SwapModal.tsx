@@ -1,100 +1,111 @@
+'use client';
+
 import { useState } from 'react';
-import { ArrowDown, ChevronDown } from 'lucide-react';
+import { ArrowDown, ChevronDown, Settings } from 'lucide-react';
 import Image from 'next/image';
 import { Token } from '@/types/tokens';
 import TokenSelectionModal from '@/components/TokenSelectorModal';
+import { Button } from '@/shadcn/components/ui/button';
+import { useSwap } from '@/hooks/useSwap';
 
-interface SwapModalProps {
-  srcTokenDetails: Token;
-  destTokenDetails: Token;
-  srcTokenAmount: string;
-  destTokenAmount: string;
-  handleSrcTokenAmountChange: (value: string) => void;
-  isLoading: boolean;
-  handleSwap: () => void;
-  onTokenSelect: (token: Token, type: 'src' | 'dest') => void;
-}
+export default function SwapModal() {
+  const [srcToken, setSrcToken] = useState<Token>({
+    name: '',
+    symbol: '',
+    logo: undefined,
+    address: '0x',
+    decimals: 18,
+  });
 
-export default function SwapModal({
-  srcTokenDetails,
-  destTokenDetails,
-  srcTokenAmount,
-  destTokenAmount,
-  handleSrcTokenAmountChange,
-  isLoading,
-  handleSwap,
-  onTokenSelect,
-}: SwapModalProps) {
-  const [sellPercentage, setSellPercentage] = useState<number | null>(null);
+  const [destToken, setDestToken] = useState<Token>({
+    name: '',
+    symbol: '',
+    logo: undefined,
+    address: '0x',
+    decimals: 18,
+  });
+
+  const [srcAmount, setSrcAmount] = useState('');
+  const [destAmount, setDestAmount] = useState('');
+  const [loading, setLoading] = useState(false);
   const [showSelector, setShowSelector] = useState(false);
   const [selectType, setSelectType] = useState<'src' | 'dest' | null>(null);
+  const [slippage] = useState(5.5); //5.50% slippage default
+
+  const { swapExactIn } = useSwap({ chainId: 10143 });
 
   const openSelector = (type: 'src' | 'dest') => {
     setSelectType(type);
     setShowSelector(true);
   };
 
-  const handleSelect = (token: Token) => {
-    if (selectType) {
-      onTokenSelect(token, selectType);
-    }
+  const handleTokenSelect = (token: Token) => {
+    if (selectType === 'src') setSrcToken(token);
+    if (selectType === 'dest') setDestToken(token);
     setShowSelector(false);
   };
 
-  const percentageButtons = [25, 50, 75, 'Max'];
+  const handleSwap = async () => {
+    try {
+      setLoading(true);
+      await swapExactIn({
+        tokenIn: srcToken,
+        tokenOut: destToken,
+        amountIn: srcAmount,
+        amountOut: destAmount,
+        slippage,
+      });
+    } catch (e) {
+      console.error('Swap error:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-transparent border border-zinc-700 rounded-2xl p-2 w-full max-w-md mx-auto shadow-2xl">
-      {showSelector && <TokenSelectionModal onClose={() => setShowSelector(false)} onSelect={handleSelect} />}
+      <div className="flex justify-between align-middle mb-2 p-2">
+        <h2 className="text-xl">Swap</h2>
+        <Button onClick={() => {}}>
+          <Settings width={20} height={20} />
+        </Button>
+      </div>
+
+      {showSelector && <TokenSelectionModal onClose={() => setShowSelector(false)} onSelect={handleTokenSelect} />}
       <div className="bg-black border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-colors">
-        <div>
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-zinc-400 text-sm font-medium">Sell</span>
-            <div className="flex gap-2">
-              {percentageButtons.map((percentage) => (
-                <button
-                  key={percentage}
-                  onClick={() => setSellPercentage(percentage === 'Max' ? 100 : Number(percentage))}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
-                    sellPercentage === percentage || (percentage === 'Max' && sellPercentage === 100)
-                      ? 'bg-zinc-700 text-white border border-zinc-600'
-                      : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-300 rounded-[7.5]'
-                  }`}
-                >
-                  {percentage}%
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="flex justify-between items-start mb-3">
-            <input
-              type="text"
-              value={srcTokenAmount || '0'}
-              onChange={(e) => handleSrcTokenAmountChange(e.target.value)}
-              placeholder="0"
-              className="text-3xl font-light bg-transparent text-white outline-none placeholder-zinc-500 w-36"
-            />
-            <button
-              onClick={() => openSelector('src')}
-              className="flex items-center gap-2 hover:bg-zinc-600 text-white px-3 py-2 bg-transparent border border-white/30 rounded-[6.5] w-fit"
-            >
-              {srcTokenDetails.logo && (
-                <Image
-                  src={srcTokenDetails.logo}
-                  alt={srcTokenDetails.symbol ? `${srcTokenDetails.symbol} logo` : ''}
-                  width={20}
-                  height={20}
-                  className="w-5 h-5 rounded-full"
-                />
-              )}
-              {srcTokenDetails.symbol || 'Select Token'}
-              <ChevronDown className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-zinc-500 text-sm">$0.00</span>
-            <span className="text-zinc-500 text-sm">Balance: 0 {srcTokenDetails.symbol || ''}</span>
-          </div>
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-zinc-400 text-sm font-medium">Sell</span>
+        </div>
+
+        <div className="flex justify-between items-start mb-3">
+          <input
+            type="text"
+            value={srcAmount}
+            onChange={(e) => setSrcAmount(e.target.value)}
+            placeholder="0"
+            className="text-3xl font-light bg-transparent text-white outline-none placeholder-zinc-500 w-36"
+          />
+          <button
+            onClick={() => openSelector('src')}
+            className="flex items-center gap-2 hover:bg-zinc-600 text-white px-3 py-2 bg-transparent border border-white/30 rounded-3xl w-fit"
+          >
+            {srcToken.logo && (
+              <Image
+                src={srcToken.logo}
+                alt={`${srcToken.symbol} logo`}
+                width={20}
+                height={20}
+                className="w-5 h-5 rounded-full"
+              />
+            )}
+            {srcToken.symbol || 'Select Token'}
+            <ChevronDown className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="flex justify-between items-center">
+          <span className="text-zinc-500 text-sm">$0.00</span>
+          <span className="text-zinc-500 text-sm">Balance: 0 {srcToken.symbol}</span>
         </div>
       </div>
       <div className="flex justify-center -mt-3.5 -mb-6">
@@ -103,47 +114,47 @@ export default function SwapModal({
         </button>
       </div>
       <div className="bg-zinc-800 border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-colors mb-4">
-        <div>
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-zinc-400 text-sm font-medium">Buy</span>
-          </div>
-          <div className="flex justify-between items-start mb-3">
-            <input
-              type="text"
-              value={destTokenAmount || '0'}
-              readOnly
-              placeholder="0"
-              className="text-3xl font-light bg-transparent text-white outline-none placeholder-zinc-500 w-36"
-            />
-            <button
-              onClick={() => openSelector('dest')}
-              className="bg-blue-700 hover:bg-blue-600 px-4 py-2.5 text-white font-medium transition-all duration-200 flex items-center gap-2 w-fit rounded-[7.5]"
-            >
-              {destTokenDetails.logo && (
-                <Image
-                  src={destTokenDetails.logo}
-                  alt={destTokenDetails.symbol ? `${destTokenDetails.symbol} logo` : ''}
-                  width={20}
-                  height={20}
-                  className="w-5 h-5 rounded-full"
-                />
-              )}
-              {destTokenDetails.symbol || 'Select Token'}
-              <ChevronDown className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="flex justify-between items-center">
-            <span className="text-zinc-500 text-sm">$0.00</span>
-            <span className="text-zinc-500 text-sm">Balance: 0</span>
-          </div>
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-zinc-400 text-sm font-medium">Buy</span>
+        </div>
+
+        <div className="flex justify-between items-start mb-3">
+          <input
+            type="text"
+            value={destAmount}
+            onChange={(e) => setDestAmount(e.target.value)}
+            placeholder="0"
+            className="text-3xl font-light bg-transparent text-white outline-none placeholder-zinc-500 w-36"
+          />
+          <button
+            onClick={() => openSelector('dest')}
+            className="bg-blue-700 hover:bg-blue-600 px-4 py-2.5 text-white font-medium transition-all duration-200 flex items-center gap-2 w-fit rounded-3xl"
+          >
+            {destToken.logo && (
+              <Image
+                src={destToken.logo}
+                alt={`${destToken.symbol} logo`}
+                width={20}
+                height={20}
+                className="w-5 h-5 rounded-full"
+              />
+            )}
+            {destToken.symbol || 'Select Token'}
+            <ChevronDown className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="flex justify-between items-center">
+          <span className="text-zinc-500 text-sm">$0.00</span>
+          <span className="text-zinc-500 text-sm">Balance: 0</span>
         </div>
       </div>
       <button
         onClick={handleSwap}
-        disabled={isLoading}
+        disabled={loading}
         className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
       >
-        {isLoading ? 'Processing...' : 'Continue'}
+        {loading ? 'Processing...' : 'Continue'}
       </button>
     </div>
   );
