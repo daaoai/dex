@@ -124,6 +124,7 @@ export const usePositions = (chainId: number) => {
         nftId: tokenId,
         chainId,
         nftManagerAddress: nftManager,
+        owner: address,
       });
       if (!position) {
         return null;
