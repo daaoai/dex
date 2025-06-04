@@ -5,7 +5,7 @@ import { Token } from '@/types/tokens';
 import { truncateNumber } from '@/utils/truncateNumber';
 import { LayoutGroup, motion } from 'framer-motion';
 import { RotateCcw, Search, ZoomIn } from 'lucide-react';
-import Text from '../Text';
+import Text from '../ui/Text';
 
 type ChartDataPoint = {
   time: number;
@@ -108,7 +108,7 @@ export default function RangeSelector({
               <Button
                 key={period}
                 className={`px-3 py-1 rounded-md text-xs transition-colors ${
-                  selectedTimeframe === period ? 'bg-zinc-700' : 'bg-zinc-800 hover:bg-zinc-700'
+                  selectedTimeframe === period ? 'bg-zinc-700' : 'bg-zinc-800 '
                 }`}
                 onClick={() => setSelectedTimeframe(period)}
               >
@@ -117,14 +117,14 @@ export default function RangeSelector({
             ))}
           </div>
           <div className="flex space-x-1">
-            <Button className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" title="search">
+            <Button className="bg-zinc-800 p-1 rounded-md " title="search">
               <Search size={16} />
             </Button>
-            <Button className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700" title="zoom">
+            <Button className="bg-zinc-800 p-1 rounded-md " title="zoom">
               <ZoomIn size={16} />
             </Button>
             <Button
-              className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 flex items-center"
+              className="bg-zinc-800 p-1 rounded-md  flex items-center"
               onClick={() => setSelectedTimeframe('1D')}
             >
               <RotateCcw size={16} />
@@ -149,13 +149,13 @@ export default function RangeSelector({
             {selectedRange !== 'full' && (
               <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
                 <Button
-                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
+                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700  rounded-md"
                   onClick={increaseMinPrice}
                 >
                   +
                 </Button>
                 <button
-                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
+                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700  rounded-md"
                   onClick={decreaseMinPrice}
                 >
                   −
@@ -179,13 +179,13 @@ export default function RangeSelector({
             {selectedRange !== 'full' && (
               <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
                 <Button
-                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
+                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700  rounded-md"
                   onClick={increaseMaxPrice}
                 >
                   +
                 </Button>
                 <Button
-                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700 hover:bg-zinc-600 rounded-md"
+                  className="w-7 h-7 flex items-center justify-center text-lg font-bold bg-zinc-700  rounded-md"
                   onClick={decreaseMaxPrice}
                 >
                   −

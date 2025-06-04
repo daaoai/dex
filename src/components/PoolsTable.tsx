@@ -22,7 +22,7 @@ export default function PoolsTable() {
         </thead>
         <tbody>
           {rows.map((r, idx) => (
-            <tr key={idx} className="border-b border-gray-700 hover:bg-gray-700 bg-dark-black-10">
+            <tr key={idx} className="border-b border-gray-700  bg-dark-black-10">
               <td className="px-4 py-2 bg-dark-black-300 text-white">{idx + 1}</td>
               <td className="px-4 py-2 flex items-center text-white space-x-2 bg-dark-black-300">
                 <span className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs">

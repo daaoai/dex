@@ -8,6 +8,7 @@ import useRemoveLiquidity from '@/hooks/useRemoveLiquidity';
 import { supportedChainIds } from '@/constants/chains';
 import IncreaseLiquidityModal from '@/components/IncreaseLiquidityModal';
 import { V3Position } from '@/types/v3';
+import Link from 'next/link';
 
 export default function PositionDetails() {
   const params = useParams();
@@ -29,7 +30,9 @@ export default function PositionDetails() {
 
   return (
     <div className="p-6 text-white bg-black min-h-screen">
-      <div className="text-sm text-gray-400 cursor-pointer">&larr; Your positions</div>
+      <Link href="/positions" className="text-sm text-gray-400 cursor-pointer">
+        Your positions
+      </Link>
 
       <div className="flex items-center mt-4 space-x-4">
         <div className="w-10 h-10 bg-yellow-400 rounded-full" />

@@ -7,6 +7,8 @@ import { X } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { ModalWrapper } from '../ModalWrapper';
+import Text from '../ui/Text';
+import { Button } from '@/shadcn/components/ui/button';
 
 interface TokenSelectionModalProps {
   onClose: () => void;
@@ -59,19 +61,23 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
     <ModalWrapper isOpen={isOpen} onClose={onClose} className="w-full max-w-md max-h-[90vh]  p-4 overflow-auto">
       <div className="w-full">
         <div className="bg-background rounded-lg w-full max-w-md max-h-[90vh] overflow-auto">
-          <div className="p-4 flex justify-between items-center border-b border-gray-800">
-            <h2 className="text-xl font-semibold">Select Token</h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-white">
+          <div className="p-4 flex justify-between items-center border-b ">
+            <Text type="h2" className="text-xl font-semibold">
+              Select Token
+            </Text>
+            <Button onClick={onClose} className="text-white hover:text-white">
               <X className="h-6 w-6" />
-              {}
-            </button>
+            </Button>
           </div>
 
           <div className="p-4">
             <div className="relative mb-4">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400">
+              <Text
+                type="span"
+                className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-white"
+              >
                 /
-              </div>
+              </Text>
               <input
                 type="text"
                 placeholder="Search Token"
@@ -86,19 +92,23 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
             ) : (
               <div className="space-y-2">
                 {filteredTokens.map((token) => (
-                  <button
+                  <Button
                     key={token.address}
-                    className="w-full bg-transparent hover:bg-gray-800 rounded-lg p-2 flex items-center gap-3"
+                    className="w-full bg-transparent rounded-lg p-2 flex items-center gap-3"
                     onClick={() => onSelect(token)}
                   >
                     <div className="w-8 h-8 rounded-full  flex items-center justify-center">
                       <Image src={token.logo || '/placeholder.svg'} alt={token.symbol} width={20} height={20} />
                     </div>
                     <div className="text-left">
-                      <div className="font-medium">{token.name}</div>
-                      <div className="text-sm text-gray-400">{token.symbol}</div>
+                      <Text type="p" className="font-medium">
+                        {token.name}
+                      </Text>
+                      <Text type="p" className="text-sm text-gray-400">
+                        {token.symbol}
+                      </Text>
                     </div>
-                  </button>
+                  </Button>
                 ))}
               </div>
             )}

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Text from './Text';
+import Text from './ui/Text';
 
 export default function PositionsSection() {
   return (

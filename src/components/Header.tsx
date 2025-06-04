@@ -36,7 +36,7 @@ export default function Header() {
         <input
           type="text"
           placeholder="Search Token"
-          className="ml-4 px-3 py-1 rounded border-2 bg-[#0a0a0a] border-[#1a1a1a] placeholder-gray-500 focus:outline-none"
+          className="ml-4 px-3 py-1 rounded border-2  placeholder-gray-500 focus:outline-none"
         />
       </nav>
 

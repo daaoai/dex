@@ -1,4 +1,5 @@
-import Text from './Text';
+import Image from 'next/image';
+import Text from './ui/Text';
 
 const topPools = Array(3).fill({
   pair: 'USDC/USDT0',
@@ -6,7 +7,7 @@ const topPools = Array(3).fill({
   fee: '0.01%',
   apr: '0.69%',
   rewards: '+10.94',
-  tokenIcon: '/usdt-icon.svg', 
+  tokenIcon: '/usdt-icon.svg',
 });
 
 export default function TopPoolsSidebar() {
@@ -19,14 +20,24 @@ export default function TopPoolsSidebar() {
       {topPools.map((p, i) => (
         <div key={i} className="bg-grey-3 rounded-2xl px-4 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <img src={p.tokenIcon} alt="Token Icon" className="w-10 h-10 rounded-full bg-white p-1" />
+            <Image
+              width={60}
+              height={60}
+              src={p.tokenIcon}
+              alt="Token Icon"
+              className="w-10 h-10 rounded-full bg-white p-1"
+            />
             <div>
               <Text type="p" className="font-semibold text-white">
                 {p.pair}
               </Text>
               <div className="flex items-center text-xs text-gray-300 gap-2">
-                <div className="bg-[#1f1f1f] px-2 py-0.5 rounded-md">{p.version}</div>
-                <div className="bg-[#1f1f1f] px-2 py-0.5 rounded-md">{p.fee}</div>
+                <Text type="p" className="bg-[#1f1f1f] px-2 py-0.5 rounded-md">
+                  {p.version}
+                </Text>
+                <Text type="p" className="bg-[#1f1f1f] px-2 py-0.5 rounded-md">
+                  {p.fee}
+                </Text>
               </div>
             </div>
           </div>
