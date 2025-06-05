@@ -1,4 +1,3 @@
-'use client';
 import SwapModal from './SwapModal';
 
 export default function Swap() {

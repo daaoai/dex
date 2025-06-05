@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { ModalWrapper } from './ModalWrapper';
+import { ModalWrapper } from '../ModalWrapper';
 import clsx from 'clsx';
 
 interface SlippageModalProps {

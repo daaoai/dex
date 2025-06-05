@@ -75,3 +75,7 @@ export const formatNumber = (value: number | string): string => {
 
   return num.toString();
 };
+
+export const formatBalance = (value: bigint, decimals: number, precision = 4) => {
+  return (Number(value) / 10 ** decimals).toFixed(precision);
+};
