@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowDown, ChevronDown, Settings } from 'lucide-react';
 import Image from 'next/image';
 import { useAccount, useChainId } from 'wagmi';
-
 import { Token } from '@/types/tokens';
 import TokenSelectionModal from '@/components/TokenSelectorModal';
 import { Button } from '@/shadcn/components/ui/button';
 import { useSwap } from '@/hooks/useSwap';
+import { useQuoter } from '@/hooks/useQuoter';
 import { fetchTokenBalance } from '@/helper/erc20';
+import { formatUnits } from 'viem';
+import { SlippageModal } from '@/components/SlippageModal';
 
 const formatBalance = (value: bigint, decimals: number, precision = 4) => {
   return (Number(value) / 10 ** decimals).toFixed(precision);
@@ -39,11 +41,12 @@ export default function SwapModal() {
   const [loading, setLoading] = useState(false);
   const [showSelector, setShowSelector] = useState(false);
   const [selectType, setSelectType] = useState<'src' | 'dest' | null>(null);
-  const [slippage] = useState(5.5);
-
+  const [slippage, setSlippage] = useState(5.5);
+  const [slippageModalOpen, setSlippageModalOpen] = useState(false);
   const { address: account } = useAccount();
   const chainId = useChainId();
-  const { swapExactIn } = useSwap({ chainId: chainId });
+  const { swapExactIn } = useSwap({ chainId });
+  const { quoteExactInputSingle } = useQuoter({ chainId });
 
   const openSelector = (type: 'src' | 'dest') => {
     setSelectType(type);
@@ -51,24 +54,52 @@ export default function SwapModal() {
   };
 
   const handleTokenSelect = async (token: Token) => {
-    if (!account) return;
-
     if (selectType === 'src') {
       setSrcToken(token);
-      setSrcBalance(null); // reset
-      const balance = await fetchTokenBalance({ token: token.address, account, chainId: 10143 });
-      setSrcBalance(balance);
+      setSrcBalance(null);
+      if (account) {
+        const balance = await fetchTokenBalance({ token: token.address, account, chainId });
+        setSrcBalance(balance);
+      }
     }
 
     if (selectType === 'dest') {
       setDestToken(token);
-      setDestBalance(null); // reset
-      const balance = await fetchTokenBalance({ token: token.address, account, chainId: 10143 });
-      setDestBalance(balance);
+      setDestBalance(null);
+      if (account) {
+        const balance = await fetchTokenBalance({ token: token.address, account, chainId });
+        setDestBalance(balance);
+      }
     }
 
     setShowSelector(false);
+    setSelectType(null);
   };
+
+  useEffect(() => {
+    const fetchQuote = async () => {
+      if (srcToken.address !== '0x' && destToken.address !== '0x' && srcAmount && !isNaN(Number(srcAmount))) {
+        try {
+          const quoted = await quoteExactInputSingle({
+            tokenIn: srcToken,
+            tokenOut: destToken,
+            amount: srcAmount,
+            fee: 3000,
+          });
+
+          const formatted = formatUnits(quoted, destToken.decimals);
+          setDestAmount(formatted);
+        } catch (e) {
+          console.error('Quote fetch error:', e);
+          setDestAmount('');
+        }
+      } else {
+        setDestAmount('');
+      }
+    };
+
+    fetchQuote();
+  }, [srcAmount, srcToken, destToken, quoteExactInputSingle]);
 
   const handleSwap = async () => {
     try {
@@ -89,14 +120,35 @@ export default function SwapModal() {
 
   return (
     <div className="bg-transparent border border-zinc-700 rounded-2xl p-2 w-full max-w-md mx-auto shadow-2xl">
-      <div className="flex justify-between align-middle mb-2 p-2">
+      <div className="flex justify-between items-center mb-2 p-2">
         <h2 className="text-xl">Swap</h2>
-        <Button onClick={() => {}}>
-          <Settings width={20} height={20} />
-        </Button>
+        <div className="relative inline-block">
+          <Button onClick={() => setSlippageModalOpen(true)} variant="ghost" size="icon">
+            <Settings width={20} height={20} />
+          </Button>
+
+          {slippageModalOpen && (
+            <SlippageModal
+              className="mt-[100px] ml-[800px]"
+              isOpen={slippageModalOpen}
+              onClose={() => setSlippageModalOpen(false)}
+              onSave={(value) => setSlippage(value)}
+              setSlippage={setSlippage}
+              slippage={slippage}
+            />
+          )}
+        </div>
       </div>
 
-      {showSelector && <TokenSelectionModal onClose={() => setShowSelector(false)} onSelect={handleTokenSelect} />}
+      {showSelector && (
+        <TokenSelectionModal
+          onClose={() => {
+            setShowSelector(false);
+            setSelectType(null);
+          }}
+          onSelect={handleTokenSelect}
+        />
+      )}
 
       {/* SELL Section */}
       <div className="bg-black border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-colors">
@@ -138,7 +190,7 @@ export default function SwapModal() {
         </div>
       </div>
 
-      {/* Arrow Icon */}
+      {/* Arrow */}
       <div className="flex justify-center -mt-3.5 -mb-6">
         <button className="bg-zinc-800 hover:bg-zinc-700 p-3 rounded-xl border-black border-4 transition-all duration-200 hover:border-zinc-600">
           <ArrowDown className="w-5 h-5 text-zinc-400" />
@@ -155,13 +207,13 @@ export default function SwapModal() {
           <input
             type="text"
             value={destAmount}
-            onChange={(e) => setDestAmount(e.target.value)}
+            disabled
             placeholder="0"
             className="text-3xl font-light bg-transparent text-white outline-none placeholder-zinc-500 w-36"
           />
           <button
             onClick={() => openSelector('dest')}
-            className="bg-blue-700 hover:bg-blue-600 px-4 py-2.5 text-white font-medium transition-all duration-200 flex items-center gap-2 w-fit rounded-3xl"
+            className="bg-indigo-600 hover:bg-blue-600 px-4 py-2.5 text-white font-medium transition-all duration-200 flex items-center gap-2 w-fit rounded-3xl"
           >
             {destToken.logo && (
               <Image

@@ -16,33 +16,55 @@ const quoterV2Abi = [
   {
     name: 'quoteExactInputSingle',
     type: 'function',
-    stateMutability: 'view',
+    stateMutability: 'nonpayable',
     inputs: [
-      { name: 'tokenIn', type: 'address' },
-      { name: 'tokenOut', type: 'address' },
-      { name: 'fee', type: 'uint24' },
-      { name: 'amountIn', type: 'uint256' },
-      { name: 'sqrtPriceLimitX96', type: 'uint160' },
+      {
+        name: 'params',
+        type: 'tuple',
+        components: [
+          { name: 'tokenIn', type: 'address' },
+          { name: 'tokenOut', type: 'address' },
+          { name: 'amountIn', type: 'uint256' },
+          { name: 'fee', type: 'uint24' },
+          { name: 'sqrtPriceLimitX96', type: 'uint160' },
+        ],
+      },
     ],
-    outputs: [{ name: 'amountOut', type: 'uint256' }],
+    outputs: [
+      { name: 'amountOut', type: 'uint256' },
+      { name: 'sqrtPriceX96After', type: 'uint160' },
+      { name: 'initializedTicksCrossed', type: 'uint32' },
+      { name: 'gasEstimate', type: 'uint256' },
+    ],
   },
   {
     name: 'quoteExactOutputSingle',
     type: 'function',
-    stateMutability: 'view',
+    stateMutability: 'nonpayable',
     inputs: [
-      { name: 'tokenIn', type: 'address' },
-      { name: 'tokenOut', type: 'address' },
-      { name: 'fee', type: 'uint24' },
-      { name: 'amountOut', type: 'uint256' },
-      { name: 'sqrtPriceLimitX96', type: 'uint160' },
+      {
+        name: 'params',
+        type: 'tuple',
+        components: [
+          { name: 'tokenIn', type: 'address' },
+          { name: 'tokenOut', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+          { name: 'fee', type: 'uint24' },
+          { name: 'sqrtPriceLimitX96', type: 'uint160' },
+        ],
+      },
     ],
-    outputs: [{ name: 'amountIn', type: 'uint256' }],
+    outputs: [
+      { name: 'amountIn', type: 'uint256' },
+      { name: 'sqrtPriceX96After', type: 'uint160' },
+      { name: 'initializedTicksCrossed', type: 'uint32' },
+      { name: 'gasEstimate', type: 'uint256' },
+    ],
   },
 ];
 
 export const useQuoter = ({ chainId }: { chainId: number }) => {
-  const quoterAddress = contractAddresses[chainId].swapRouter;
+  const quoterAddress = contractAddresses[chainId].v2Quoter;
 
   const quoteExactInputSingle = useCallback(
     async ({ tokenIn, tokenOut, amount, fee }: QuoteParams) => {
@@ -55,15 +77,17 @@ export const useQuoter = ({ chainId }: { chainId: number }) => {
           abi: quoterV2Abi,
           functionName: 'quoteExactInputSingle',
           args: [
-            tokenIn.address,
-            tokenOut.address,
-            fee,
-            amountIn,
-            0, // no price limit
+            {
+              tokenIn: tokenIn.address,
+              tokenOut: tokenOut.address,
+              amountIn,
+              fee,
+              sqrtPriceLimitX96: 0n,
+            },
           ],
         });
 
-        return result as bigint;
+        return (result as [bigint, bigint, number, bigint])[0]; // amountOut
       } catch (error) {
         console.error('quoteExactInputSingle failed:', error);
         return BigInt(0);
@@ -72,33 +96,40 @@ export const useQuoter = ({ chainId }: { chainId: number }) => {
     [chainId, quoterAddress]
   );
 
-  const quoteExactOutputSingle = useCallback(
-    async ({ tokenIn, tokenOut, amount, fee }: QuoteParams) => {
-      try {
-        const publicClient = getPublicClient(chainId);
-        const amountOut = parseUnits(amount, tokenOut.decimals);
+const quoteExactOutputSingle = useCallback(
+  async ({ tokenIn, tokenOut, amount, fee }: QuoteParams) => {
+    try {
+      const publicClient = getPublicClient(chainId);
+      const amountOut = parseUnits(amount, tokenOut.decimals);
 
-        const result = await publicClient.readContract({
-          address: quoterAddress as Address,
-          abi: quoterV2Abi,
-          functionName: 'quoteExactOutputSingle',
-          args: [
-            tokenIn.address,
-            tokenOut.address,
-            fee,
-            amountOut,
-            0,
-          ],
-        });
-
-        return result as bigint;
-      } catch (error) {
-        console.error('quoteExactOutputSingle failed:', error);
-        return BigInt(0);
+      if (amountOut <= 0n) {
+        throw new Error('Invalid amountOut for quoteExactOutputSingle');
       }
-    },
-    [chainId, quoterAddress]
-  );
+
+      const result = await publicClient.readContract({
+        address: quoterAddress as Address,
+        abi: quoterV2Abi,
+        functionName: 'quoteExactOutputSingle',
+        args: [
+          {
+            tokenIn: tokenIn.address,
+            tokenOut: tokenOut.address,
+            amount: amountOut,
+            fee,
+            sqrtPriceLimitX96: 0n,
+          },
+        ],
+      });
+
+      return (result as [bigint, bigint, number, bigint])[0]; // amountIn
+    } catch (error) {
+      console.error('quoteExactOutputSingle failed:', error);
+      return BigInt(0);
+    }
+  },
+  [chainId, quoterAddress]
+);
+
 
   return {
     quoteExactInputSingle,
