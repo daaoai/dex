@@ -3,8 +3,10 @@ import { supportedChainIds } from '@/constants/chains';
 import useAddLiquidity from '@/hooks/useAddLiquidity';
 import { V3Position } from '@/types/v3';
 import React from 'react';
-import { ModalWrapper } from './ModalWrapper';
-import Text from './ui/Text';
+import { ModalWrapper } from '../ModalWrapper';
+import Text from '../ui/Text';
+import { Button } from '@/shadcn/components/ui/button';
+import { X, Settings } from 'lucide-react';
 
 interface IncreaseLiquidityModalProps {
   isOpen: boolean;
@@ -50,12 +52,13 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ isOpen,
     <ModalWrapper isOpen={isOpen} onClose={onClose} className="bg-grey-3 w-full max-w-md p-6">
       <div className="w-full ">
         <div className="flex justify-between items-center mb-6">
+          <Button onClick={onClose} className="text-white hover:text-white">
+            <X className="w-5 h-5" />
+          </Button>
           <Text type="h2" className="text-xl font-bold text-white">
-            Increase Liquidity
+            Add Liquidity
           </Text>
-          <button onClick={onClose} className="text-white hover:text-white">
-            ✕
-          </button>
+          <Settings className="w-4 h-4 text-gray-400 hover:text-white cursor-pointer" />
         </div>
 
         <Text type="p" className="text-white mb-4">
@@ -103,7 +106,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ isOpen,
                 : 'bg-blue-600 '
             }`}
           >
-            {loading ? 'Processing...' : 'Increase Liquidity'}
+            {loading ? 'Processing...' : 'Enter A Amount'}
           </button>
         </form>
       </div>
