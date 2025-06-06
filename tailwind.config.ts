@@ -22,6 +22,7 @@ const config: Config = {
         'grey-2': 'var(--color-grey-2)',
         'grey-3': 'var(--color-grey-3)',
         'grey-4': 'var(--color-grey-4)',
+        'grey-5': 'var(--color-grey-5)',
 
         stroke: 'var(--color-stroke)',
         'stroke-2': 'var(--color-stroke-2)',
