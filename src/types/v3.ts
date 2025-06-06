@@ -18,6 +18,7 @@ export type GetNFTDetailsRequest = {
   chainId: number;
   nftId: bigint;
   nftManagerAddress: Hex;
+  owner: Hex;
 };
 
 export type V3PositionRaw = {
@@ -40,6 +41,7 @@ export type V3PositionRaw = {
 };
 
 export interface V3Position {
+  chainId: number;
   token0: Hex;
   token1: Hex;
   poolAddress: Hex;

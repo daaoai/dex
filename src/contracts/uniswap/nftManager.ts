@@ -160,6 +160,7 @@ export class UniswapNFTManager {
       functionName: 'multicall',
       args: [multicallData],
     });
+
     const publicClient = getPublicClient(chainId);
     const res = await publicClient.call({
       data: callData,
@@ -167,18 +168,28 @@ export class UniswapNFTManager {
       to: nftManagerAddress,
     });
 
-    const decodeType = Array.from({ length: nftIds.length }, () => [
-      { type: 'uint256', name: 'amount0Max' },
-      { type: 'uint256', name: 'amount1Max' },
-    ]).flat();
+    const multicallReturnType = [{ type: 'bytes[]', name: 'results' }];
+    const [multicallResults] = decodeAbiParameters(multicallReturnType, res.data as Hex) as [Hex[]];
 
-    const results = decodeAbiParameters(decodeType, res.data as Hex) as bigint[];
+    // Define the collect function return type
+    const collectReturnType = [
+      { type: 'uint256', name: 'amount0' },
+      { type: 'uint256', name: 'amount1' },
+    ];
 
-    const feesEarned = nftIds.map((nftId, index) => ({
-      id: nftId,
-      feeEarned0: results[index * 2],
-      feeEarned1: results[index * 2 + 1],
-    }));
+    const feesEarned = nftIds.map((nftId, index) => {
+      const [feeEarned0, feeEarned1] = decodeAbiParameters(collectReturnType, multicallResults[index]) as [
+        bigint,
+        bigint,
+      ];
+
+      return {
+        id: nftId,
+        feeEarned0,
+        feeEarned1,
+      };
+    });
+
     return feesEarned;
   };
 
@@ -264,6 +275,7 @@ export class UniswapNFTManager {
     nftId,
     nftManagerAddress,
     chainId,
+    owner,
   }: GetNFTDetailsRequest): Promise<V3PositionRaw> => {
     const publicClient = getPublicClient(chainId);
     const res = await publicClient.readContract({
@@ -275,7 +287,7 @@ export class UniswapNFTManager {
 
     const feeEarned = await this.getFeeToCollect({
       tokenId: nftId,
-      account: zeroAddress, // Using zero address to just get the fees without collecting
+      account: owner,
       chainId,
       nftManagerAddress,
     });

@@ -13,6 +13,7 @@ import RemoveLiquidityModal from '@/components/modals/RemoveLiquidityModal';
 import Image from 'next/image';
 import Text from '@/components/ui/Text';
 import CollectRewardsModal from '@/components/modals/CollectFeesModal';
+import { ModalWrapper } from '@/components/ModalWrapper';
 
 export default function PositionDetails() {
   const params = useParams();
@@ -120,9 +121,15 @@ export default function PositionDetails() {
           </div>
         </div>
       </div>
-      <RemoveLiquidityModal isOpen={removeModalOpen} onClose={() => setRemoveModalOpen(false)} position={position} />
-      <IncreaseLiquidityModal isOpen={modalOpen} onClose={() => setModalOpen(false)} position={position} />
-      <CollectRewardsModal isOpen={collectModalOpen} onClose={() => setCollectModalOpen(false)} position={position} />
+      <ModalWrapper isOpen={removeModalOpen} onClose={() => setRemoveModalOpen(false)}>
+        <RemoveLiquidityModal position={position} onClose={() => setRemoveModalOpen(false)} />
+      </ModalWrapper>
+      <ModalWrapper isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <IncreaseLiquidityModal position={position} onClose={() => setModalOpen(false)} />
+      </ModalWrapper>
+      <ModalWrapper isOpen={collectModalOpen} onClose={() => setCollectModalOpen(false)}>
+        <CollectRewardsModal position={position} onClose={() => setCollectModalOpen(false)} />
+      </ModalWrapper>
     </div>
   );
 }
