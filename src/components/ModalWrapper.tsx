@@ -46,7 +46,7 @@ const ModalWrapper: React.FC<ModalProps> = ({ isOpen, onClose, children, classNa
 
   return (
     <div
-      className="fixed inset-0 flex items-start w-full justify-center py-4 pt-8 px-6 z-10 bg-opacity-70 backdrop-blur-md"
+      className="fixed inset-0 flex items-center w-full justify-center py-4 pt-8 px-6 z-10 bg-opacity-70 backdrop-blur-md"
       style={{ position: 'fixed' }}
     >
       <div
