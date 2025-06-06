@@ -27,7 +27,7 @@ type ToggleTokensProps = {
 export default function ToggleTokens({ tokens, amounts, balances }: ToggleTokensProps) {
   const chainId = useChainId();
   const { address: account } = useAccount();
-  console.log(account);
+  // console.log(account);
 
   const handleToggle = async () => {
     tokens.setSrc(tokens.dest);
@@ -51,7 +51,7 @@ export default function ToggleTokens({ tokens, amounts, balances }: ToggleTokens
   };
 
   return (
-    <div className="flex justify-center -mt-3.5 -mb-6">
+    <div className="flex justify-center -mt-8 -mb-6">
       <button
         onClick={handleToggle}
         className="bg-zinc-800 hover:bg-zinc-700 p-3 rounded-xl border-black border-4 transition-all duration-200 hover:border-zinc-600 group"

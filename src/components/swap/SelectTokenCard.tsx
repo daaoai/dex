@@ -31,7 +31,7 @@ export default function SelectTokenCard({
   const isSell = title.toLowerCase() === 'sell';
   return (
     <div
-      className={`border border-zinc-700 rounded-xl p-4 hover:border-zinc-600 transition-colors mb-4 ${
+      className={`border border-zinc-700 rounded-3xl p-4 hover:border-zinc-600 transition-colors mb-4 ${
         isSell ? 'bg-transparent -mb-3.5' : 'bg-zinc-800'
       }`}
     >

@@ -121,9 +121,9 @@ export default function SwapModal() {
   };
 
   return (
-    <div className="bg-transparent border border-zinc-700 rounded-2xl p-2 w-full max-w-md mx-auto shadow-2xl">
-      <div className="flex justify-between items-center mb-2 p-2">
-        <h2 className="text-xl">Swap</h2>
+    <div className="bg-transparent border border-zinc-700 rounded-3xl p-2 w-full max-w-md mx-auto shadow-2xl">
+      <div className=" text-white flex justify-between items-center mb-2 p-2">
+        <h2 className="text-xl ">Swap</h2>
         <div className="relative inline-block">
           <Button onClick={() => setSlippageModalOpen(true)} variant="ghost" size="icon">
             <Settings width={20} height={20} />
@@ -139,15 +139,14 @@ export default function SwapModal() {
         </div>
       </div>
 
-      {showSelector && (
-        <TokenSelectionModal
-          onClose={() => {
-            setShowSelector(false);
-            setSelectType(null);
-          }}
-          onSelect={handleTokenSelect}
-        />
-      )}
+      <TokenSelectionModal
+        onClose={() => {
+          setShowSelector(false);
+          setSelectType(null);
+        }}
+        onSelect={handleTokenSelect}
+        isOpen={showSelector}
+      />
 
       <SelectTokenCard
         title="Sell"
@@ -192,7 +191,7 @@ export default function SwapModal() {
       <Button
         onClick={handleSwap}
         disabled={loading}
-        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
+        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl  active:scale-[0.98]"
       >
         {loading ? 'Processing...' : 'Continue'}
       </Button>
