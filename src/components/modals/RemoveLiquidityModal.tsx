@@ -8,6 +8,7 @@ import { supportedChainIds } from '@/constants/chains';
 import { ModalWrapper } from '../ModalWrapper';
 import Text from '../ui/Text';
 import Image from 'next/image';
+import { formatUnits } from 'viem';
 
 interface Props {
   isOpen: boolean;
@@ -27,6 +28,8 @@ export default function RemoveLiquidityModal({ isOpen, onClose, position }: Prop
     onClose();
   };
 
+  const { amount0, amount1, token0Details, token1Details, fee } = position;
+
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose}>
       <div className="bg-background text-white max-w-md mx-auto p-6 rounded-lg">
@@ -41,7 +44,7 @@ export default function RemoveLiquidityModal({ isOpen, onClose, position }: Prop
             </Text>
           </div>
           <Text type="p" className="ml-auto text-xs bg-grey-4 px-2 py-1 rounded">
-            v4 0.01%
+            v3 {fee / 10000}%
           </Text>
         </div>
 
@@ -65,12 +68,16 @@ export default function RemoveLiquidityModal({ isOpen, onClose, position }: Prop
         </div>
 
         <div className="flex justify-between text-sm mb-2">
-          <Text type="span">ETH position</Text>
-          <Text type="span">{position.amount0} ETH</Text>
+          <Text type="span">{token0Details.symbol} position</Text>
+          <Text type="span">
+            {formatUnits(BigInt(amount0), token0Details.decimals)} {token0Details.symbol}
+          </Text>
         </div>
         <div className="flex justify-between text-sm mb-6">
-          <Text type="span">USDT position</Text>
-          <Text type="span">{position.amount1} USDT</Text>
+          <Text type="span">{token1Details.symbol} position</Text>
+          <Text type="span">
+            {formatUnits(BigInt(amount1), token1Details.decimals)} {token1Details.symbol}
+          </Text>
         </div>
 
         <Button

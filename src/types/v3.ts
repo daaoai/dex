@@ -41,6 +41,7 @@ export type V3PositionRaw = {
 };
 
 export interface V3Position {
+  chainId: number;
   token0: Hex;
   token1: Hex;
   poolAddress: Hex;
