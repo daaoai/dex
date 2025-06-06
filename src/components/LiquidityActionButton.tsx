@@ -15,7 +15,7 @@ const ConnectOrActionButton = ({ isDisabled, authenticatedOnClick, authenticated
   const { appChainId } = useSelector((state: RootState) => state.common, shallowEqual);
   return account && isConnected && appChainId === accountChainId ? (
     <button
-      className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full disabled:opacity-50"
+      className="bg-btn-gradient text-white px-4 py-2 rounded-lg w-full disabled:opacity-50"
       disabled={isDisabled}
       onClick={authenticatedOnClick}
     >
@@ -23,8 +23,8 @@ const ConnectOrActionButton = ({ isDisabled, authenticatedOnClick, authenticated
     </button>
   ) : (
     <ConnectWalletButton
-      connectButtonTailwindClasses="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
-      wrongNetworkButtonTailwindClasses="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg w-full"
+      connectButtonTailwindClasses="bg-btn-gradient text-white px-4 py-2 rounded-lg w-full"
+      wrongNetworkButtonTailwindClasses="bg-btn-gradient text-white px-4 py-2 rounded-lg w-full"
       wrongNetworkButtonText={`Switch to ${chainsData[appChainId]?.name}`}
       switchToChainId={appChainId}
     />

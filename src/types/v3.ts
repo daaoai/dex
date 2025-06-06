@@ -21,8 +21,8 @@ export type GetNFTDetailsRequest = {
 };
 
 export type V3PositionRaw = {
-  id: bigint;
-  nonce: bigint;
+  tokenId: bigint;
+  // nonce: bigint;
   operator: Hex;
   token0: Hex;
   token1: Hex;
@@ -31,10 +31,10 @@ export type V3PositionRaw = {
   tickLower: number;
   tickUpper: number;
   liquidity: bigint;
-  feeGrowthInside0LastX128: bigint;
-  feeGrowthInside1LastX128: bigint;
-  tokensOwed0: bigint;
-  tokensOwed1: bigint;
+  // feeGrowthInside0LastX128: bigint;
+  // feeGrowthInside1LastX128: bigint;
+  // tokensOwed0: bigint;
+  // tokensOwed1: bigint;
   feeEarned0: bigint;
   feeEarned1: bigint;
 };
@@ -43,15 +43,15 @@ export interface V3Position {
   token0: Hex;
   token1: Hex;
   poolAddress: Hex;
-  amount0: bigint;
-  amount1: bigint;
-  liquidity: bigint;
+  amount0: string;
+  amount1: string;
+  liquidity: string;
   token0Details: Token;
   token1Details: Token;
   liquidityUsd: string;
-  tokenId: bigint;
-  feeEarned0: bigint;
-  feeEarned1: bigint;
+  tokenId: string;
+  feeEarned0: string;
+  feeEarned1: string;
   fee: number;
   tickSpacing: number;
   tickLower: number;

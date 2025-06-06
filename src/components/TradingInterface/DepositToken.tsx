@@ -3,12 +3,14 @@
 import { Token } from '@/types/tokens';
 import ConnectOrActionButton from '../LiquidityActionButton';
 import Image from 'next/image';
+import Text from '../ui/Text';
 
 interface DepositTokensProps {
   srcTokenDetails: Token;
   destTokenDetails: Token;
   srcTokenAmount: string;
   destTokenAmount: string;
+  txnState: 'approvingToken0' | 'approvingToken1' | 'waitingForConfirmation' | null;
   handleSrcTokenAmountChange: (value: string) => void;
   isLoading: boolean;
   handleDeposit: () => void;
@@ -21,12 +23,17 @@ export default function DepositTokens({
   destTokenAmount,
   handleSrcTokenAmountChange,
   isLoading,
+  txnState,
   handleDeposit,
 }: DepositTokensProps) {
   return (
     <div className="bg-zinc-900 rounded-lg p-4 space-y-4">
-      <h3 className="text-lg font-medium">Deposit tokens</h3>
-      <p className="text-sm text-gray-400">Specify the token amounts for your liquidity contribution.</p>
+      <Text type="h3" className="text-lg font-medium">
+        Deposit tokens
+      </Text>
+      <Text type="p" className="text-sm text-gray-400">
+        Specify the token amounts for your liquidity contribution.
+      </Text>
 
       <div className="bg-zinc-800 p-4 rounded-md">
         <div className="flex justify-between items-center">
@@ -47,10 +54,12 @@ export default function DepositTokens({
                 height={20}
               />
             </div>
-            <span>{srcTokenDetails.symbol}</span>
+            <Text type="span">{srcTokenDetails.symbol}</Text>
           </div>
         </div>
-        <div className="text-sm text-gray-400 mt-2">${srcTokenAmount}</div>
+        <Text type="p" className="text-sm text-gray-400 mt-2">
+          ${srcTokenAmount}
+        </Text>
       </div>
 
       <div className="bg-zinc-800 p-4 rounded-md">
@@ -73,16 +82,26 @@ export default function DepositTokens({
                 height={20}
               />
             </div>
-            <span>{destTokenDetails.symbol}</span>
+            <Text type="span">{destTokenDetails.symbol}</Text>
           </div>
         </div>
-        <div className="text-sm text-gray-400 mt-2">${destTokenAmount}</div>
+        <Text type="p" className="text-sm text-gray-400 mt-2">
+          ${destTokenAmount}
+        </Text>
       </div>
 
       <ConnectOrActionButton
         authenticatedOnClick={handleDeposit}
         isDisabled={isLoading}
-        authenticatedText="Create Position"
+        authenticatedText={
+          txnState === 'approvingToken0'
+            ? `Approving ${srcTokenDetails.symbol}`
+            : txnState === 'approvingToken1'
+              ? `Approving ${destTokenDetails.symbol}`
+              : txnState === 'waitingForConfirmation'
+                ? 'Waiting for confirmation...'
+                : 'Create Position'
+        }
       />
     </div>
   );

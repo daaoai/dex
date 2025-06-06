@@ -157,7 +157,7 @@ const useAddLiquidity = ({ chainId, position }: { chainId: number; position: V3P
     await approveToken(amount1, position.token1);
 
     const callData = UniswapNFTManager.generateAddLiquidityCallData({
-      tokenId: position.tokenId,
+      tokenId: BigInt(position.tokenId),
       amount0Desired: amount0,
       amount1Desired: amount1,
       amount0Min,

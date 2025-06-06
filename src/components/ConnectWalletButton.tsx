@@ -1,5 +1,6 @@
 import { Button } from '@/shadcn/components/ui/button';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import Image from 'next/image';
 import { useSwitchChain } from 'wagmi';
 
 type ConnectWalletButtonProps = {
@@ -74,7 +75,13 @@ const ConnectWalletButton = ({
                         }}
                       >
                         {chain.iconUrl && (
-                          <img alt={chain.name ?? 'Chain icon'} src={chain.iconUrl} style={{ width: 12, height: 12 }} />
+                          <Image
+                            alt={chain.name ?? 'Chain icon'}
+                            src={chain.iconUrl}
+                            style={{ width: 12, height: 12 }}
+                            width={20}
+                            height={20}
+                          />
                         )}
                       </div>
                     )}

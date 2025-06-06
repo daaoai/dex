@@ -3,7 +3,10 @@ import { supportedChainIds } from '@/constants/chains';
 import useAddLiquidity from '@/hooks/useAddLiquidity';
 import { V3Position } from '@/types/v3';
 import React from 'react';
-import { ModalWrapper } from './ModalWrapper';
+import { ModalWrapper } from '../ModalWrapper';
+import Text from '../ui/Text';
+import { Button } from '@/shadcn/components/ui/button';
+import { X, Settings } from 'lucide-react';
 
 interface IncreaseLiquidityModalProps {
   isOpen: boolean;
@@ -46,23 +49,26 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ isOpen,
   };
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose} className="bg-gray-800 w-full max-w-md p-6">
-      <div className="w-full">
+    <ModalWrapper isOpen={isOpen} onClose={onClose} className="bg-grey-3 w-full max-w-md p-6">
+      <div className="w-full ">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-white">Increase Liquidity</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white">
-            ✕
-          </button>
+          <Button onClick={onClose} className="text-white hover:text-white">
+            <X className="w-5 h-5" />
+          </Button>
+          <Text type="h2" className="text-xl font-bold text-white">
+            Add Liquidity
+          </Text>
+          <Settings className="w-4 h-4 text-gray-400 hover:text-white cursor-pointer" />
         </div>
 
-        <p className="text-gray-300 mb-4">
+        <Text type="p" className="text-white mb-4">
           Position #{position.tokenId.toString()} - {position.token0Details.symbol}/{position.token1Details.symbol} (
           {position.fee / 10000}%)
-        </p>
+        </Text>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-300 mb-2" htmlFor="token0Amount">
+            <label className="block text-white mb-2" htmlFor="token0Amount">
               {position.token0Details.symbol} Amount
             </label>
             <input
@@ -71,13 +77,13 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ isOpen,
               type="text"
               value={token0FormattedAmount}
               onChange={handleToken0Change}
-              className="w-full p-3 bg-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 bg-black rounded-md text-white focus:outline-none focus:ring-2"
               placeholder={`Enter ${position.token0Details.symbol} amount`}
             />
           </div>
 
           <div className="mb-6">
-            <label className="block text-gray-300 mb-2" htmlFor="token1Amount">
+            <label className="block text-white mb-2" htmlFor="token1Amount">
               {position.token1Details.symbol} Amount
             </label>
             <input
@@ -86,7 +92,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ isOpen,
               disabled={loading}
               value={token1FormattedAmount}
               onChange={handleToken1Change}
-              className="w-full p-3 bg-gray-700 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3  rounded-md bg-black text-white focus:outline-none"
               placeholder={`Enter ${position.token1Details.symbol} amount`}
             />
           </div>
@@ -97,10 +103,10 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ isOpen,
             className={`w-full py-3 px-4 rounded-md font-medium text-white ${
               loading || !token0FormattedAmount || !token1FormattedAmount
                 ? 'bg-blue-500 opacity-50 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-blue-600 '
             }`}
           >
-            {loading ? 'Processing...' : 'Increase Liquidity'}
+            {loading ? 'Processing...' : 'Enter A Amount'}
           </button>
         </form>
       </div>

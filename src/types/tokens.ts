@@ -6,4 +6,5 @@ export type Token = {
   logo?: string;
   address: Hex;
   decimals: number;
+  coingeckoId?: string;
 };

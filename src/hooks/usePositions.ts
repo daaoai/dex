@@ -30,13 +30,16 @@ export const usePositions = (chainId: number) => {
     const apr = 0; // Placeholder for APR calculation
     return {
       ...position,
+      liquidity: position.liquidity.toString(),
       poolAddress: poolDetails.address,
+      feeEarned0: position.feeEarned0.toString(),
+      feeEarned1: position.feeEarned1.toString(),
       token0Details: poolDetails.token0,
       token1Details: poolDetails.token1,
       liquidityUsd,
-      tokenId: position.id,
-      amount0,
-      amount1,
+      tokenId: position.tokenId.toString(),
+      amount0: amount0.toString(),
+      amount1: amount1.toString(),
       apr,
     };
   };

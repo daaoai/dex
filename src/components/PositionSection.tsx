@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import Text from './Text';
+import Text from './ui/Text';
 
 export default function PositionsSection() {
   return (
     <div className="space-y-4">
-      <div className="bg-black-50 border-2 border-dark-black-100 rounded-lg p-4 flex justify-between items-center">
+      {/* <div className="bg-black-50 border-2 border-dark-black-100 rounded-lg p-4 flex justify-between items-center">
         <div>
           <Text type="p" className="font-semibold text-white">
             Welcome to your positions
@@ -13,7 +13,7 @@ export default function PositionsSection() {
             Connect your wallet to view your current positions.
           </Text>
         </div>
-      </div>
+      </div> */}
       <div className="flex flex-col items-start gap-4">
         <Text type="h3" className="text-xl text-white font-semibold">
           Your Positions

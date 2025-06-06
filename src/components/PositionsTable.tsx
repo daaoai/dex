@@ -1,11 +1,10 @@
-import { supportedChainIds } from '@/constants/chains';
-import useHarvestLiquidtiy from '@/hooks/useHarvestLiquidity';
-import useRemoveLiquidity from '@/hooks/useRemoveLiquidity';
+'use client';
+
 import { V3Position } from '@/types/v3';
 import { truncateNumber } from '@/utils/truncateNumber';
-import { useState } from 'react';
-import IncreaseLiquidityModal from './IncreaseLiquidityModal';
-import { formatUnits } from 'viem';
+import { useRouter } from 'next/navigation';
+import clsx from 'clsx';
+import Text from './ui/Text';
 
 interface PositionsTableProps {
   positions: V3Position[];
@@ -13,100 +12,75 @@ interface PositionsTableProps {
 }
 
 export default function PositionsTable({ positions, loading }: PositionsTableProps) {
-  const { decreaseLiquidity } = useRemoveLiquidity({ chainId: supportedChainIds.monadTestnet });
-  const { harvestLiquidity } = useHarvestLiquidtiy({ chainId: supportedChainIds.monadTestnet });
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedPosition, setSelectedPosition] = useState<V3Position | null>(null);
+  const router = useRouter();
+
   if (loading) {
     return (
-      <div className="overflow-auto rounded-lg bg-gray-800 p-4">
-        <p className="text-white">Loading positions...</p>
+      <div className="space-y-4">
+        {[...Array(3)].map((_, i) => (
+          <div className="relative overflow-hidden rounded-xl bg-grey-3 h-24 shimmer" key={i} />
+        ))}
       </div>
     );
   }
 
   if (positions.length === 0) {
-    return (
-      <div className="overflow-auto rounded-lg bg-gray-800 p-4">
-        <p className="text-white">No positions found</p>
-      </div>
-    );
+    return <p className="text-white p-4 bg-gray-800 rounded-lg">No positions found</p>;
   }
 
   return (
-    <div className="overflow-auto rounded-lg bg-gray-800">
-      <table className="min-w-full text-left">
-        <thead className="border-b border-gray-700">
-          <tr>
-            {['ID', 'Token Pair', 'Fee Tier', 'Fee Earned', 'Liquidity', 'Fees Earned'].map((h) => (
-              <th key={h} className="px-4 py-2 text-gray-400 bg-dark-black-300">
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {positions.map((position) => (
-            <tr
-              key={position.tokenId.toString()}
-              className="border-b border-gray-700 hover:bg-gray-700 bg-dark-black-10"
-            >
-              <td className="px-4 py-2 bg-dark-black-300 text-white">#{position.tokenId.toString()}</td>
-              <td className="px-4 py-2 flex items-center text-white space-x-2 bg-dark-black-300">
-                {`${position.token0Details.symbol}-${position.token1Details.symbol}`}
-              </td>
-              <td className="px-4 py-2 text-white">{position.fee / 10000}%</td>
-              <td className="px-4 py-2 text-white">{`${formatUnits(position.feeEarned0, position.token0Details.decimals)} ${position.token0Details.symbol} / ${formatUnits(position.feeEarned1, position.token1Details.decimals)} ${position.token1Details.symbol}`}</td>
-              <td className="px-4 py-2 text-white">{truncateNumber(position.liquidity.toString())}</td>
-              <td className="px-4 py-2 text-white">
-                <div className="flex space-x-2">
-                  <button
-                    className="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-2 rounded"
-                    onClick={() => {
-                      setSelectedPosition(position);
-                      setModalOpen(true);
-                    }}
-                  >
-                    Increase Liquidity
-                  </button>
-                  <button
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
-                    onClick={() =>
-                      decreaseLiquidity({
-                        position,
-                        percent: 50, // Example: Decrease by 50%
-                      })
-                    }
-                  >
-                    Decrease Liquidity
-                  </button>
-                  <button
-                    className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded"
-                    onClick={() =>
-                      harvestLiquidity({
-                        position,
-                      })
-                    }
-                  >
-                    Harvest Liquidity
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="space-y-4">
+      {positions.map((position) => (
+        <div
+          key={position.tokenId.toString()}
+          className={clsx('bg-grey-3 rounded-xl shadow-md flex flex-col cursor-pointer transition')}
+          onClick={() => router.push(`/positions/${position.tokenId}`)}
+        >
+          <div className="flex items-center p-4 bg-background">
+            <div className="w-12 h-12 bg-gray-700 rounded-full" />
+            <div>
+              <div className="text-white font-semibold text-lg">
+                {position.token0Details.symbol} / {position.token1Details.symbol}
+              </div>
+              <Text type="p" className="text-green-500 text-sm">
+                In range
+              </Text>
+            </div>
+            <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded ml-2">
+              v3 {position.fee / 10000}%
+            </Text>
+          </div>
 
-      {selectedPosition && (
-        <IncreaseLiquidityModal
-          isOpen={modalOpen}
-          onClose={() => {
-            setModalOpen(false);
-            setSelectedPosition(null);
-          }}
-          position={selectedPosition}
-        />
-      )}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-white bg-background-2 p-4">
+            <div>
+              <Text type="p" className="text-sm text-gray-400">
+                Position
+              </Text>
+              <Text type="p">${truncateNumber(position.liquidity.toString())}</Text>
+            </div>
+            <div>
+              <Text type="p" className="text-sm text-gray-400">
+                Fees
+              </Text>
+              <Text type="p">$0.00</Text>
+            </div>
+            <div>
+              <Text type="p" className="text-sm text-gray-400">
+                APR
+              </Text>
+              <Text type="p">64.39%</Text>
+            </div>
+            <div>
+              <Text type="p" className="text-sm text-gray-400">
+                Range
+              </Text>
+              <Text type="span">
+                {position.tickLower} - {position.tickUpper}
+              </Text>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
