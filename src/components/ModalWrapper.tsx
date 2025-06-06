@@ -51,7 +51,7 @@ const ModalWrapper: React.FC<ModalProps> = ({ isOpen, onClose, children, classNa
     >
       <div
         ref={modalRef}
-        className={clsx('relative shadow-lg max-w-4xl rounded-lg flex justify-center items-center', className)}
+        className={clsx('relative shadow-lg w-full max-w-4xl rounded-lg flex justify-center items-center', className)}
       >
         {children}
       </div>
