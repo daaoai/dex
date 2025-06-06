@@ -187,21 +187,37 @@ const useAddLiquidity = ({ chainId, position }: { chainId: number; position: V3P
     }
   };
 
-  useEffectAfterMount(() => {
-    if (!Number(token0FormattedAmount)) {
-      setToken1FormattedAmount('0');
-      return;
+  const isValidAddLiquidityRequest = () => {
+    if (!account) {
+      return {
+        valid: false,
+        message: 'Connect wallet',
+      };
     }
-    setToken1FormattedAmount(getToken1FormattedAmount(token0FormattedAmount));
-  }, [token0FormattedAmount, poolSlot0]);
+    if (!Number(token0FormattedAmount) || !Number(token1FormattedAmount)) {
+      return {
+        valid: false,
+        message: 'Please enter valid amounts for both tokens',
+      };
+    }
+    const amount0 = parseUnits(token0FormattedAmount, position.token0Details.decimals);
+    const amount1 = parseUnits(token1FormattedAmount, position.token1Details.decimals);
+    if (amount0 > balances[position.token0] || amount1 > balances[position.token1]) {
+      return {
+        valid: false,
+        message: 'Insufficient token balance',
+      };
+    }
+    return {
+      valid: true,
+      message: '',
+    };
+  };
 
   useEffectAfterMount(() => {
-    if (!Number(token1FormattedAmount)) {
-      setToken0FormattedAmount('0');
-      return;
-    }
+    setToken1FormattedAmount(getToken1FormattedAmount(token0FormattedAmount));
     setToken0FormattedAmount(getToken0FormattedAmount(token1FormattedAmount));
-  }, [token1FormattedAmount, poolSlot0]);
+  }, [poolSlot0]);
 
   useEffect(() => {
     updatePoolSlot0();
@@ -211,7 +227,10 @@ const useAddLiquidity = ({ chainId, position }: { chainId: number; position: V3P
   return {
     setToken0FormattedAmount,
     setToken1FormattedAmount,
+    isValidAddLiquidityRequest,
     token0FormattedAmount,
+    getToken0FormattedAmount,
+    getToken1FormattedAmount,
     token1FormattedAmount,
     addLiquidity,
     loading,

@@ -2,7 +2,7 @@
 import { supportedChainIds } from '@/constants/chains';
 import useAddLiquidity from '@/hooks/useAddLiquidity';
 import { V3Position } from '@/types/v3';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ModalWrapper } from '../ModalWrapper';
 import Text from '../ui/Text';
 import { Button } from '@/shadcn/components/ui/button';
@@ -15,13 +15,18 @@ interface IncreaseLiquidityModalProps {
 }
 
 const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ isOpen, onClose, position }) => {
+  const [isValidRequest, setIsValidRequest] = useState<boolean>(false);
+  const [warningMessage, setWarningMessage] = useState<string>('');
   // Using the addLiquidity hook
   const {
     token0FormattedAmount,
     token1FormattedAmount,
     setToken0FormattedAmount,
     setToken1FormattedAmount,
+    getToken1FormattedAmount,
+    getToken0FormattedAmount,
     addLiquidity,
+    isValidAddLiquidityRequest,
     loading,
   } = useAddLiquidity({
     chainId: supportedChainIds.monadTestnet,
@@ -31,14 +36,19 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ isOpen,
   const handleToken0Change = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setToken0FormattedAmount(value);
+    setToken1FormattedAmount(getToken1FormattedAmount(value));
   };
 
   const handleToken1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setToken1FormattedAmount(value);
+    setToken0FormattedAmount(getToken0FormattedAmount(value));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    if (loading || !isValidAddLiquidityRequest()) {
+      return;
+    }
     e.preventDefault();
     try {
       await addLiquidity();
@@ -47,6 +57,16 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ isOpen,
       console.error('Error adding liquidity:', error);
     }
   };
+
+  useEffect(() => {
+    const isValid = isValidAddLiquidityRequest();
+    setIsValidRequest(isValid.valid);
+    if (!isValid.valid && Number(token0FormattedAmount) > 0 && Number(token1FormattedAmount) > 0) {
+      setWarningMessage(isValid.message);
+    } else {
+      setWarningMessage('');
+    }
+  }, [token0FormattedAmount, token1FormattedAmount, isValidAddLiquidityRequest]);
 
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose} className="bg-grey-3 w-full max-w-md p-6">
@@ -81,7 +101,6 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ isOpen,
               placeholder={`Enter ${position.token0Details.symbol} amount`}
             />
           </div>
-
           <div className="mb-6">
             <label className="block text-white mb-2" htmlFor="token1Amount">
               {position.token1Details.symbol} Amount
@@ -97,16 +116,19 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ isOpen,
             />
           </div>
 
+          {warningMessage && (
+            <div className="mb-4 text-red-500">
+              <Text type="p">{warningMessage}</Text>
+            </div>
+          )}
           <button
             onClick={handleSubmit}
-            disabled={loading || !token0FormattedAmount || !token1FormattedAmount}
+            disabled={loading || !isValidRequest}
             className={`w-full py-3 px-4 rounded-md font-medium text-white ${
-              loading || !token0FormattedAmount || !token1FormattedAmount
-                ? 'bg-blue-500 opacity-50 cursor-not-allowed'
-                : 'bg-blue-600 '
+              loading || !isValidRequest ? 'bg-blue-500 opacity-50 cursor-not-allowed' : 'bg-blue-600 '
             }`}
           >
-            {loading ? 'Processing...' : 'Enter A Amount'}
+            {loading ? 'Processing...' : 'Add Liquidity'}
           </button>
         </form>
       </div>
