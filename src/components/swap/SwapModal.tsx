@@ -10,7 +10,7 @@ import { useSwap } from '@/hooks/useSwap';
 import { useQuoter } from '@/hooks/useQuoter';
 import { fetchTokenBalance } from '@/helper/erc20';
 import { formatUnits } from 'viem';
-import { SlippageModal } from '@/components/swap/SlippageModal';
+import { SettingsModal } from '@/components/swap/SettingsModal';
 import ToggleTokens from '@/components/swap/ToggleTokens';
 import SelectTokenCard from '@/components/swap/SelectTokenCard';
 
@@ -40,6 +40,7 @@ export default function SwapModal() {
   const [showSelector, setShowSelector] = useState(false);
   const [selectType, setSelectType] = useState<'src' | 'dest' | null>(null);
   const [slippage, setSlippage] = useState(0.5);
+  const [deadline, setDeadline] = useState(5);
   const [slippageModalOpen, setSlippageModalOpen] = useState(false);
 
   const chainId = useChainId();
@@ -112,6 +113,7 @@ export default function SwapModal() {
         amountIn: srcAmount,
         amountOut: destAmount,
         slippage,
+        deadline,
       });
     } catch (e) {
       console.error('Swap error:', e);
@@ -128,13 +130,15 @@ export default function SwapModal() {
           <Button onClick={() => setSlippageModalOpen(true)} variant="ghost" size="icon">
             <Settings width={20} height={20} />
           </Button>
-          <SlippageModal
+          <SettingsModal
             className="mt-[100px] ml-[800px]"
             isOpen={slippageModalOpen}
             onClose={() => setSlippageModalOpen(false)}
             onSave={(value) => setSlippage(value)}
             setSlippage={setSlippage}
             slippage={slippage}
+            setDeadline={setDeadline}
+            deadline={deadline}
           />
         </div>
       </div>

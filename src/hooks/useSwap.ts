@@ -58,24 +58,24 @@ export const useSwap = ({ chainId }: { chainId: number }) => {
     amountIn,
     amountOut,
     slippage,
+    deadline
   }: {
     tokenIn: Token;
     tokenOut: Token;
     amountIn: string;
     amountOut: string;
     slippage: number;
+    deadline: number;
   }) => {
     try {
       if (!account) throw new Error('Wallet not connected');
       if (walletChainId !== chainId) {
         await switchChainAsync({ chainId });
       }
-
       const routerAddress = contractAddresses[chainId].swapRouter;
       const amountInParsed = parseUnits(amountIn, tokenIn.decimals);
       const minAmountOut = getMinAmount(parseUnits(amountOut, tokenOut.decimals), slippage);
-      const deadline = BigInt(Math.floor(Date.now() / 1000) + 60 * 5); // 5 minutes
-
+      const swapDeadline = BigInt(Math.floor(Date.now() / 1000) + 60 * deadline); 
       await approveIfNeeded({
         amount: amountInParsed,
         token: tokenIn.address,
@@ -114,7 +114,7 @@ export const useSwap = ({ chainId }: { chainId: number }) => {
             tokenOut: tokenOut.address,
             fee: 3000,
             recipient: account,
-            deadline,
+            deadline: swapDeadline,
             amountIn: amountInParsed,
             amountOutMinimum: minAmountOut,
             sqrtPriceLimitX96: 0n,
@@ -163,7 +163,6 @@ export const useSwap = ({ chainId }: { chainId: number }) => {
     const amountOutParsed = parseUnits(amountOut, tokenOut.decimals);
     const maxAmountIn = getMinAmount(parseUnits(amountInMax, tokenIn.decimals), slippage);
     const deadline = BigInt(Math.floor(Date.now() / 1000) + 60 * 5); // 5 minutes
-
     await approveIfNeeded({
       amount: maxAmountIn,
       token: tokenIn.address,
