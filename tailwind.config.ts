@@ -31,6 +31,7 @@ const config: Config = {
         'primary-2': 'var(--color-primary-2)',
         'primary-3': 'var(--color-primary-3)',
         'primary-4': 'var(--color-primary-4)',
+        'primary-5': 'var(--color-primary-5)',
 
         secondary: 'var(--color-secondary)',
         'secondary-2': 'var(--color-secondary-2)',

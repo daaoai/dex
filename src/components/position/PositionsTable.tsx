@@ -4,11 +4,12 @@ import { V3Position } from '@/types/v3';
 import { truncateNumber } from '@/utils/truncateNumber';
 import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
-import Text from './ui/Text';
-import PoolIcon from './PoolLogo';
+import Text from '../ui/Text';
+import PoolIcon from '../PoolLogo';
 import { formatUnits } from 'viem';
-import DynamicLogo from './DynamicLogo';
+import DynamicLogo from '../DynamicLogo';
 import { Circle } from 'lucide-react';
+import NoPositions from './NoPositionFound';
 
 interface PositionsTableProps {
   positions: V3Position[];
@@ -29,11 +30,11 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
   }
 
   if (positions.length === 0) {
-    return <p className="text-white p-4 bg-gray-800 rounded-lg">No positions found</p>;
+    return <NoPositions positions={[]} />;
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 max-h-[800px] overflow-y-scroll">
       {positions.map((position) => {
         const {
           feeEarned0,
@@ -81,7 +82,7 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-white bg-background-2 p-4">
+            <div className="grid text-white bg-background-2 p-4" style={{ gridTemplateColumns: '1fr 1fr 0.5fr 1fr' }}>
               <div>
                 <Text type="p" className="text-sm text-gray-400">
                   Position

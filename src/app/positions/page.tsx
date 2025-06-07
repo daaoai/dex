@@ -1,6 +1,6 @@
 'use client';
-import PositionsSection from '@/components/PositionSection';
-import PositionsTable from '@/components/PositionsTable';
+import PositionsSection from '@/components/position/PositionSection';
+import PositionsTable from '@/components/position/PositionsTable';
 import RewardsSummary from '@/components/RewardSummary';
 import TopPoolsSidebar from '@/components/TopPoolsSidebar';
 import { usePositions } from '@/hooks/usePositions';
@@ -9,12 +9,18 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useChainId } from 'wagmi';
 import { RootState } from '../../../store';
 import { setPositions } from '../../../store/reducers/position';
+import NoPositions from '@/components/position/NoPositionFound';
 
 export default function PositionsPage() {
   const chainId = useChainId();
   const { fetchPositions } = usePositions(chainId);
   const { positions } = useSelector((state: RootState) => state.position, shallowEqual);
   const [loading, setLoading] = useState<boolean>(true);
+  const [filters, setFilters] = useState({
+    inRange: true,
+    outOfRange: true,
+    closed: false,
+  });
 
   const dispatch = useDispatch();
 
@@ -29,6 +35,12 @@ export default function PositionsPage() {
     setLoading(false);
   };
 
+  const filteredPositions = positions.filter((pos) => {
+    // if (pos.closed) return filters.closed;
+    if (pos.isInRange) return filters.inRange;
+    return filters.outOfRange;
+  });
+
   useEffect(() => {
     handleLoadPositions();
   }, []);
@@ -38,8 +50,14 @@ export default function PositionsPage() {
       <div className="flex w-full gap-20">
         <div className="flex flex-col gap-8 flex-1">
           <RewardsSummary />
-          <PositionsSection />
-          <PositionsTable positions={positions} loading={loading} />
+          <PositionsSection filters={filters} setFilters={setFilters} />
+          {loading ? (
+            <PositionsTable positions={[]} loading={true} />
+          ) : filteredPositions.length > 0 ? (
+            <PositionsTable positions={filteredPositions} loading={false} />
+          ) : (
+            <NoPositions positions={[]} />
+          )}
         </div>
         <div className="w-1/3">
           <TopPoolsSidebar />
