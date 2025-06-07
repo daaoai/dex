@@ -5,9 +5,11 @@ import { V3Position } from '@/types/v3';
 import React, { useEffect, useState } from 'react';
 import Text from '../ui/Text';
 import { Button } from '@/shadcn/components/ui/button';
-import { X, Settings } from 'lucide-react';
-import Image from 'next/image';
+import { X, Settings, Circle } from 'lucide-react';
 import TokenInput from '../TokenInput';
+import DynamicLogo from '../DynamicLogo';
+import PoolIcon from '../PoolLogo';
+import clsx from 'clsx';
 
 interface IncreaseLiquidityModalProps {
   onClose: () => void;
@@ -70,9 +72,9 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
   return (
     <div className="bg-background p-6 rounded-xl w-full max-w-xl">
       <div className="flex justify-between items-center mb-4">
-        <button onClick={onClose}>
+        <Button onClick={onClose}>
           <X className="w-5 h-5 text-white" />
-        </button>
+        </Button>
         <Text type="h2" className="text-lg font-semibold text-white">
           Add Liquidity
         </Text>
@@ -81,14 +83,21 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
 
       {/* Pair and Range */}
       <div className="flex items-start gap-4 rounded-lg px-4 py-2 mb-6">
-        <div className="flex items-center gap-2">
-          <Image src="/icons/pair-icon.png" alt="pair" width={28} height={28} className="rounded-full" />
+        <div className="flex items-center gap-6">
+          <PoolIcon token0={position.token0Details} token1={position.token1Details} />
+
           <div className="flex flex-col gap-1">
             <Text type="h3" className="text-white">
               {position.token0Details.symbol}/{position.token1Details.symbol}
             </Text>
-            <Text type="p" className="text-green-500 text-sm mb-2">
-              • In range
+            <Text type="p" className="flex items-center gap-1 text-sm">
+              <Circle
+                className={clsx('w-2 h-2', position.isInRange ? 'text-green-500' : 'text-red-500')}
+                fill={position.isInRange ? 'currentColor' : 'currentColor'}
+              />
+              <span className={position.isInRange ? 'text-green-500' : 'text-red-500'}>
+                {position.isInRange ? 'In Range' : 'Out of Range'}
+              </span>
             </Text>
           </div>
         </div>
@@ -109,8 +118,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
           onChange={handleToken0Change}
           symbol={position.token0Details.symbol}
           // balance={position.token0Details.balance.toFixed(4)}
-          // logoURI={position.token1Details.logoURI}
-          logoURI={'/'}
+          logoUrl={position.token0Details.logo}
           balance={'123'}
           disabled={loading}
         />
@@ -121,8 +129,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
           onChange={handleToken1Change}
           symbol={position.token1Details.symbol}
           // balance={position.token1Details.balance.toFixed(2)}
-          // logoURI={position.token1Details.logoURI}
-          logoURI={'/'}
+          logoUrl={position.token1Details.logo}
           balance={'123'}
           disabled={loading}
         />
@@ -130,16 +137,27 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
         {/* Preview Positions */}
         <div className="flex flex-col gap-4 justify-between mb-4 text-sm text-white">
           <div className="flex items-center justify-between w-full">
-            <p className="text-muted-foreground">ETH position</p>
-            <p>
-              {token0FormattedAmount || '0'} {position.token0Details.symbol}
-            </p>
+            <Text type="p" className="text-muted-foreground">
+              {position.token0Details.symbol} position
+            </Text>
+            <div className="flex gap-2">
+              <DynamicLogo logoUrl={position.token0Details.logo} alt={position.token0Details.symbol} />
+              <Text type="p">
+                {token0FormattedAmount || '0'} {position.token0Details.symbol}
+              </Text>
+            </div>
           </div>
           <div className="flex items-center justify-between w-full">
-            <p className="text-muted-foreground">USDT position</p>
-            <p>
-              {token1FormattedAmount || '0'} {position.token1Details.symbol}
-            </p>
+            <Text type="p" className="text-muted-foreground">
+              {position.token1Details.symbol} position
+            </Text>
+            <div className="flex gap-2">
+              <DynamicLogo logoUrl={position.token1Details.logo} alt={position.token1Details.symbol} />
+
+              <Text type="p">
+                {token1FormattedAmount || '0'} {position.token1Details.symbol}
+              </Text>
+            </div>
           </div>
         </div>
 
@@ -150,7 +168,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
         <Button
           type="submit"
           disabled={loading || !isValidRequest}
-          className={`w-full py-3 rounded-md text-white ${
+          className={`w-full py-2 h-12 rounded-md text-white ${
             loading || !isValidRequest ? 'bg-blue-500 opacity-50 cursor-not-allowed' : 'bg-blue-600'
           }`}
         >

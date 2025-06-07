@@ -12,7 +12,7 @@ export default function RewardsSummary() {
     >
       <header className="flex justify-between items-center mb-12">
         <div>
-          <Text type="h2" className="bg-gradient-purple bg-clip-text text-gradient-purple font-semibold text-4xl">
+          <Text type="h2" className="bg-gradient-purple bg-clip-text text-gradient-purple font-semibold md:text-4xl">
             {REWARD_CONTENT.rewards.amount}
           </Text>
           <Text type="p" className="text-gray-400">

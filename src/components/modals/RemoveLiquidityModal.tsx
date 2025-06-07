@@ -6,9 +6,10 @@ import { useState } from 'react';
 import useRemoveLiquidity from '@/hooks/useRemoveLiquidity';
 import { supportedChainIds } from '@/constants/chains';
 import Text from '../ui/Text';
-import Image from 'next/image';
 import { formatUnits } from 'viem';
-import { X, Settings } from 'lucide-react';
+import { X, Settings, Circle } from 'lucide-react';
+import clsx from 'clsx';
+import PoolIcon from '../PoolLogo';
 
 interface Props {
   onClose: () => void;
@@ -42,13 +43,19 @@ export default function RemoveLiquidityModal({ onClose, position }: Props) {
       </div>
 
       <div className="flex items-center gap-3 mb-4">
-        <Image src="/favicon.png" alt="Logo" width={10} height={10} />
+        <PoolIcon token0={position.token0Details} token1={position.token1Details} />
         <div>
           <Text type="p" className="text-lg font-semibold">
             {token0Details.symbol}/{token1Details.symbol}
           </Text>
-          <Text type="p" className="text-green-400 text-sm">
-            In range
+          <Text type="p" className="flex items-center gap-1 text-sm">
+            <Circle
+              className={clsx('w-2 h-2', position.isInRange ? 'text-green-500' : 'text-red-500')}
+              fill={position.isInRange ? 'currentColor' : 'currentColor'}
+            />
+            <span className={position.isInRange ? 'text-green-500' : 'text-red-500'}>
+              {position.isInRange ? 'In Range' : 'Out of Range'}
+            </span>
           </Text>
         </div>
         <Text type="p" className="ml-auto text-xs bg-grey-4 px-2 py-1 rounded">
