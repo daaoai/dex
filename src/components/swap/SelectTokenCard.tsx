@@ -1,8 +1,9 @@
-import Image from 'next/image';
 import { Button } from '@/shadcn/components/ui/button';
-import { formatBalance } from '@/utils/truncateNumber';
 import { Token } from '@/types/tokens';
+import { truncateNumber } from '@/utils/truncateNumber';
 import { ChevronDown } from 'lucide-react';
+import Image from 'next/image';
+import { formatUnits } from 'viem';
 
 type SelectTokenCardProps = {
   title: string;
@@ -77,7 +78,9 @@ export default function SelectTokenCard({
       <div className="flex justify-between items-center">
         <span className="text-zinc-500 text-sm">$0.00</span>
         <span className="text-zinc-500 text-sm">
-          {balance !== null && token.symbol ? `Balance: ${formatBalance(balance, decimals)} ${token.symbol}` : ''}
+          {balance !== null && token.symbol
+            ? `Balance: ${truncateNumber(formatUnits(balance, decimals))} ${token.symbol}`
+            : ''}
         </span>
       </div>
     </div>

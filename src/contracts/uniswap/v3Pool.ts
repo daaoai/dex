@@ -1,4 +1,5 @@
 import { uniswapV3PoolAbi } from '@/abi/uniswap/v3Pool';
+import { supportedFeeAndTickSpacing } from '@/constants/fee';
 import { multicallForSameContract, multicallWithSameAbi } from '@/helper/multicall';
 import { V3PoolRawData } from '@/types/v3';
 import { getPublicClient } from '@/utils/publicClient';
@@ -81,7 +82,11 @@ export class UniswapV3Pool {
         sqrtPriceX96: (multicallRes[i * methods.length + 2] as [bigint, number])[0],
         currentTick: (multicallRes[i * methods.length + 2] as [bigint, number])[1],
       },
-      tickSpacing: multicallRes[i * methods.length + 3] as number,
+      tickSpacing:
+        (multicallRes[i * methods.length + 3] as number) ||
+        supportedFeeAndTickSpacing.find((item) => item.fee === (multicallRes[i * methods.length + 4] as number))
+          ?.tickSpacing ||
+        0,
       fee: multicallRes[i * methods.length + 4] as number,
     }));
   };

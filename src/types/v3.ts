@@ -45,6 +45,7 @@ export interface V3Position {
   token0: Hex;
   token1: Hex;
   poolAddress: Hex;
+  isInRange: boolean;
   amount0: string;
   amount1: string;
   liquidity: string;
@@ -59,6 +60,21 @@ export interface V3Position {
   tickLower: number;
   tickUpper: number;
   apr: number;
+  isInFullRange: boolean;
+  token0ToToken1: {
+    currentPrice: number;
+    minPrice: number;
+    maxPrice: number;
+  };
+  token1ToToken0: {
+    currentPrice: number;
+    minPrice: number;
+    maxPrice: number;
+  };
+  slot0: {
+    sqrtPriceX96: string;
+    currentTick: number;
+  };
 }
 
 export type V3PoolRawData = {

@@ -47,8 +47,7 @@ export class V3PoolUtils {
   }) => {
     return new Decimal(V3PoolUtils.tickMultiplier)
       .pow(tick)
-      .mul(new Decimal(10).pow(decimal0))
-      .div(new Decimal(10).pow(decimal1))
+      .mul(new Decimal(10).pow(decimal1 - decimal0))
       .toNumber();
   };
 

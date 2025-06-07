@@ -19,9 +19,13 @@ export default function PositionsPage() {
   const dispatch = useDispatch();
 
   const handleLoadPositions = async () => {
+    if (positions.length > 0) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
-    const positions = await fetchPositions();
-    dispatch(setPositions(positions));
+    const fetchedPositions = await fetchPositions();
+    dispatch(setPositions(fetchedPositions));
     setLoading(false);
   };
 

@@ -73,12 +73,7 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
   return (
     <div className="max-w-lg mx-auto w-full px-4 pb-8 space-y-4">
       <div className="bg-zinc-900 rounded-lg p-4 flex items-center">
-        <PoolIcon
-          token0Logo={token0.logo || ''}
-          token1Logo={token1.logo || ''}
-          token0FallbackCharacter={token0.symbol}
-          token1FallbackCharacter={token1.symbol}
-        />
+        <PoolIcon token0={token0} token1={token1} />
         <div className="flex-1">
           <h2 className="text-xl font-bold">
             {token0.symbol} / {token1.symbol}

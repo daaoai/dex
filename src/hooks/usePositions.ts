@@ -27,9 +27,30 @@ export const usePositions = (chainId: number) => {
     const token0Amount = formattedAmount0 * token0Price;
     const token1Amount = formattedAmount1 * token1Price;
     const liquidityUsd = (token0Amount + token1Amount).toFixed(4);
+    const currentPrice = V3PoolUtils.getPriceFromSqrtRatio({
+      decimal0: poolDetails.token0.decimals,
+      decimal1: poolDetails.token1.decimals,
+      sqrtPriceX96: poolDetails.slot0.sqrtPriceX96,
+    });
+    const minPrice = V3PoolUtils.getPriceFromTick({
+      decimal0: poolDetails.token0.decimals,
+      decimal1: poolDetails.token1.decimals,
+      tick: position.tickLower,
+    });
+    const maxPrice = V3PoolUtils.getPriceFromTick({
+      decimal0: poolDetails.token0.decimals,
+      decimal1: poolDetails.token1.decimals,
+      tick: position.tickUpper,
+    });
     const apr = 0; // Placeholder for APR calculation
     return {
       ...position,
+      slot0: {
+        sqrtPriceX96: poolDetails.slot0.sqrtPriceX96.toString(),
+        currentTick: poolDetails.slot0.currentTick,
+      },
+      isInRange:
+        poolDetails.slot0.currentTick <= position.tickUpper && poolDetails.slot0.currentTick >= position.tickLower,
       chainId,
       liquidity: position.liquidity.toString(),
       poolAddress: poolDetails.address,
@@ -41,6 +62,25 @@ export const usePositions = (chainId: number) => {
       tokenId: position.tokenId.toString(),
       amount0: amount0.toString(),
       amount1: amount1.toString(),
+      isInFullRange:
+        position.tickLower ===
+          V3PoolUtils.getLowestUsableTick({
+            tickSpacing: poolDetails.tickSpacing,
+          }) &&
+        position.tickUpper ===
+          V3PoolUtils.getHighestUsableTick({
+            tickSpacing: poolDetails.tickSpacing,
+          }),
+      token0ToToken1: {
+        currentPrice,
+        minPrice,
+        maxPrice,
+      },
+      token1ToToken0: {
+        currentPrice: 1 / currentPrice,
+        minPrice: 1 / maxPrice,
+        maxPrice: 1 / minPrice,
+      },
       apr,
     };
   };

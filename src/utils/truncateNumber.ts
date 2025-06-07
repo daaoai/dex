@@ -14,13 +14,12 @@ export function truncateNumber(number: number | string | null, digits: number = 
   }
 
   const sliceTo =
-    firstNonZeroIndex < digits ? digits : firstNonZeroIndex <= digits ? firstNonZeroIndex + 1 : digits + 1;
+    firstNonZeroIndex < digits ? digits : firstNonZeroIndex >= digits ? firstNonZeroIndex + 1 : digits + 1;
 
   const truncatedNumber = `${whole}.${decimal.slice(0, sliceTo)}`;
 
   return Number(truncatedNumber) === 0 ? '0' : truncatedNumber;
 }
-
 export const numberToString = (x: number | string): string => {
   const number = x.toString();
   if (number.includes('e-')) {
@@ -29,7 +28,7 @@ export const numberToString = (x: number | string): string => {
     const [beforeDecimal, afterDecimal] = mantissaExponentSplit[0].split('.');
     const beforeDecimalLength = beforeDecimal.length;
     const zeroes = '0'.repeat(exponent - beforeDecimalLength);
-    return `${'0'}.${zeroes}${beforeDecimal}${afterDecimal && afterDecimal}`;
+    return `${'0'}.${zeroes}${beforeDecimal}${afterDecimal ? afterDecimal : ''}`;
   }
   if (number.includes('e+')) {
     const valueExponentSplit = number.split('e+');
@@ -52,7 +51,7 @@ export const countLeadingZeros = (inputString: string) => {
 
 export const getSignedValue = (value: number): string => {
   if (value > 0) return `${'+'}${Math.abs(value)}`;
-  if (value < 0) return `${'-'}${Math.abs(value)}`;
+  if (value < 0) return `${'−'}${Math.abs(value)}`;
   return `${value}`;
 };
 
@@ -74,8 +73,4 @@ export const formatNumber = (value: number | string): string => {
   }
 
   return num.toString();
-};
-
-export const formatBalance = (value: bigint, decimals: number, precision = 4) => {
-  return (Number(value) / 10 ** decimals).toFixed(precision);
 };
