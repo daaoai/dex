@@ -41,7 +41,7 @@ export default function PositionsPage() {
           <PositionsSection />
           <PositionsTable positions={positions} loading={loading} />
         </div>
-        <div className="w-2/5">
+        <div className="w-1/3">
           <TopPoolsSidebar />
         </div>
       </div>

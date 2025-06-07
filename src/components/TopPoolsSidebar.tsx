@@ -1,5 +1,5 @@
-import Image from 'next/image';
 import Text from './ui/Text';
+import DynamicLogo from './DynamicLogo';
 
 const topPools = Array(3).fill({
   pair: 'USDC/USDT0',
@@ -20,10 +20,9 @@ export default function TopPoolsSidebar() {
       {topPools.map((p, i) => (
         <div key={i} className="bg-grey-3 rounded-2xl px-4 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Image
-              width={60}
-              height={60}
-              src={p.tokenIcon}
+            <DynamicLogo
+              logoUrl={p.tokenIcon}
+              fallbackText={p.tokenIcon}
               alt="Token Icon"
               className="w-10 h-10 rounded-full bg-white p-1"
             />

@@ -47,14 +47,14 @@ const ModalWrapper: React.FC<ModalProps> = ({ isOpen, onClose, children, classNa
 
   return (
     <div
-      className={clsx('fixed inset-0 flex items-start w-full justify-center py-4 pt-8 px-6 z-10', {
+      className={clsx('fixed inset-0 flex items-center w-full justify-center py-4 pt-8 px-6 z-10', {
         'bg-black/50 backdrop-blur-md': withBlur,
         'bg-transparent': !withBlur,
       })}
     >
       <div
         ref={modalRef}
-        className={clsx('relative shadow-lg w-full max-w-4xl rounded-lg flex justify-center items-center', className)}
+        className={clsx('relative shadow-lg w-full max-w-xl rounded-lg flex justify-center items-center', className)}
       >
         {children}
       </div>

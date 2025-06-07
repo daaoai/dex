@@ -6,8 +6,9 @@ import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
 import Text from './ui/Text';
 import PoolIcon from './PoolLogo';
-import Image from 'next/image';
 import { formatUnits } from 'viem';
+import DynamicLogo from './DynamicLogo';
+import { Circle } from 'lucide-react';
 
 interface PositionsTableProps {
   positions: V3Position[];
@@ -51,22 +52,33 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
         return (
           <div
             key={tokenId.toString()}
-            className={clsx('bg-grey-3 rounded-xl shadow-md flex flex-col cursor-pointer transition')}
+            className={clsx('bg-grey-3 rounded-lg overflow-hidden shadow-md flex flex-col cursor-pointer transition')}
             onClick={() => router.push(`/positions/${tokenId}`)}
           >
-            <div className="flex items-center p-4 bg-background">
+            <div className="flex items-center p-4 gap-12 bg-background">
               <PoolIcon token0={token0Details} token1={token1Details} />
               <div>
                 <div className="text-white font-semibold text-lg">
                   {token0Details.symbol} / {token1Details.symbol}
                 </div>
-                <Text type="p" className={`${isInRange ? 'text-green-500' : 'text-red-500'} text-sm`}>
-                  {isInRange ? 'In Range' : 'Out of Range'}
+                <Text type="p" className="flex items-center gap-1 text-sm">
+                  <Circle
+                    className={clsx('w-2 h-2', isInRange ? 'text-green-500' : 'text-red-500')}
+                    fill={isInRange ? 'currentColor' : 'currentColor'}
+                  />
+                  <span className={isInRange ? 'text-green-500' : 'text-red-500'}>
+                    {isInRange ? 'In Range' : 'Out of Range'}
+                  </span>
                 </Text>
               </div>
-              <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded ml-2">
-                v3 {fee / 10000}%
-              </Text>
+              <div className="flex gap-1">
+                <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded-l ">
+                  v3
+                </Text>
+                <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded-r ">
+                  {fee / 10000}%
+                </Text>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-white bg-background-2 p-4">
@@ -75,11 +87,10 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
                   Position
                 </Text>
                 <div className="flex gap-2 text-sm mt-4">
-                  <Image
-                    src={token0Details.logo || '/placeholder.png'}
+                  <DynamicLogo
+                    logoUrl={token0Details.logo}
                     alt={token0Details.symbol}
-                    width={20}
-                    height={20}
+                    fallbackText={token0Details.symbol}
                     className="rounded-full"
                   />
                   <Text type="p" className="mt-2 text-sm ">
@@ -87,42 +98,42 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
                   </Text>
                 </div>
                 <div className="flex gap-2 text-sm mt-4">
-                  <Image
-                    src={token1Details.logo || '/placeholder.png'}
+                  <DynamicLogo logoUrl={token1Details.logo} alt={token1Details.symbol} className="rounded-full" />
+                  <Text type="p" className="text-sm ">
+                    {truncateNumber(formatUnits(BigInt(amount1), token1Details.decimals), 4)} {token1Details.symbol}
+                  </Text>
+                </div>
+              </div>
+              <div>
+                <Text type="p" className="text-sm text-gray-400">
+                  Fees
+                </Text>
+                <div className="flex gap-2 text-sm mt-4">
+                  <DynamicLogo
+                    logoUrl={token0Details.logo}
+                    alt={token0Details.symbol}
+                    width={20}
+                    height={20}
+                    className="rounded-full"
+                  />
+                  <Text type="p" className="mt-2 text-sm ">
+                    {truncateNumber(formatUnits(BigInt(feeEarned0), token0Details.decimals), 4)} {token0Details.symbol}
+                  </Text>
+                </div>
+                <div className="flex gap-2 text-sm mt-4">
+                  <DynamicLogo
+                    logoUrl={token1Details.logo}
                     alt={token1Details.symbol}
                     width={20}
                     height={20}
                     className="rounded-full"
                   />
                   <Text type="p" className="text-sm ">
-                    {truncateNumber(formatUnits(BigInt(amount1), token1Details.decimals), 4)} {token1Details.symbol}
+                    {truncateNumber(formatUnits(BigInt(feeEarned1), token1Details.decimals), 4)} {token1Details.symbol}
                   </Text>
                 </div>
               </div>
-              <div className="flex gap-2 text-sm mt-4">
-                <Image
-                  src={token0Details.logo || '/placeholder.png'}
-                  alt={token0Details.symbol}
-                  width={20}
-                  height={20}
-                  className="rounded-full"
-                />
-                <Text type="p" className="mt-2 text-sm ">
-                  {truncateNumber(formatUnits(BigInt(feeEarned0), token0Details.decimals), 4)} {token0Details.symbol}
-                </Text>
-              </div>
-              <div className="flex gap-2 text-sm mt-4">
-                <Image
-                  src={token1Details.logo || '/placeholder.png'}
-                  alt={token1Details.symbol}
-                  width={20}
-                  height={20}
-                  className="rounded-full"
-                />
-                <Text type="p" className="text-sm ">
-                  {truncateNumber(formatUnits(BigInt(feeEarned1), token1Details.decimals), 4)} {token1Details.symbol}
-                </Text>
-              </div>
+
               <div>
                 <Text type="p" className="text-sm text-gray-400">
                   APR
@@ -140,11 +151,11 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
                 ) : (
                   <div>
                     <Text type="p" className="text-sm">
-                      MinPrice {truncateNumber(token0ToToken1.minPrice, 4)} {token1Details.symbol} /{' '}
+                      MinPrice {truncateNumber(token0ToToken1.minPrice, 4)} {token1Details.symbol} /
                       {token0Details.symbol}
                     </Text>
                     <Text type="p" className="text-sm">
-                      MaxPrice {truncateNumber(token0ToToken1.maxPrice, 4)} {token1Details.symbol} /{' '}
+                      MaxPrice {truncateNumber(token0ToToken1.maxPrice, 4)} {token1Details.symbol} /
                       {token0Details.symbol}
                     </Text>
                   </div>
