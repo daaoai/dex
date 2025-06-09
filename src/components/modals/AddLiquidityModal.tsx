@@ -1,15 +1,17 @@
 'use client';
 import { supportedChainIds } from '@/constants/chains';
 import useAddLiquidity from '@/hooks/useAddLiquidity';
-import { V3Position } from '@/types/v3';
-import React, { useEffect, useState } from 'react';
-import Text from '../ui/Text';
 import { Button } from '@/shadcn/components/ui/button';
-import { X, Settings, Circle } from 'lucide-react';
-import TokenInput from '../TokenInput';
+import { V3Position } from '@/types/v3';
+import { truncateNumber } from '@/utils/truncateNumber';
+import clsx from 'clsx';
+import { Circle, Settings, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { formatUnits } from 'viem';
 import DynamicLogo from '../DynamicLogo';
 import PoolIcon from '../PoolLogo';
-import clsx from 'clsx';
+import TokenInput from '../TokenInput';
+import Text from '../ui/Text';
 
 interface IncreaseLiquidityModalProps {
   onClose: () => void;
@@ -22,6 +24,8 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
   const {
     token0FormattedAmount,
     token1FormattedAmount,
+    token0Balance,
+    token1Balance,
     setToken0FormattedAmount,
     setToken1FormattedAmount,
     getToken1FormattedAmount,
@@ -103,7 +107,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
         </div>
         <div className="flex gap-1 items-center">
           <Text type="span" className="bg-background-4 px-2 py-1 rounded text-xs text-white">
-            V4
+            V3
           </Text>
           <Text type="span" className="bg-background-4 px-2 py-1 rounded text-xs text-white">
             {position.fee / 10000}%
@@ -119,7 +123,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
           symbol={position.token0Details.symbol}
           // balance={position.token0Details.balance.toFixed(4)}
           logoUrl={position.token0Details.logo}
-          balance={'123'}
+          balance={truncateNumber(formatUnits(token0Balance, position.token0Details.decimals), 4)}
           disabled={loading}
         />
 
@@ -130,7 +134,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
           symbol={position.token1Details.symbol}
           // balance={position.token1Details.balance.toFixed(2)}
           logoUrl={position.token1Details.logo}
-          balance={'123'}
+          balance={truncateNumber(formatUnits(token1Balance, position.token1Details.decimals), 4)}
           disabled={loading}
         />
 
@@ -143,7 +147,8 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
             <div className="flex gap-2">
               <DynamicLogo logoUrl={position.token0Details.logo} alt={position.token0Details.symbol} />
               <Text type="p">
-                {token0FormattedAmount || '0'} {position.token0Details.symbol}
+                {truncateNumber(formatUnits(BigInt(position.amount0), position.token0Details.decimals) || '0')}{' '}
+                {position.token0Details.symbol}
               </Text>
             </div>
           </div>
@@ -155,7 +160,8 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
               <DynamicLogo logoUrl={position.token1Details.logo} alt={position.token1Details.symbol} />
 
               <Text type="p">
-                {token1FormattedAmount || '0'} {position.token1Details.symbol}
+                {truncateNumber(formatUnits(BigInt(position.amount1), position.token1Details.decimals) || '0')}{' '}
+                {position.token1Details.symbol}
               </Text>
             </div>
           </div>

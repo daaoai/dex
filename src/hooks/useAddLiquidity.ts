@@ -225,6 +225,8 @@ const useAddLiquidity = ({ chainId, position }: { chainId: number; position: V3P
   }, [position.poolAddress, chainId, account]);
 
   return {
+    token0Balance: balances[position.token0] || BigInt(0),
+    token1Balance: balances[position.token1] || BigInt(0),
     setToken0FormattedAmount,
     setToken1FormattedAmount,
     isValidAddLiquidityRequest,
