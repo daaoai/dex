@@ -2,7 +2,7 @@ import axios from 'axios';
 import moment from 'moment';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import { chartOptions, crosshairPlugin, gradientPlugin, endOfLineLegendPlugin } from './chart-options';
+import { chartOptions, crosshairPlugin, gradientPlugin } from './chart-options';
 import { LoaderCircle } from 'lucide-react';
 import 'chartjs-plugin-zoom';
 
@@ -188,12 +188,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
           )}
         </div>
       ) : (
-        <Line
-          ref={chartRef}
-          data={chartData}
-          options={chartOptions}
-          plugins={[crosshairPlugin, gradientPlugin, endOfLineLegendPlugin]}
-        />
+        <Line ref={chartRef} data={chartData} options={chartOptions} plugins={[crosshairPlugin, gradientPlugin]} />
       )}
     </div>
   );
