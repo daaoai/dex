@@ -94,15 +94,15 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
             {loading ? (
               <p className="text-gray-400 text-sm">Loading...</p>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-2 mt-3">
                 {filteredTokens.map((token) => (
                   <Button
                     key={token.address}
-                    className="w-full bg-transparent rounded-lg p-2 flex  justify-start items-center gap-3"
+                    className="w-full bg-transparent rounded-lg p-2 flex  justify-start items-center gap-3 h-15"
                     onClick={() => onSelect(token)}
                   >
                     <div className="w-8 h-8 rounded-full  flex items-center justify-center">
-                      <Image src={token.logo || '/placeholder.svg'} alt={token.symbol} width={20} height={20} />
+                      <Image src={token.logo || '/placeholder.svg'} alt={token.symbol} width={36} height={36} />
                     </div>
                     <div className="text-left">
                       <Text type="p" className="font-medium">
