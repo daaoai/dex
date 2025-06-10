@@ -1,7 +1,7 @@
 import { REWARD_CONTENT } from '@/content/reward';
-import Text from './ui/Text';
 import { Button } from '@/shadcn/components/ui/button';
 import Link from 'next/link';
+import Text from '../ui/Text';
 
 export default function RewardsSummary() {
   return (

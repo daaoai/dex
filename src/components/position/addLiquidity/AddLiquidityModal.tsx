@@ -1,4 +1,6 @@
 'use client';
+import DynamicLogo from '@/components/ui/logo/DynamicLogo';
+import PoolIcon from '@/components/ui/logo/PoolLogo';
 import { supportedChainIds } from '@/constants/chains';
 import useAddLiquidity from '@/hooks/useAddLiquidity';
 import { Button } from '@/shadcn/components/ui/button';
@@ -8,10 +10,8 @@ import clsx from 'clsx';
 import { Circle, Settings, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { formatUnits } from 'viem';
-import DynamicLogo from '../DynamicLogo';
-import PoolIcon from '../PoolLogo';
-import TokenInput from '../TokenInput';
-import Text from '../ui/Text';
+import TokenInput from './TokenInput';
+import Text from '@/components/ui/Text';
 
 interface IncreaseLiquidityModalProps {
   onClose: () => void;

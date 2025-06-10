@@ -1,8 +1,7 @@
 'use client';
 import PositionsSection from '@/components/position/PositionSection';
 import PositionsTable from '@/components/position/PositionsTable';
-import RewardsSummary from '@/components/RewardSummary';
-import TopPoolsSidebar from '@/components/TopPoolsSidebar';
+import TopPoolsSidebar from '@/components/pools/TopPoolsSidebar';
 import { usePositions } from '@/hooks/usePositions';
 import { useEffect, useState } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -10,6 +9,7 @@ import { useChainId } from 'wagmi';
 import { RootState } from '../../../store';
 import { setPositions } from '../../../store/reducers/position';
 import NoPositions from '@/components/position/NoPositionFound';
+import RewardsSummary from '@/components/position/RewardSummary';
 
 export default function PositionsPage() {
   const chainId = useChainId();

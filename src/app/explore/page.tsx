@@ -1,4 +1,4 @@
-import PoolsTable from '@/components/PoolsTable';
+import PoolsTable from '@/components/pools/PoolsTable';
 import React from 'react';
 
 const ExplorePage = () => {

@@ -1,8 +1,8 @@
 import { chainsData } from '@/constants/chains';
 import { useSelector, shallowEqual } from 'react-redux';
 import { useAccount } from 'wagmi';
-import { RootState } from '../../store';
-import ConnectWalletButton from './ConnectWalletButton';
+import { RootState } from '../../../store';
+import ConnectWalletButton from '../wallet/ConnectWalletButton';
 
 interface ConnectOrActionButton {
   isDisabled: boolean;

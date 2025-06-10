@@ -1,4 +1,4 @@
-import DynamicLogo from './DynamicLogo';
+import DynamicLogo from '@/components/ui/logo/DynamicLogo';
 
 const TokenInput = ({
   id,

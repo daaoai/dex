@@ -6,7 +6,7 @@ import { Token } from '@/types/tokens';
 import { X } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { ModalWrapper } from '../ModalWrapper';
+import { ModalWrapper } from '../ui/ModalWrapper';
 import Text from '../ui/Text';
 import { Button } from '@/shadcn/components/ui/button';
 

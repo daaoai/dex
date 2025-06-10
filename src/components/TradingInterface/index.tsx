@@ -3,7 +3,7 @@
 import { useCreatePosition } from '@/hooks/useCreatePosition';
 import { Token } from '@/types/tokens';
 import { useEffect, useRef, useState } from 'react';
-import PoolIcon from '../PoolLogo';
+import PoolIcon from '../ui/logo/PoolLogo';
 import DepositTokens from './DepositToken';
 import RangeSelector from './RangeSelector';
 

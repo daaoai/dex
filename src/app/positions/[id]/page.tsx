@@ -1,13 +1,9 @@
 'use client';
-
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
-import IncreaseLiquidityModal from '@/components/modals/AddLiquidityModal';
-import CollectRewardsModal from '@/components/modals/CollectFeesModal';
-import RemoveLiquidityModal from '@/components/modals/RemoveLiquidityModal';
-import { ModalWrapper } from '@/components/ModalWrapper';
+import { ModalWrapper } from '@/components/ui/ModalWrapper';
 import Text from '@/components/ui/Text';
 import { chainsData } from '@/constants/chains';
 import { Button } from '@/shadcn/components/ui/button';
@@ -15,11 +11,14 @@ import { V3Position } from '@/types/v3';
 import { truncateNumber } from '@/utils/truncateNumber';
 import Link from 'next/link';
 import { formatUnits } from 'viem';
-import PoolIcon from '@/components/PoolLogo';
+import PoolIcon from '@/components/ui/logo/PoolLogo';
 import PriceRange from '@/components/position/PriceRanges';
 import { ArrowLeft, Circle, LineChart } from 'lucide-react';
 import clsx from 'clsx';
-import DynamicLogo from '@/components/DynamicLogo';
+import IncreaseLiquidityModal from '@/components/position/addLiquidity/AddLiquidityModal';
+import CollectRewardsModal from '@/components/position/collectFees/CollectFeesModal';
+import RemoveLiquidityModal from '@/components/position/removeLiquidity/RemoveLiquidityModal';
+import DynamicLogo from '@/components/ui/logo/DynamicLogo';
 
 export default function PositionDetails() {
   const params = useParams();

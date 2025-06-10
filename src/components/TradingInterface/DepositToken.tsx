@@ -1,9 +1,9 @@
 'use client';
 
 import { Token } from '@/types/tokens';
-import ConnectOrActionButton from '../LiquidityActionButton';
 import Image from 'next/image';
 import Text from '../ui/Text';
+import ConnectOrActionButton from '../position/LiquidityActionButton';
 
 interface DepositTokensProps {
   srcTokenDetails: Token;

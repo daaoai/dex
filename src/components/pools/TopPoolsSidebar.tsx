@@ -1,5 +1,5 @@
-import Text from './ui/Text';
-import DynamicLogo from './DynamicLogo';
+import DynamicLogo from '../ui/logo/DynamicLogo';
+import Text from '../ui/Text';
 
 const topPools = Array(3).fill({
   pair: 'USDC/USDT0',

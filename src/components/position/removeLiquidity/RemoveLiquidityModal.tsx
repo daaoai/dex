@@ -5,11 +5,11 @@ import { Button } from '@/shadcn/components/ui/button';
 import { useState } from 'react';
 import useRemoveLiquidity from '@/hooks/useRemoveLiquidity';
 import { supportedChainIds } from '@/constants/chains';
-import Text from '../ui/Text';
 import { formatUnits } from 'viem';
 import { X, Settings, Circle } from 'lucide-react';
 import clsx from 'clsx';
-import PoolIcon from '../PoolLogo';
+import Text from '@/components/ui/Text';
+import PoolIcon from '@/components/ui/logo/PoolLogo';
 
 interface Props {
   onClose: () => void;

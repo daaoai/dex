@@ -1,12 +1,12 @@
 'use client';
 
+import Text from '@/components/ui/Text';
 import useHarvestLiquidity from '@/hooks/useHarvestLiquidity';
 import { Button } from '@/shadcn/components/ui/button';
 import { V3Position } from '@/types/v3';
 import Image from 'next/image';
 import { useState } from 'react';
 import { formatUnits } from 'viem';
-import Text from '../ui/Text';
 
 interface Props {
   onClose: () => void;

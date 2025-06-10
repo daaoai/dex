@@ -3,7 +3,7 @@
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { UserCircle } from 'lucide-react';
-import Text from './ui/Text';
+import Text from '../Text';
 
 interface DynamicLogoProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   logoUrl?: string;

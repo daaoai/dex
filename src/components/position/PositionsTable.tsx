@@ -5,11 +5,11 @@ import { truncateNumber } from '@/utils/truncateNumber';
 import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
 import Text from '../ui/Text';
-import PoolIcon from '../PoolLogo';
+import PoolIcon from '../ui/logo/PoolLogo';
 import { formatUnits } from 'viem';
-import DynamicLogo from '../DynamicLogo';
 import { Circle } from 'lucide-react';
 import NoPositions from './NoPositionFound';
+import DynamicLogo from '../ui/logo/DynamicLogo';
 
 interface PositionsTableProps {
   positions: V3Position[];

@@ -1,6 +1,4 @@
 'use client';
-
-import ConnectOrActionButton from '@/components/LiquidityActionButton';
 import TokenSelectionModal from '@/components/TokenSelectorModal';
 import CryptoTradingInterface from '@/components/TradingInterface';
 import { Token } from '@/types/tokens';
@@ -10,6 +8,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
+import ConnectOrActionButton from '@/components/position/LiquidityActionButton';
 
 export default function NewPositions() {
   // states

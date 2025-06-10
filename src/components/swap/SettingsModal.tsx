@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { ModalWrapper } from '../ModalWrapper';
+import { ModalWrapper } from '../ui/ModalWrapper';
 import clsx from 'clsx';
 import { Button } from '@/shadcn/components/ui/button';
 

@@ -1,7 +1,8 @@
 'use client';
+import { ModalWrapper } from '@/components/ui/ModalWrapper';
+import Text from '@/components/ui/Text';
 import { Button } from '@/shadcn/components/ui/button';
-import { ModalWrapper } from '../ModalWrapper';
-import Text from '../ui/Text';
+
 import Image from 'next/image';
 
 interface Props {
