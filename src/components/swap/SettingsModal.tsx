@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import { ModalWrapper } from '../ui/ModalWrapper';
 import clsx from 'clsx';
 import { Button } from '@/shadcn/components/ui/button';
+import Text from '../ui/Text';
 
 interface SlippageModalProps {
   isOpen: boolean;
@@ -87,7 +88,9 @@ export const SettingsModal: React.FC<SlippageModalProps> = ({
             }}
             className="no-spinner bg-transparent text-white text-sm outline-none text-center w-5"
           />
-          <span className="text-white text-sm">minutes</span>
+          <Text type="span" className="text-white text-sm">
+            minutes
+          </Text>
         </div>
       </div>
     </ModalWrapper>

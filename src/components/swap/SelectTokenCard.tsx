@@ -4,6 +4,7 @@ import { truncateNumber } from '@/utils/truncateNumber';
 import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import { formatUnits } from 'viem';
+import Text from '../ui/Text';
 
 type SelectTokenCardProps = {
   title: string;
@@ -12,7 +13,7 @@ type SelectTokenCardProps = {
   setAmount?: (value: string) => void;
   onTokenClick: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  balance?: any;
+  balance?: bigint;
   decimals: number;
   isDisabled?: boolean;
   isLoading?: boolean;
@@ -37,7 +38,9 @@ export default function SelectTokenCard({
       }`}
     >
       <div className="flex justify-between items-center mb-3">
-        <span className="text-zinc-400 text-sm font-medium">{title}</span>
+        <Text type="span" className="text-zinc-400 text-sm font-medium">
+          {title}
+        </Text>
       </div>
 
       <div className="flex justify-between items-start mb-3">
@@ -76,12 +79,12 @@ export default function SelectTokenCard({
       </div>
 
       <div className="flex justify-between items-center">
-        <span className="text-zinc-500 text-sm">$0.00</span>
-        <span className="text-zinc-500 text-sm">
-          {balance !== null && token.symbol
-            ? `Balance: ${truncateNumber(formatUnits(balance, decimals))} ${token.symbol}`
-            : ''}
-        </span>
+        <Text type="span" className="text-zinc-500 text-sm">
+          $0.00
+        </Text>
+        <Text type="span" className="text-zinc-500 text-sm">
+          {balance && token.symbol ? `Balance: ${truncateNumber(formatUnits(balance, decimals))} ${token.symbol}` : ''}
+        </Text>
       </div>
     </div>
   );

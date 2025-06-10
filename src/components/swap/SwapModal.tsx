@@ -13,6 +13,7 @@ import { formatUnits } from 'viem';
 import { SettingsModal } from '@/components/swap/SettingsModal';
 import ToggleTokens from '@/components/swap/ToggleTokens';
 import SelectTokenCard from '@/components/swap/SelectTokenCard';
+import Text from '../ui/Text';
 
 export default function SwapModal() {
   const [srcToken, setSrcToken] = useState<Token>({
@@ -33,8 +34,8 @@ export default function SwapModal() {
 
   const [srcAmount, setSrcAmount] = useState('');
   const [destAmount, setDestAmount] = useState('');
-  const [srcBalance, setSrcBalance] = useState<bigint | null>(null);
-  const [destBalance, setDestBalance] = useState<bigint | null>(null);
+  const [srcBalance, setSrcBalance] = useState<bigint>(0n);
+  const [destBalance, setDestBalance] = useState<bigint>(0n);
   const [loading, setLoading] = useState(false);
   const [quoteLoading, setQuoteLoading] = useState(false);
   const [showSelector, setShowSelector] = useState(false);
@@ -63,7 +64,7 @@ export default function SwapModal() {
     const setBalance = isSource ? setSrcBalance : setDestBalance;
 
     setToken(token);
-    setBalance(null);
+    setBalance(0n);
 
     if (account) {
       const balance = await fetchTokenBalance({ token: token.address, account, chainId });
@@ -125,7 +126,9 @@ export default function SwapModal() {
   return (
     <div className="bg-transparent border border-zinc-700 rounded-3xl p-2 w-full max-w-md mx-auto shadow-2xl">
       <div className=" text-white flex justify-between items-center mb-2 p-2">
-        <h2 className="text-xl ">Swap</h2>
+        <Text type="h2" className="text-xl ">
+          Swap
+        </Text>
         <div className="relative inline-block">
           <Button onClick={() => setSlippageModalOpen(true)} variant="ghost" size="icon">
             <Settings width={20} height={20} />

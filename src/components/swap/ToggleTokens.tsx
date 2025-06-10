@@ -19,15 +19,14 @@ type ToggleTokensProps = {
     setDest: (val: string) => void;
   };
   balances: {
-    setSrc: (val: bigint | null) => void;
-    setDest: (val: bigint | null) => void;
+    setSrc: (val: bigint) => void;
+    setDest: (val: bigint) => void;
   };
 };
 
 export default function ToggleTokens({ tokens, amounts, balances }: ToggleTokensProps) {
   const chainId = useChainId();
   const { address: account } = useAccount();
-  // console.log(account);
 
   const handleToggle = async () => {
     tokens.setSrc(tokens.dest);
