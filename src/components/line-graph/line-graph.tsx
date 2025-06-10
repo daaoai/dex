@@ -45,7 +45,6 @@ export const LineGraph: React.FC<LineGraphProps> = ({
 }) => {
   const [prices, setPrices] = useState<PriceData[]>([]);
   const [error, setError] = useState<string | null>(null);
-   
 
   const cacheKey = useMemo(() => `${tokenName}_${duration}_${vsCurrency}`, [tokenName, duration, vsCurrency]);
 

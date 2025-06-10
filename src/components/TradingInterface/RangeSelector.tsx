@@ -7,7 +7,7 @@ import { truncateNumber } from '@/utils/truncateNumber';
 import { LayoutGroup, motion } from 'framer-motion';
 import { RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import Text from '../ui/Text';
-import { LineGraphView } from './line-graph';
+import { LineGraphView } from '../line-graph';
 import { useEffect, useState, useRef } from 'react';
 
 type ChartDataPoint = {
