@@ -12,7 +12,6 @@ type SelectTokenCardProps = {
   amount: string;
   setAmount?: (value: string) => void;
   onTokenClick: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   balance?: bigint;
   decimals: number;
   isDisabled?: boolean;
