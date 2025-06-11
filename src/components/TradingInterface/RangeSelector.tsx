@@ -116,7 +116,7 @@ export default function RangeSelector({
             <Text type="p">{destTokenDetails.symbol}</Text>
           </div>
         </div>
-        <div className="relative h-[160px] rounded-md overflow-hidden bg-zinc-800">
+        <div className="relative h-[150px] overflow-hidden bg-zinc-800">
           <motion.div
             className="absolute inset-0 origin-center"
             animate={{ scale: isZoomed ? 1.5 : 1 }}

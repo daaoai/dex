@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import PoolIcon from '../ui/logo/PoolLogo';
 import DepositTokens from './DepositToken';
 import RangeSelector from './RangeSelector';
+import Text from '../ui/Text';
 
 interface CryptoTradingInterfaceProps {
   token0: Token;
@@ -75,13 +76,17 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
       <div className="bg-zinc-900 rounded-lg p-4 flex items-center">
         <PoolIcon token0={token0} token1={token1} />
         <div className="flex-1">
-          <h2 className="text-xl font-bold">
+          <Text type="h2" className="text-xl font-bold ml-4">
             {token0.symbol} / {token1.symbol}
-          </h2>
+          </Text>
         </div>
         <div className="flex items-center space-x-4">
-          <p className="bg-zinc-800 px-2 py-1 rounded text-sm">V4</p>
-          <p className="text-gray-400">{fee / 10000}%</p>
+          <Text type="p" className="bg-zinc-800 px-2 py-1 rounded text-sm">
+            V4
+          </Text>
+          <Text type="p" className="text-gray-400">
+            {fee / 10000}%
+          </Text>
         </div>
       </div>
 

@@ -146,7 +146,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
             </Text>
           ) : (
             <div className="flex items-center justify-center h-32">
-              <LoaderCircle className="h-10 w-10 text-primary animate-spin" />
+              <LoaderCircle className="h-10 w-10 text-pink animate-spin" />
             </div>
           )}
         </div>
