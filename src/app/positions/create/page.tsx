@@ -9,6 +9,8 @@ import { useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import ConnectOrActionButton from '@/components/position/LiquidityActionButton';
+import Text from '@/components/ui/Text';
+import { Button } from '@/shadcn/components/ui/button';
 
 export default function NewPositions() {
   // states
@@ -33,21 +35,21 @@ export default function NewPositions() {
           <span className="text-gray-600">
             <ChevronDown className="h-4 w-4 rotate-270" />
           </span>
-          <p>New positions</p>
+          <Text type="p">New positions</Text>
         </div>
 
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">New Positions</h1>
+          <Text type="h1" className="text-3xl font-bold">
+            New Positions
+          </Text>
           <div className="flex gap-2">
-            <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-              <span className="text-gray-400"></span>
+            <Button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
               Reset
-            </button>
-            <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">v3 position</button>
-            <button className="bg-gray-800 hover:bg-gray-700 text-white p-2 rounded-lg">
+            </Button>
+            <Button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">v3 position</Button>
+            <Button className="bg-gray-800 hover:bg-gray-700 text-white p-2 rounded-lg">
               <Settings className="h-5 w-5" />
-              {}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -62,8 +64,12 @@ export default function NewPositions() {
                 1
               </div>
               <div>
-                <div className="text-sm text-gray-400">Step 1</div>
-                <div className="text-base font-medium text-white">Select token pair and fees</div>
+                <Text type="p" className="text-sm text-gray-400">
+                  Step 1
+                </Text>
+                <Text type="p" className="text-base font-medium text-white">
+                  Select token pair and fees
+                </Text>
               </div>
             </div>
 
@@ -78,8 +84,12 @@ export default function NewPositions() {
                 2
               </div>
               <div>
-                <div className="text-sm text-gray-400">Step 2</div>
-                <div className="text-base font-medium text-gray-500">Select price range and deposit amounts</div>
+                <Text type="p" className="text-sm text-gray-400">
+                  Step 2
+                </Text>
+                <Text type="p" className="text-base font-medium text-gray-500">
+                  Select price range and deposit amounts
+                </Text>
               </div>
             </div>
           </div>
@@ -87,13 +97,15 @@ export default function NewPositions() {
           {step === 1 ? (
             <>
               <div className="bg-background border-2 border-stroke-2 rounded-lg p-6">
-                <h2 className="text-xl font-semibold mb-4">Select pair</h2>
-                <p className="text-gray-400 mb-6">
+                <Text type="h2" className="text-xl font-semibold mb-4">
+                  Select pair
+                </Text>
+                <Text type="p" className="text-gray-400 mb-6">
                   Choose the tokens you want to provide liquidity for. You can select tokens on all supported networks.
-                </p>
+                </Text>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <button
+                  <Button
                     className="bg-grey-3 rounded-lg p-4 flex items-center justify-between"
                     onClick={() => setShowTokenModal({ show: true, tokenType: 'token0' })}
                   >
@@ -105,10 +117,10 @@ export default function NewPositions() {
                         <span>{token0.symbol}</span>
                       </div>
                     ) : (
-                      <span>Choose token</span>
+                      <Text type="p">Choose token</Text>
                     )}
                     <ChevronDown className="h-5 w-5 text-gray-400" />
-                  </button>
+                  </Button>
 
                   <button
                     className="bg-white text-black rounded-lg p-4 flex items-center justify-between"
@@ -119,37 +131,46 @@ export default function NewPositions() {
                         <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
                           <Image src={token1.logo || '/placeholder.svg'} alt={token1.symbol} width={16} height={16} />
                         </div>
-                        <span>{token1.symbol}</span>
+                        <Text type="p">{token1.symbol}</Text>
                       </div>
                     ) : (
-                      <span>Choose token</span>
+                      <Text type="p">Choose token</Text>
                     )}
                     <ChevronDown className="h-5 w-5 text-gray-600" />
                   </button>
                 </div>
 
                 <div className="mb-6">
-                  <button className="text-gray-400 hover:text-white flex items-center gap-2">
-                    Add a Hook <span className="text-gray-600">(Advanced)</span>
-                  </button>
+                  <Button className="text-gray-400 hover:text-white flex items-center gap-2">
+                    Add a Hook{' '}
+                    <Text type="p" className="text-gray-600">
+                      (Advanced)
+                    </Text>
+                  </Button>
                 </div>
 
                 <div className="mb-6">
-                  <h3 className="text-xl font-semibold mb-2">Fee tier</h3>
-                  <p className="text-gray-400 mb-4">
+                  <Text type="h3" className="text-xl font-semibold mb-2">
+                    Fee tier
+                  </Text>
+                  <Text type="p" className="text-gray-400 mb-4">
                     The amount earned providing liquidity. Choose an amount that suits your risk tolerance and strategy.
-                  </p>
+                  </Text>
 
                   <div className="bg-dark-black-300 rounded-lg">
                     <div className="flex justify-between items-center">
                       <div>
-                        <h4 className="font-semibold mb-1">0.3% fee tier</h4>
-                        <p className="text-gray-400">The % you will earn in fees</p>
+                        <Text type="h4" className="font-semibold mb-1">
+                          0.3% fee tier
+                        </Text>
+                        <Text type="p" className="text-gray-400">
+                          The % you will earn in fees
+                        </Text>
                       </div>
-                      <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                      <Button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
                         More
                         <ChevronDown className="h-4 w-4" />
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>

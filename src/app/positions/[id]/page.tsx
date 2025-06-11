@@ -53,12 +53,39 @@ export default function PositionDetails() {
     isInFullRange,
   } = position;
 
+  const renderModals = () => (
+    <>
+      <ModalWrapper isOpen={removeModalOpen} onClose={() => setRemoveModalOpen(false)}>
+        <RemoveLiquidityModal position={position} onClose={() => setRemoveModalOpen(false)} />
+      </ModalWrapper>
+      <ModalWrapper isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+        <IncreaseLiquidityModal position={position} onClose={() => setModalOpen(false)} />
+      </ModalWrapper>
+      <ModalWrapper isOpen={collectModalOpen} onClose={() => setCollectModalOpen(false)}>
+        <CollectRewardsModal position={position} onClose={() => setCollectModalOpen(false)} />
+      </ModalWrapper>
+    </>
+  );
+
+  const positionContent = {
+    backLink: 'Your positions',
+    addLiquidity: 'Add liquidity',
+    removeLiquidity: 'Remove liquidity',
+    collectFees: 'Collect fees',
+    position: 'Position',
+    feesEarned: 'Fees earned',
+    noGraphTitle: 'No Graph Data',
+    noGraphDesc: 'We couldn’t generate a graph for this data. Try adjusting your filters or come back later.',
+    inRange: 'In Range',
+    outOfRange: 'Out of Range',
+  };
+
   return (
     <div className="p-6 text-white min-h-screen bg-grey-5">
       <div>
         <Link href="/positions" className="text-md cursor-pointer flex items-center gap-2">
           <ArrowLeft className="h-4 w-4" />
-          Your positions
+          {positionContent.backLink}
         </Link>
       </div>
 
@@ -103,16 +130,16 @@ export default function PositionDetails() {
         </div>
         <div className="flex mt-6 gap-2">
           <Button className="px-4 py-2 rounded font-bold bg-background text-white" onClick={() => setModalOpen(true)}>
-            Add liquidity
+            {positionContent.addLiquidity}
           </Button>
           <Button
             className="px-4 py-2 rounded font-bold bg-background text-white"
             onClick={() => setRemoveModalOpen(true)}
           >
-            Remove liquidity
+            {positionContent.removeLiquidity}
           </Button>
           <Button className="bg-white text-black px-4 py-2 rounded font-bold" onClick={() => setCollectModalOpen(true)}>
-            Collect fees
+            {positionContent.collectFees}
           </Button>
         </div>
       </div>
@@ -130,10 +157,12 @@ export default function PositionDetails() {
             <div className="bg-zinc-800 p-3 rounded-full">
               <LineChart className="w-6 h-6 text-zinc-400" />
             </div>
-            <p className="text-lg font-semibold">No Graph Data</p>
-            <p className="text-sm text-zinc-400 max-w-xs">
-              We couldn’t generate a graph for this data. Try adjusting your filters or come back later.
-            </p>
+            <Text type="p" className="text-lg font-semibold">
+              {positionContent.noGraphTitle}
+            </Text>
+            <Text type="p" className="text-sm text-zinc-400 max-w-xs">
+              {positionContent.noGraphDesc}
+            </Text>
           </div>
         </div>
         <div className="flex flex-col gap-6 mt-4 w-2/5">
@@ -148,20 +177,9 @@ export default function PositionDetails() {
           )}
           <div className="p-4 rounded-lg bg-background">
             <Text type="p" className="">
-              Position
+              {positionContent.position}
             </Text>
-            {/* <div className="text-2xl font-bold mt-2">$0.0000000133</div> */}
-            {/* Percent seems to be calculated based on dollar value of the position 
-            <div className="flex justify-between text-sm mt-4">
-              <div className="flex items-center space-x-1">
-                <Image logoUrl="/bnb-icon.svg" alt="bnb" width={20} height={20} />
-                <Text type="span">50.01%</Text>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Image logoUrl="/usdt-icon.svg" alt="usdt" width={20} height={20} />
-                <Text type="span">49.99%</Text>
-              </div>
-            </div> */}
+
             <div className="flex gap-2 text-sm mt-4">
               <DynamicLogo
                 logoUrl={token0Details.logo}
@@ -189,20 +207,10 @@ export default function PositionDetails() {
           </div>
 
           <div className="p-4 rounded-lg bg-background">
-            <div className="">Fees earned</div>
-            {/* <Text type="p" className="text-2xl font-bold mt-2">
-              &lt;$0.00000001
-            </Text> */}
-            {/* <div className="flex justify-between text-sm mt-4">
-              <div className="flex items-center space-x-1">
-                <Image logoUrl="/bnb-icon.svg" alt="bnb" width={20} height={20} />
-                <Text type="span">50.72%</Text>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Image logoUrl="/usdt-icon.svg" alt="usdt" width={20} height={20} />
-                <Text type="span">49.28%</Text>
-              </div>
-            </div> */}
+            <Text type="p" className="">
+              {positionContent.feesEarned}
+            </Text>
+
             <div className="flex gap-2 text-sm mt-4">
               <DynamicLogo
                 logoUrl={token0Details.logo}
@@ -230,15 +238,7 @@ export default function PositionDetails() {
           </div>
         </div>
       </div>
-      <ModalWrapper isOpen={removeModalOpen} onClose={() => setRemoveModalOpen(false)}>
-        <RemoveLiquidityModal position={position} onClose={() => setRemoveModalOpen(false)} />
-      </ModalWrapper>
-      <ModalWrapper isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-        <IncreaseLiquidityModal position={position} onClose={() => setModalOpen(false)} />
-      </ModalWrapper>
-      <ModalWrapper isOpen={collectModalOpen} onClose={() => setCollectModalOpen(false)}>
-        <CollectRewardsModal position={position} onClose={() => setCollectModalOpen(false)} />
-      </ModalWrapper>
+      {renderModals()}
     </div>
   );
 }
