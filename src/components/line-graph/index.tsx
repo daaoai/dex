@@ -36,9 +36,9 @@ export const LineGraphView: React.FC<LineGraphViewProps> = ({
     setDuration(active?.duration ?? tabs[0].duration);
   }, [activeTabId, tabs]);
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       {!loading && !tokenState?.diff && (
-        <div className="text-[#fa8f6b] mt-11 flex justify-center">Line Graph unavailable</div>
+        <div className="text-orange-500 mt-11 flex justify-center">Line Graph unavailable</div>
       )}
 
       <div className="relative">
