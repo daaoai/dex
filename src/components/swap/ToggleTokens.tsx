@@ -53,10 +53,10 @@ export default function ToggleTokens({ tokens, amounts, balances }: ToggleTokens
     <div className="flex justify-center -mt-8 -mb-6">
       <button
         onClick={handleToggle}
-        className="bg-zinc-800 hover:bg-zinc-700 p-3 rounded-xl border-black border-4 transition-all duration-200 hover:border-zinc-600 group"
+        className="bg-background hover:bg-background-2 p-3 rounded-xl border-black border-4 transition-all duration-200 hover:border-grey group"
         aria-label="Switch tokens"
       >
-        <ArrowDown className="w-5 h-5 text-zinc-400 transition-transform duration-300 group-hover:rotate-180" />
+        <ArrowDown className="w-5 h-5 text-grey transition-transform duration-300 group-hover:rotate-180" />
       </button>
     </div>
   );

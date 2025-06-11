@@ -124,7 +124,7 @@ export default function SwapModal() {
   };
 
   return (
-    <div className="bg-transparent border border-zinc-700 rounded-3xl p-2 w-full max-w-md mx-auto shadow-2xl">
+    <div className="bg-transparent border border-stroke rounded-3xl p-2 w-full max-w-md mx-auto shadow-2xl">
       <div className=" text-white flex justify-between items-center mb-2 p-2">
         <Text type="h2" className="text-xl ">
           Swap
@@ -198,7 +198,7 @@ export default function SwapModal() {
       <Button
         onClick={handleSwap}
         disabled={loading}
-        className="h-[50px] w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl  active:scale-[0.98]"
+        className="h-[50px] w-full bg-gradient-to-r from-gradient to-gradient-2 text-white py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl  active:scale-[0.98]"
       >
         {loading ? 'Processing...' : 'Continue'}
       </Button>

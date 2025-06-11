@@ -137,16 +137,16 @@ export const LineGraph: React.FC<LineGraphProps> = ({
   };
 
   return (
-    <div className="bg-pink-500/10">
+    <div className="w-full h-40 p-2 rounded-lg bg-magenta-2 shadow-md">
       {loading ? (
         <div className="h-[150px] flex flex-col items-center justify-center">
           {error ? (
-            <Text type="p" className="text-red-500 text-center">
+            <Text type="p" className="text-rose text-center">
               {error}
             </Text>
           ) : (
             <div className="flex items-center justify-center h-32">
-              <LoaderCircle className="h-10 w-10 text-pink animate-spin" />
+              <LoaderCircle className="h-10 w-10 text-magenta animate-spin" />
             </div>
           )}
         </div>

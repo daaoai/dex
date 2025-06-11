@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { LineGraph } from './line-graph';
+import Text from '../ui/Text';
 
 interface Tab {
   id: string | number;
@@ -38,7 +39,9 @@ export const LineGraphView: React.FC<LineGraphViewProps> = ({
   return (
     <div className="w-full h-full">
       {!loading && !tokenState?.diff && (
-        <div className="text-orange-500 mt-11 flex justify-center">Line Graph unavailable</div>
+        <Text type="p" className="text-rose mt-11 flex justify-center">
+          Line Graph unavailable
+        </Text>
       )}
 
       <div className="relative">

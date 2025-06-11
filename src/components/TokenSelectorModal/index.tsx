@@ -69,7 +69,7 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
             <Text type="h2" className="text-xl font-semibold">
               Select Token
             </Text>
-            <Button onClick={onClose} className="text-white hover:text-white">
+            <Button onClick={onClose} className="text-white hover:text-white bg-background">
               <X className="h-6 w-6" />
             </Button>
           </div>
@@ -92,7 +92,9 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
             </div>
 
             {loading ? (
-              <p className="text-gray-400 text-sm">Loading...</p>
+              <Text type="p" className="text-gray-400 text-sm">
+                Loading...
+              </Text>
             ) : (
               <div className="space-y-2 mt-3">
                 {filteredTokens.map((token) => (
