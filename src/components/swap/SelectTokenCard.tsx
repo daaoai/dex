@@ -5,6 +5,7 @@ import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import { formatUnits } from 'viem';
 import Text from '../ui/Text';
+import BalancePercentageButtons from '../ui/BalancePercentageButtons';
 
 type SelectTokenCardProps = {
   title: string;
@@ -32,12 +33,6 @@ export default function SelectTokenCard({
 }: SelectTokenCardProps) {
   const isSell = title.toLowerCase() === 'sell';
 
-  const handlePercentageClick = (percent: number) => {
-    if (!balance || !setAmount) return;
-    const value = (balance * BigInt(percent)) / BigInt(100);
-    setAmount(formatUnits(value, decimals));
-  };
-
   return (
     <div
       className={`border border-zinc-700 rounded-3xl p-4 hover:border-zinc-600 transition-colors mb-4 ${
@@ -49,19 +44,8 @@ export default function SelectTokenCard({
           {title}
         </Text>
 
-        {isSell && balance && (
-          <div className="flex gap-1">
-            {[25, 50, 75, 100].map((percent) => (
-              <button
-                key={percent}
-                type="button"
-                className="bg-grey-4 text-xs text-grey border border-zinc-600 px-2 py-0.5 rounded-xl hover:bg-zinc-700 transition"
-                onClick={() => handlePercentageClick(percent)}
-              >
-                {percent === 100 ? 'Max' : `${percent}%`}
-              </button>
-            ))}
-          </div>
+        {isSell && balance && setAmount && (
+          <BalancePercentageButtons balance={balance} decimals={decimals} setAmount={setAmount} />
         )}
       </div>
 
