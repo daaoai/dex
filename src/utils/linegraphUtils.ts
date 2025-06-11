@@ -58,21 +58,15 @@ export const fetchPrices = async ({
 };
 
 export const getTimeLabel = (duration: number): string => {
-    switch (duration) {
-      case 1:
-        return 'TODAY';
-      case 3:
-        return '3 DAYS';
-      case 30:
-        return '1 MONTH';
-      case 180:
-        return '6 MONTH';
-      case 365:
-        return '1 YEAR';
-      case 365 * 5:
-        return 'ALL';
-      default:
-        return `${duration} DAYS`;
-    }
+    const labels: Record<number, string> = {
+      1: 'TODAY',
+      3: '3 DAYS',
+      30: '1 MONTH',
+      180: '6 MONTH',
+      365: '1 YEAR',
+      [365 * 5]: 'ALL',
+    };
+  
+    return labels[duration] || `${duration} DAYS`;
   };
   
