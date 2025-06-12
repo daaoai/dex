@@ -7,7 +7,7 @@ import { truncateNumber } from '@/utils/truncateNumber';
 import { LayoutGroup, motion } from 'framer-motion';
 import { RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import Text from '../ui/Text';
-import { LineGraphView } from './line-graph';
+import { LineGraphView } from '../line-graph';
 import { useEffect, useState, useRef } from 'react';
 
 type ChartDataPoint = {
@@ -73,23 +73,25 @@ export default function RangeSelector({
   const rangeOptions = ['full', 'custom'] as const;
 
   return (
-    <div className="bg-zinc-900 rounded-lg p-4 space-y-4">
-      <h3 className="text-lg font-medium">Set price range</h3>
-      <div className="relative bg-zinc-800 p-1 rounded-md overflow-hidden">
+    <div className="bg-background-4 rounded-lg p-4 space-y-4">
+      <Text type="p" className="text-lg font-medium">
+        Set price range
+      </Text>
+      <div className="relative bg-background-3 p-1 rounded-md overflow-hidden">
         <LayoutGroup>
           <div className="grid grid-cols-2">
             {rangeOptions.map((option) => (
               <Button
                 key={option}
                 onClick={() => handleRangeSelection(option)}
-                className={`py-2 rounded-md text-center transition-colors relative z-10 ${
+                className={`py-2 rounded-md text-center transition-colors relative z-10 bg-background-3 ${
                   selectedRange === option ? 'text-white' : 'text-gray-400 hover:text-white'
                 }`}
               >
                 {selectedRange === option && (
                   <motion.div
                     layoutId="rangeToggle"
-                    className="absolute inset-0 bg-zinc-700 rounded-md z-0"
+                    className="absolute inset-0 bg-background-4 rounded-md z-0"
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 )}
@@ -116,7 +118,7 @@ export default function RangeSelector({
             <Text type="p">{destTokenDetails.symbol}</Text>
           </div>
         </div>
-        <div className="relative h-[160px] rounded-md overflow-hidden bg-zinc-800">
+        <div className="relative h-[150px] overflow-hidden bg-zinc-800">
           <motion.div
             className="absolute inset-0 origin-center"
             animate={{ scale: isZoomed ? 1.5 : 1 }}

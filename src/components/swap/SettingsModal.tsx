@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import { ModalWrapper } from '../ui/ModalWrapper';
 import clsx from 'clsx';
 import { Button } from '@/shadcn/components/ui/button';
+import Text from '../ui/Text';
 
 interface SlippageModalProps {
   isOpen: boolean;
@@ -48,16 +49,16 @@ export const SettingsModal: React.FC<SlippageModalProps> = ({
       isOpen={isOpen}
       onClose={handleClose}
       className={clsx(
-        'flex flex-col absolute right-0 top-12 z-50 w-[300px] rounded-[20px] bg-zinc-900 shadow-xl p-4 space-y-4',
+        'flex flex-col absolute right-0 top-12 z-50 w-[300px] rounded-[20px] bg-background shadow-xl p-4 space-y-4',
         className,
       )}
     >
       {/* Slippage */}
       <div className="flex items-center justify-between w-full">
-        <div className="text-zinc-400 text-sm font-medium">Max Slippage</div>
+        <div className="text-grey text-sm font-medium">Max Slippage</div>
 
         <div className="flex items-center bg-black rounded-full px-1 py-1 gap-1 w-[140px]">
-          <Button className="text-sm px-4 py-1.5 rounded-full font-medium text-white bg-indigo-600 mr-2" disabled>
+          <Button className="text-sm px-4 py-1.5 rounded-full font-medium text-white bg-primary mr-2" disabled>
             Auto
           </Button>
           <input
@@ -74,7 +75,7 @@ export const SettingsModal: React.FC<SlippageModalProps> = ({
 
       {/* Deadline */}
       <div className="flex items-center justify-between w-full">
-        <div className="text-zinc-400 text-sm font-medium">Swap Deadline</div>
+        <div className="text-grey text-sm font-medium">Swap Deadline</div>
 
         <div className="flex items-center bg-black rounded-full px-3 py-1  w-[140px] h-9 align-middle justify-center">
           <input
@@ -87,7 +88,9 @@ export const SettingsModal: React.FC<SlippageModalProps> = ({
             }}
             className="no-spinner bg-transparent text-white text-sm outline-none text-center w-5"
           />
-          <span className="text-white text-sm">minutes</span>
+          <Text type="span" className="text-white text-sm">
+            minutes
+          </Text>
         </div>
       </div>
     </ModalWrapper>

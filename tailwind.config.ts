@@ -37,6 +37,11 @@ const config: Config = {
         'secondary-2': 'var(--color-secondary-2)',
         'secondary-3': 'var(--color-secondary-3)',
         black: 'var(--color-black)',
+        magenta: 'var(--color-magenta)',
+        'magenta-2': 'var(--color-magenta-2)',
+        rose: 'var(--color-rose)',
+        gradient: 'var(--color-gradient-1)',
+        'gradient-2': 'var(--color-gradient-2)',
       },
       backgroundImage: {
         dots: 'radial-gradient(rgb(0 0 0 / 6%) 1px, transparent 2px)',
