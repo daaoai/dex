@@ -141,11 +141,7 @@ export default function NewPositions() {
                 </div>
 
                 <div className="mb-6">
-<<<<<<< feat/minor-features
                   <Button className="text-gray-400 bg-background hover:text-white flex items-center gap-2">
-=======
-                  <Button className="text-gray-400 hover:text-white flex items-center gap-2">
->>>>>>> main
                     Add a Hook{' '}
                     <Text type="p" className="text-gray-600">
                       (Advanced)
