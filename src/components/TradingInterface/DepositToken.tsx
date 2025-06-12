@@ -33,12 +33,16 @@ export default function DepositTokens({
   const [srcBalance, setSrcBalance] = useState<bigint>(0n);
   const { address: account } = useAccount();
   const chainId = useChainId();
-
   useEffect(() => {
     if (account) {
       const init = async () => {
-        const balance = await fetchTokenBalance({ token: srcTokenDetails.address, account, chainId });
-        setSrcBalance(balance);
+        try {
+          const balance = await fetchTokenBalance({ token: srcTokenDetails.address, account, chainId });
+          setSrcBalance(balance);
+        } catch (error) {
+          console.error('Failed to fetch token balance:', error);
+          setSrcBalance(0n);
+        }
       };
       init();
     }
