@@ -1,10 +1,11 @@
-import axios from 'axios';
 import moment from 'moment';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import { chartOptions, crosshairPlugin, gradientPlugin, endOfLineLegendPlugin } from './chart-options';
+import { chartOptions, crosshairPlugin, gradientPlugin } from './chart-options';
 import { LoaderCircle } from 'lucide-react';
 import 'chartjs-plugin-zoom';
+import Text from '../ui/Text';
+import { fetchPrices, getTimeLabel } from '@/utils/linegraphUtils';
 
 interface LineGraphProps {
   duration: number;
@@ -45,7 +46,6 @@ export const LineGraph: React.FC<LineGraphProps> = ({
 }) => {
   const [prices, setPrices] = useState<PriceData[]>([]);
   const [error, setError] = useState<string | null>(null);
-   
 
   const cacheKey = useMemo(() => `${tokenName}_${duration}_${vsCurrency}`, [tokenName, duration, vsCurrency]);
 
@@ -54,35 +54,18 @@ export const LineGraph: React.FC<LineGraphProps> = ({
     return cachedData ? JSON.parse(cachedData) : null;
   }, [cacheKey]);
 
-  const isCachedPricesValid = (updatedAt: string): boolean => {
-    const currTime = Date.now();
-    const prevUpdatedAt = Date.parse(updatedAt);
-    return currTime - prevUpdatedAt < 10 * 60 * 1000;
-  };
-
   useEffect(() => {
-    const fetchPrices = async () => {
+    const load = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        let newPrices: PriceData[] = [];
-
-        if (cachedPrices && cachedPrices.updatedAt && isCachedPricesValid(cachedPrices.updatedAt)) {
-          newPrices = cachedPrices.newPrices;
-        } else {
-          const apiUrl = `https://api.coingecko.com/api/v3/coins/${tokenName}/market_chart`;
-          const params = { vs_currency: vsCurrency, days: duration };
-
-          const response = await axios.get(apiUrl, { params });
-
-          newPrices = response.data.prices.map((price: number[]) => ({
-            timestamp: price[0],
-            price: price[1],
-          }));
-
-          localStorage.setItem(cacheKey, JSON.stringify({ newPrices, updatedAt: new Date().toISOString() }));
-        }
+        const newPrices = await fetchPrices({
+          tokenName: tokenName!,
+          duration,
+          cacheKey,
+          cachedPrices,
+        });
 
         if (newPrices.length > 0) {
           const firstValue = newPrices[0].price || 0;
@@ -90,28 +73,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
           const diff = lastValue - firstValue;
           const percentageDiff = (diff / lastValue) * 100;
 
-          let time = '';
-          switch (duration) {
-            case 1:
-              time = 'TODAY';
-              break;
-            case 3:
-              time = '3 DAYS';
-              break;
-            case 30:
-              time = '1 MONTH';
-              break;
-            case 180:
-              time = '6 MONTH';
-              break;
-            case 365:
-              time = '1 YEAR';
-              break;
-            case 365 * 5:
-              time = 'ALL';
-              break;
-          }
-
+          const time = getTimeLabel(duration);
           const type: 'positive' | 'negative' = diff >= 0 ? 'positive' : 'negative';
 
           setTokenState({
@@ -123,26 +85,24 @@ export const LineGraph: React.FC<LineGraphProps> = ({
         }
 
         setPrices(newPrices);
-        setLoading(false);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         if (error?.response?.status === 429) {
-          setTimeout(fetchPrices, 10000);
-          if (cachedPrices) setPrices(cachedPrices.newPrices);
           console.warn('Too many requests. Retrying...');
+          if (cachedPrices) setPrices(cachedPrices.newPrices);
+          setTimeout(load, 10000);
           return;
         }
 
         console.error('Error fetching data:', error);
         setError('Unable to fetch data. Please try again.');
+      } finally {
         setLoading(false);
       }
     };
 
-    if (tokenName) fetchPrices();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [duration, tokenName, vsCurrency, cacheKey, cachedPrices, setTokenState]);
-
+    if (tokenName) load();
+  }, [duration, tokenName, cacheKey, cachedPrices]);
   const chartData = {
     labels: prices.map((p: PriceData) => {
       const formats: { [key: number]: string } = {
@@ -177,24 +137,21 @@ export const LineGraph: React.FC<LineGraphProps> = ({
   };
 
   return (
-    <div className="w-full h-40 p-2 rounded-lg bg-[#372331] dark:bg-gray-900 shadow-md">
+    <div className="w-full h-40 p-2 rounded-lg bg-magenta-2 shadow-md">
       {loading ? (
-        <div className="flex flex-col items-center justify-center">
+        <div className="h-[150px] flex flex-col items-center justify-center">
           {error ? (
-            <div className="text-red-500 text-center">{error}</div>
+            <Text type="p" className="text-rose text-center">
+              {error}
+            </Text>
           ) : (
             <div className="flex items-center justify-center h-32">
-              <LoaderCircle className="h-10 w-10 text-[#ff36c7] animate-spin" />
+              <LoaderCircle className="h-10 w-10 text-magenta animate-spin" />
             </div>
           )}
         </div>
       ) : (
-        <Line
-          ref={chartRef}
-          data={chartData}
-          options={chartOptions}
-          plugins={[crosshairPlugin, gradientPlugin, endOfLineLegendPlugin]}
-        />
+        <Line ref={chartRef} data={chartData} options={chartOptions} plugins={[crosshairPlugin, gradientPlugin]} />
       )}
     </div>
   );

@@ -13,8 +13,7 @@ type SelectTokenCardProps = {
   amount: string;
   setAmount?: (value: string) => void;
   onTokenClick: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  balance?: any;
+  balance?: bigint;
   decimals: number;
   isDisabled?: boolean;
   isLoading?: boolean;
@@ -35,8 +34,8 @@ export default function SelectTokenCard({
 
   return (
     <div
-      className={`border border-zinc-700 rounded-3xl p-4 hover:border-zinc-600 transition-colors mb-4 ${
-        isSell ? 'bg-transparent -mb-3.5' : 'bg-zinc-800'
+      className={`border border-stroke rounded-3xl p-4 hover:border-stroke transition-colors mb-4 ${
+        isSell ? 'bg-transparent -mb-3.5' : 'bg-background-5'
       }`}
     >
       <div className="flex justify-between items-center mb-3">
@@ -51,7 +50,7 @@ export default function SelectTokenCard({
 
       <div className="flex justify-between items-start mb-3">
         {isLoading ? (
-          <div className="w-36 h-10 bg-zinc-700 animate-pulse rounded-md" />
+          <div className="w-36 h-10 bg-stroke animate-pulse rounded-md" />
         ) : (
           <input
             type="text"
@@ -59,7 +58,7 @@ export default function SelectTokenCard({
             onChange={(e) => setAmount?.(e.target.value)}
             disabled={isDisabled}
             placeholder="0"
-            className="text-3xl font-light bg-transparent text-white outline-none placeholder-zinc-500 w-36"
+            className="text-3xl font-light bg-transparent text-white outline-none placeholder-grey-2 w-36"
           />
         )}
         <Button
@@ -67,7 +66,7 @@ export default function SelectTokenCard({
           className={`flex items-center gap-2 px-3 py-2 rounded-3xl w-fit ${
             isSell
               ? 'bg-transparent border-white/30 border text-white hover:bg-zinc-600'
-              : 'bg-indigo-600 text-white hover:bg-blue-600'
+              : 'bg-primary text-white hover:bg-blue-600'
           }`}
         >
           {token.logo && (
@@ -85,12 +84,14 @@ export default function SelectTokenCard({
       </div>
 
       <div className="flex justify-between items-center">
-        <span className="text-zinc-500 text-sm">$0.00</span>
-        <span className="text-zinc-500 text-sm">
-          {balance !== null && token.symbol
-            ? `Balance: ${truncateNumber(formatUnits(balance, decimals))} ${token.symbol}`
+        <Text type="span" className="text-grey text-sm">
+          $0.00
+        </Text>
+        <Text type="span" className="text-grey text-sm">
+          {balance !== undefined && balance !== null && token.symbol
+            ? `Balance: ${truncateNumber(formatUnits(balance ?? 0n, decimals))} ${token.symbol}`
             : ''}
-        </span>
+        </Text>
       </div>
     </div>
   );

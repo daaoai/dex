@@ -44,6 +44,14 @@ input[type='number'].no-spinner {
   --color-secondary: #926ef5;
   --color-secondary-2: #49b063;
   --color-secondary-3: #0d1220;
+
+  --color-magenta: #ff36c7;
+  --color-magenta-2: #372331;
+
+  --color-rose: #f35734;
+
+  --color-gradient-1: #492aff;
+  --color-gradient-2: #f49167;
 }
 
 .light {
