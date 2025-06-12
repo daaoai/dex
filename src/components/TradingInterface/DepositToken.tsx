@@ -1,9 +1,13 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Token } from '@/types/tokens';
 import Image from 'next/image';
 import Text from '../ui/Text';
 import ConnectOrActionButton from '../position/LiquidityActionButton';
+import BalancePercentageButtons from '../ui/BalancePercentageButtons';
+import { useAccount, useChainId } from 'wagmi';
+import { fetchTokenBalance } from '@/helper/erc20';
 
 interface DepositTokensProps {
   srcTokenDetails: Token;
@@ -26,6 +30,24 @@ export default function DepositTokens({
   txnState,
   handleDeposit,
 }: DepositTokensProps) {
+  const [srcBalance, setSrcBalance] = useState<bigint>(0n);
+  const { address: account } = useAccount();
+  const chainId = useChainId();
+  useEffect(() => {
+    if (account) {
+      const init = async () => {
+        try {
+          const balance = await fetchTokenBalance({ token: srcTokenDetails.address, account, chainId });
+          setSrcBalance(balance);
+        } catch (error) {
+          console.error('Failed to fetch token balance:', error);
+          setSrcBalance(0n);
+        }
+      };
+      init();
+    }
+  }, [JSON.stringify(srcTokenDetails)]);
+
   return (
     <div className="bg-zinc-900 rounded-lg p-4 space-y-4">
       <Text type="h3" className="text-lg font-medium">
@@ -39,7 +61,7 @@ export default function DepositTokens({
         <div className="flex justify-between items-center">
           <input
             type="text"
-            // value={srcTokenAmount}
+            value={srcTokenAmount}
             onChange={(e) => handleSrcTokenAmountChange(e.target.value)}
             aria-label={srcTokenDetails.symbol + ' Amount'}
             className="text-3xl font-bold bg-transparent outline-none w-full"
@@ -57,9 +79,16 @@ export default function DepositTokens({
             <Text type="span">{srcTokenDetails.symbol}</Text>
           </div>
         </div>
-        <Text type="p" className="text-sm text-gray-400 mt-2">
-          ${srcTokenAmount}
-        </Text>
+        <div className="flex justify-between mt-1">
+          <Text type="p" className="text-sm text-gray-400 mt-2">
+            ${srcTokenAmount}
+          </Text>
+          <BalancePercentageButtons
+            balance={srcBalance}
+            decimals={srcTokenDetails.decimals}
+            setAmount={handleSrcTokenAmountChange}
+          />
+        </div>
       </div>
 
       <div className="bg-zinc-800 p-4 rounded-md">

@@ -5,6 +5,7 @@ import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import { formatUnits } from 'viem';
 import Text from '../ui/Text';
+import BalancePercentageButtons from '../ui/BalancePercentageButtons';
 
 type SelectTokenCardProps = {
   title: string;
@@ -30,6 +31,7 @@ export default function SelectTokenCard({
   isLoading = false,
 }: SelectTokenCardProps) {
   const isSell = title.toLowerCase() === 'sell';
+
   return (
     <div
       className={`border border-stroke rounded-3xl p-4 hover:border-stroke transition-colors mb-4 ${
@@ -37,9 +39,13 @@ export default function SelectTokenCard({
       }`}
     >
       <div className="flex justify-between items-center mb-3">
-        <Text type="span" className="text-white text-sm font-medium">
+        <Text type="span" className="text-zinc-400 text-sm font-medium">
           {title}
         </Text>
+
+        {isSell && balance && setAmount && (
+          <BalancePercentageButtons balance={balance} decimals={decimals} setAmount={setAmount} />
+        )}
       </div>
 
       <div className="flex justify-between items-start mb-3">
@@ -58,7 +64,7 @@ export default function SelectTokenCard({
         <Button
           onClick={onTokenClick}
           className={`flex items-center gap-2 px-3 py-2 rounded-3xl w-fit ${
-            title === 'Sell'
+            isSell
               ? 'bg-transparent border-white/30 border text-white hover:bg-zinc-600'
               : 'bg-primary text-white hover:bg-blue-600'
           }`}
