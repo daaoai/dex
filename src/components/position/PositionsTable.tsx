@@ -10,6 +10,7 @@ import { formatUnits } from 'viem';
 import { Circle } from 'lucide-react';
 import NoPositions from './NoPositionFound';
 import DynamicLogo from '../ui/logo/DynamicLogo';
+import { positionsTableContent } from '@/content/positionContent';
 
 interface PositionsTableProps {
   positions: V3Position[];
@@ -68,13 +69,13 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
                     fill={isInRange ? 'currentColor' : 'currentColor'}
                   />
                   <span className={isInRange ? 'text-green-500' : 'text-red-500'}>
-                    {isInRange ? 'In Range' : 'Out of Range'}
+                    {isInRange ? positionsTableContent.inRange : positionsTableContent.outOfRange}
                   </span>
                 </Text>
               </div>
               <div className="flex gap-1">
                 <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded-l ">
-                  v3
+                  {positionsTableContent.v3}
                 </Text>
                 <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded-r ">
                   {fee / 10000}%
@@ -85,7 +86,7 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
             <div className="grid text-white bg-background-2 p-4" style={{ gridTemplateColumns: '1fr 1fr 0.5fr 1fr' }}>
               <div>
                 <Text type="p" className="text-sm text-gray-400">
-                  Position
+                  {positionsTableContent.position}
                 </Text>
                 <div className="flex gap-2 text-sm mt-4">
                   <DynamicLogo
@@ -107,7 +108,7 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
               </div>
               <div>
                 <Text type="p" className="text-sm text-gray-400">
-                  Fees
+                  {positionsTableContent.fees}
                 </Text>
                 <div className="flex gap-2 text-sm mt-4">
                   <DynamicLogo
@@ -137,17 +138,17 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
 
               <div>
                 <Text type="p" className="text-sm text-gray-400">
-                  APR
+                  {positionsTableContent.apr}
                 </Text>
                 <Text type="p">{apr}%</Text>
               </div>
               <div>
                 <Text type="p" className="text-sm text-gray-400">
-                  Range
+                  {positionsTableContent.range}
                 </Text>
                 {isInFullRange ? (
                   <Text type="p" className="text-sm text-gray-400">
-                    Full Range
+                    {positionsTableContent.fullRange}
                   </Text>
                 ) : (
                   <div>

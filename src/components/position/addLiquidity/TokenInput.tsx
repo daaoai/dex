@@ -1,4 +1,5 @@
 import DynamicLogo from '@/components/ui/logo/DynamicLogo';
+import Text from '@/components/ui/Text';
 
 const TokenInput = ({
   id,
@@ -31,9 +32,13 @@ const TokenInput = ({
       <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-right text-xs text-muted-foreground flex flex-col items-end gap-6">
         <div className="flex items-center gap-1">
           <DynamicLogo logoUrl={logoUrl} alt={symbol} width={20} height={20} className="rounded-full" />
-          <span className="text-white text-base">{symbol}</span>
+          <Text type="span" className="text-white text-base">
+            {symbol}
+          </Text>
         </div>
-        <span className="text-xs text-muted-foreground">bal {balance}</span>
+        <Text type="span" className="text-xs text-muted-foreground">
+          bal {balance}
+        </Text>
       </div>
     </div>
   </div>

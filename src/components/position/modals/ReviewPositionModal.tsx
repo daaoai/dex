@@ -1,6 +1,7 @@
 'use client';
 import { ModalWrapper } from '@/components/ui/ModalWrapper';
 import Text from '@/components/ui/Text';
+import { reviewPositionContent } from '@/content/positionContent';
 import { Button } from '@/shadcn/components/ui/button';
 
 import Image from 'next/image';
@@ -27,7 +28,7 @@ export default function ReviewPositionModal({ isOpen, onClose, onCreate, positio
     <ModalWrapper isOpen={isOpen} onClose={onClose}>
       <div className="bg-[#0e0e0e] text-white max-w-md p-6 rounded-xl">
         <Text type="p" className="text-lg font-semibold mb-2">
-          Creating position
+          {reviewPositionContent.creatingPosition}
         </Text>
 
         <div className="flex items-center justify-between mb-4">
@@ -35,7 +36,7 @@ export default function ReviewPositionModal({ isOpen, onClose, onCreate, positio
             {token0Symbol} / {token1Symbol}
           </div>
           <Text type="p" className="text-xs bg-[#333] px-2 py-1 rounded-full">
-            v4 0.05%
+            {reviewPositionContent.feeTier}
           </Text>
         </div>
 
@@ -51,15 +52,17 @@ export default function ReviewPositionModal({ isOpen, onClose, onCreate, positio
         </div>
 
         <div className="flex justify-between text-sm mb-1">
-          <Text type="p">Min</Text>
-          <Text type="span">0 USDT/BNB</Text>
+          <Text type="p">{reviewPositionContent.min}</Text>
+          <Text type="span">{reviewPositionContent.minValue}</Text>
         </div>
         <div className="flex justify-between text-sm mb-4">
-          <Text type="span">Max</Text>
-          <Text type="span">∞ USDT/BNB</Text>
+          <Text type="span">{reviewPositionContent.max}</Text>
+          <Text type="span">{reviewPositionContent.maxValue}</Text>
         </div>
 
-        <div className="text-sm mb-1">Depositing</div>
+        <Text type="p" className="text-sm mb-1">
+          {reviewPositionContent.depositing}
+        </Text>
         <div className="flex justify-between items-center mb-1">
           <div className="flex gap-2 items-center">
             <Image src="/bnb-icon.svg" className="w-5 h-5" alt="BNB" width={20} height={20} />
@@ -78,13 +81,15 @@ export default function ReviewPositionModal({ isOpen, onClose, onCreate, positio
               {amount1} {token1Symbol}
             </Text>
           </div>
-          <span className="text-xs text-muted-foreground">${value1USD}</span>
+          <Text type="span" className="text-xs text-muted-foreground">
+            ${value1USD}
+          </Text>
         </div>
 
         <div className="border-t border-[#222] pt-4 mb-4">
           <div className="flex justify-between items-center text-sm">
             <Text type="span" className="text-muted-foreground">
-              Network cost
+              {reviewPositionContent.networkCost}
             </Text>
             <div className="flex gap-1 items-center">
               <Image src="/bnb-icon.svg" className="w-4 h-4" alt="fee" width={20} height={20} />
@@ -94,7 +99,7 @@ export default function ReviewPositionModal({ isOpen, onClose, onCreate, positio
         </div>
 
         <Button className="w-full bg-[#ff00aa] text-white font-bold text-md py-2 rounded-full" onClick={onCreate}>
-          Create
+          {reviewPositionContent.create}
         </Button>
       </div>
     </ModalWrapper>

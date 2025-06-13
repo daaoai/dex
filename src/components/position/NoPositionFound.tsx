@@ -4,6 +4,7 @@ import { Waves } from 'lucide-react';
 import Link from 'next/link';
 import Text from '../ui/Text';
 import { V3Position } from '@/types/v3';
+import { noPositionsContent } from '@/content/positionContent';
 
 type NoPositionsProps = {
   positions: V3Position[];
@@ -18,24 +19,23 @@ const NoPositions = ({ positions }: NoPositionsProps) => {
         <Waves size={32} />
       </div>
       <Text type="h2" className="text-xl font-semibold">
-        No positions
+        {noPositionsContent.title}
       </Text>
       <Text type="p" className="text-zinc-400 max-w-md">
-        You don’t have any liquidity positions. Create a new position to start earning fees and rewards on eligible
-        pools.
+        {noPositionsContent.description}
       </Text>
       <div className="flex gap-4">
         <Link
           href="/explore"
           className="bg-zinc-800 text-white font-medium py-2 px-4 rounded-xl hover:bg-zinc-700 transition"
         >
-          Explore pools
+          {noPositionsContent.explore}
         </Link>
         <Link
           href="/positions/create"
           className="bg-white text-black font-medium py-2 px-4 rounded-xl hover:bg-zinc-200 transition"
         >
-          New position
+          {noPositionsContent.new}
         </Link>
       </div>
     </div>

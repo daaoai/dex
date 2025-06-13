@@ -1,11 +1,7 @@
 import PoolsTable from '@/components/pools/PoolsTable';
 import Text from '@/components/ui/Text';
+import { exploreContent } from '@/content/explore';
 import React from 'react';
-
-const exploreContent = {
-  title: 'Explore Pools',
-  description: 'Discover and analyze all available liquidity pools. Click on a pool to view more details.',
-};
 
 const ExplorePage = () => {
   return (

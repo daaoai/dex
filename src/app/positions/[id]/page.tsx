@@ -19,6 +19,7 @@ import IncreaseLiquidityModal from '@/components/position/addLiquidity/AddLiquid
 import CollectRewardsModal from '@/components/position/collectFees/CollectFeesModal';
 import RemoveLiquidityModal from '@/components/position/removeLiquidity/RemoveLiquidityModal';
 import DynamicLogo from '@/components/ui/logo/DynamicLogo';
+import { positionContent } from '@/content/positionContent';
 
 export default function PositionDetails() {
   const params = useParams();
@@ -66,19 +67,6 @@ export default function PositionDetails() {
       </ModalWrapper>
     </>
   );
-
-  const positionContent = {
-    backLink: 'Your positions',
-    addLiquidity: 'Add liquidity',
-    removeLiquidity: 'Remove liquidity',
-    collectFees: 'Collect fees',
-    position: 'Position',
-    feesEarned: 'Fees earned',
-    noGraphTitle: 'No Graph Data',
-    noGraphDesc: 'We couldn’t generate a graph for this data. Try adjusting your filters or come back later.',
-    inRange: 'In Range',
-    outOfRange: 'Out of Range',
-  };
 
   return (
     <div className="p-6 text-white min-h-screen bg-grey-5">

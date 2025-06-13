@@ -4,11 +4,12 @@ import { supportedChainIds } from '@/constants/chains';
 import { tokensByChainId } from '@/constants/tokens';
 import { Token } from '@/types/tokens';
 import { X } from 'lucide-react';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { ModalWrapper } from '../ui/ModalWrapper';
 import Text from '../ui/Text';
 import { Button } from '@/shadcn/components/ui/button';
+import DynamicLogo from '../ui/logo/DynamicLogo';
+import { tokenSelectorContent } from '@/content/tokenSelector';
 
 interface TokenSelectionModalProps {
   onClose: () => void;
@@ -67,7 +68,7 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
         <div className="bg-background rounded-lg w-full max-w-md max-h-[90vh] overflow-auto">
           <div className="p-4 flex justify-between items-center border-b ">
             <Text type="h2" className="text-xl font-semibold">
-              Select Token
+              {tokenSelectorContent.selectToken}
             </Text>
             <Button onClick={onClose} className="text-white hover:text-white bg-background">
               <X className="h-6 w-6" />
@@ -84,7 +85,7 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
               </Text>
               <input
                 type="text"
-                placeholder="Search Token"
+                placeholder={tokenSelectorContent.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-gray-800 text-white rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-gray-700"
@@ -93,7 +94,7 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
 
             {loading ? (
               <Text type="p" className="text-gray-400 text-sm">
-                Loading...
+                {tokenSelectorContent.loading}
               </Text>
             ) : (
               <div className="space-y-2 mt-3">
@@ -104,7 +105,13 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
                     onClick={() => onSelect(token)}
                   >
                     <div className="w-8 h-8 rounded-full  flex items-center justify-center">
-                      <Image src={token.logo || '/placeholder.svg'} alt={token.symbol} width={36} height={36} />
+                      <DynamicLogo
+                        logoUrl={token.logo}
+                        alt={token.symbol}
+                        width={36}
+                        height={36}
+                        fallbackText={token.symbol}
+                      />
                     </div>
                     <div className="text-left">
                       <Text type="p" className="font-medium">

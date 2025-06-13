@@ -147,7 +147,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
             <div className="flex gap-2">
               <DynamicLogo logoUrl={position.token0Details.logo} alt={position.token0Details.symbol} />
               <Text type="p">
-                {truncateNumber(formatUnits(BigInt(position.amount0), position.token0Details.decimals) || '0')}{' '}
+                {truncateNumber(formatUnits(BigInt(position.amount0), position.token0Details.decimals) || '0')}
                 {position.token0Details.symbol}
               </Text>
             </div>
@@ -160,7 +160,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
               <DynamicLogo logoUrl={position.token1Details.logo} alt={position.token1Details.symbol} />
 
               <Text type="p">
-                {truncateNumber(formatUnits(BigInt(position.amount1), position.token1Details.decimals) || '0')}{' '}
+                {truncateNumber(formatUnits(BigInt(position.amount1), position.token1Details.decimals) || '0')}
                 {position.token1Details.symbol}
               </Text>
             </div>

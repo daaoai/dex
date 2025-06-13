@@ -11,6 +11,7 @@ import { RootState } from '../../../../store';
 import ConnectOrActionButton from '@/components/position/LiquidityActionButton';
 import Text from '@/components/ui/Text';
 import { Button } from '@/shadcn/components/ui/button';
+import { newPositionsContent } from '@/content/positionContent';
 
 export default function NewPositions() {
   // states
@@ -30,23 +31,25 @@ export default function NewPositions() {
       <div className="max-w-[1200px] mx-auto px-4 py-6">
         <div className="flex items-center gap-2 text-sm mb-4">
           <Link href="/positions" className="text-gray-400 hover:text-white cursor-pointer">
-            Your positions
+            {newPositionsContent.breadcrumbs.yourPositions}
           </Link>
           <span className="text-gray-600">
             <ChevronDown className="h-4 w-4 rotate-270" />
           </span>
-          <Text type="p">New positions</Text>
+          <Text type="p">{newPositionsContent.breadcrumbs.newPositions}</Text>
         </div>
 
         <div className="flex justify-between items-center mb-8">
           <Text type="h1" className="text-3xl font-bold">
-            New Positions
+            {newPositionsContent.header.title}
           </Text>
           <div className="flex gap-2">
             <Button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-              Reset
+              {newPositionsContent.header.reset}
             </Button>
-            <Button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">v3 position</Button>
+            <Button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+              {newPositionsContent.header.v3}
+            </Button>
             <Button className="bg-gray-800 hover:bg-gray-700 text-white p-2 rounded-lg">
               <Settings className="h-5 w-5" />
             </Button>
@@ -65,10 +68,10 @@ export default function NewPositions() {
               </div>
               <div>
                 <Text type="p" className="text-sm text-gray-400">
-                  Step 1
+                  {newPositionsContent.steps[0].label}
                 </Text>
                 <Text type="p" className="text-base font-medium text-white">
-                  Select token pair and fees
+                  {newPositionsContent.steps[0].title}
                 </Text>
               </div>
             </div>
@@ -85,10 +88,10 @@ export default function NewPositions() {
               </div>
               <div>
                 <Text type="p" className="text-sm text-gray-400">
-                  Step 2
+                  {newPositionsContent.steps[1].label}
                 </Text>
                 <Text type="p" className="text-base font-medium text-gray-500">
-                  Select price range and deposit amounts
+                  {newPositionsContent.steps[1].title}
                 </Text>
               </div>
             </div>
@@ -98,10 +101,10 @@ export default function NewPositions() {
             <>
               <div className="bg-background border-2 border-stroke-2 rounded-lg p-6">
                 <Text type="h2" className="text-xl font-semibold mb-4">
-                  Select pair
+                  {newPositionsContent.selectPair.title}
                 </Text>
                 <Text type="p" className="text-gray-400 mb-6">
-                  Choose the tokens you want to provide liquidity for. You can select tokens on all supported networks.
+                  {newPositionsContent.selectPair.description}
                 </Text>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -117,7 +120,7 @@ export default function NewPositions() {
                         <span>{token0.symbol}</span>
                       </div>
                     ) : (
-                      <Text type="p">Choose token</Text>
+                      <Text type="p">{newPositionsContent.selectPair.chooseToken}</Text>
                     )}
                     <ChevronDown className="h-5 w-5 text-gray-400" />
                   </Button>
@@ -134,7 +137,7 @@ export default function NewPositions() {
                         <Text type="p">{token1.symbol}</Text>
                       </div>
                     ) : (
-                      <Text type="p">Choose token</Text>
+                      <Text type="p">{newPositionsContent.selectPair.chooseToken}</Text>
                     )}
                     <ChevronDown className="h-5 w-5 text-gray-600" />
                   </button>
@@ -142,33 +145,33 @@ export default function NewPositions() {
 
                 <div className="mb-6">
                   <Button className="text-gray-400 bg-background hover:text-white flex items-center gap-2">
-                    Add a Hook{' '}
+                    {newPositionsContent.addHook.label}
                     <Text type="p" className="text-gray-600">
-                      (Advanced)
+                      {newPositionsContent.addHook.advanced}
                     </Text>
                   </Button>
                 </div>
 
                 <div className="mb-6">
                   <Text type="h3" className="text-xl font-semibold mb-2">
-                    Fee tier
+                    {newPositionsContent.feeTier.title}
                   </Text>
                   <Text type="p" className="text-gray-400 mb-4">
-                    The amount earned providing liquidity. Choose an amount that suits your risk tolerance and strategy.
+                    {newPositionsContent.feeTier.description}
                   </Text>
 
                   <div className="bg-dark-black-300 rounded-lg">
                     <div className="flex justify-between items-center">
                       <div>
                         <Text type="h4" className="font-semibold mb-1">
-                          0.3% fee tier
+                          {newPositionsContent.feeTier.tier}
                         </Text>
                         <Text type="p" className="text-gray-400">
-                          The % you will earn in fees
+                          {newPositionsContent.feeTier.tierDescription}
                         </Text>
                       </div>
                       <Button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-                        More
+                        {newPositionsContent.feeTier.more}
                         <ChevronDown className="h-4 w-4" />
                       </Button>
                     </div>
