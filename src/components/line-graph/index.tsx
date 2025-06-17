@@ -1,21 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { LineGraph } from './line-graph';
 import Text from '../ui/Text';
-
-interface Tab {
-  id: string | number;
-  duration: number;
-}
-
-interface LineGraphViewProps {
-  tokenName?: string;
-  setTokenState: any;
-  tokenState: any;
-  tabs: Tab[];
-  activeTabId: string | number;
-  chartRef: any;
-}
+import { LineGraphViewProps } from '@/types/linegraph';
+import { Line } from 'react-chartjs-2';
 
 export const LineGraphView: React.FC<LineGraphViewProps> = ({
   tokenName,
@@ -52,7 +39,7 @@ export const LineGraphView: React.FC<LineGraphViewProps> = ({
           loading={loading}
           setLoading={setLoading}
           vsCurrency={fiatCurrency}
-          chartRef={chartRef}
+          chartRef={chartRef ?? React.createRef<Line | null>()}
         />
       </div>
     </div>

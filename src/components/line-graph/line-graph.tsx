@@ -1,39 +1,13 @@
 import moment from 'moment';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { chartOptions, crosshairPlugin, gradientPlugin } from './chart-options';
 import { LoaderCircle } from 'lucide-react';
 import 'chartjs-plugin-zoom';
 import Text from '../ui/Text';
 import { fetchPrices, getTimeLabel } from '@/utils/linegraphUtils';
-
-interface LineGraphProps {
-  duration: number;
-  tokenName?: string;
-  setTokenState: React.Dispatch<React.SetStateAction<TokenState>>;
-  loading: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  vsCurrency: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  chartRef?: any;
-}
-
-interface PriceData {
-  timestamp: number;
-  price: number;
-}
-
-interface TokenState {
-  percentageDiff?: number;
-  diff?: number;
-  time?: string;
-  type?: 'positive' | 'negative';
-}
-
-interface CachedPrices {
-  newPrices: PriceData[];
-  updatedAt: string;
-}
+import axios from 'axios';
+import { CachedPrices, LineGraphProps, PriceData } from '@/types/linegraph';
 
 export const LineGraph: React.FC<LineGraphProps> = ({
   duration,
@@ -46,6 +20,9 @@ export const LineGraph: React.FC<LineGraphProps> = ({
 }) => {
   const [prices, setPrices] = useState<PriceData[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  const localRef = useRef<Line>(null);
+  const ref = chartRef ?? localRef;
 
   const cacheKey = useMemo(() => `${tokenName}_${duration}_${vsCurrency}`, [tokenName, duration, vsCurrency]);
 
@@ -85,9 +62,8 @@ export const LineGraph: React.FC<LineGraphProps> = ({
         }
 
         setPrices(newPrices);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        if (error?.response?.status === 429) {
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 429) {
           console.warn('Too many requests. Retrying...');
           if (cachedPrices) setPrices(cachedPrices.newPrices);
           setTimeout(load, 10000);
@@ -102,7 +78,8 @@ export const LineGraph: React.FC<LineGraphProps> = ({
     };
 
     if (tokenName) load();
-  }, [duration, tokenName, cacheKey, cachedPrices]);
+  }, [duration, tokenName, cacheKey, cachedPrices, setLoading, setTokenState]);
+
   const chartData = {
     labels: prices.map((p: PriceData) => {
       const formats: { [key: number]: string } = {
@@ -121,15 +98,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
         data: prices.map((p: PriceData) => Number(p.price.toFixed(3))),
         fill: true,
         borderColor: '#ff38c7',
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        backgroundColor: (ctx: any) => {
-          const chart = ctx.chart;
-          const { ctx: c, chartArea } = chart;
-          if (!chartArea) return null;
-
-          const gradient = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-          return gradient;
-        },
+        backgroundColor: 'transparent',
         tension: 0.1,
         pointRadius: 0,
       },
@@ -151,7 +120,7 @@ export const LineGraph: React.FC<LineGraphProps> = ({
           )}
         </div>
       ) : (
-        <Line ref={chartRef} data={chartData} options={chartOptions} plugins={[crosshairPlugin, gradientPlugin]} />
+        <Line ref={ref} data={chartData} options={chartOptions} plugins={[crosshairPlugin, gradientPlugin]} />
       )}
     </div>
   );

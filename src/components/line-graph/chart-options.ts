@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChartOptions } from "chart.js";
+import { AfterDrawData, ChartDataset } from "@/types/linegraph";
+import { ChartData, ChartOptions, ChartTooltipItem } from "chart.js";
+import { isArray } from "util";
 
 export const chartOptions: ChartOptions = {
   legend: { display: false },
@@ -31,16 +32,18 @@ export const chartOptions: ChartOptions = {
   },
   
   tooltips: {
-    mode: "index",
+    mode: 'index',
     intersect: false,
-    backgroundColor: "#4c3645",
-    bodyFontColor: "rgba(255,255,255,0.6)",
+    backgroundColor: '#4c3645',
+    bodyFontColor: 'rgba(255,255,255,0.6)',
     displayColors: false,
     callbacks: {
-      label: (tooltipItem: any, data: any) => {
-        const label = data.datasets[tooltipItem.datasetIndex].label || "";
-        const value = tooltipItem.yLabel || "";
-        return ` ${label} ${value} ${"USD"}`;
+      label: (tooltipItem: ChartTooltipItem, data: ChartData) => {
+        let label = '';
+        if (isArray(data?.datasets))
+          label = data?.datasets[tooltipItem.datasetIndex || 0].label || '';
+        const value = tooltipItem.yLabel || '';
+        return ` ${label} ${value} ${'USD'}`;
       },
     },
   },
@@ -49,10 +52,10 @@ export const chartOptions: ChartOptions = {
       borderWidth: 2,
     },
   },
- plugins: {
+  plugins: {
     crosshair: {
       line: {
-        color: "#4B40EE",
+        color: '#4B40EE',
         width: 1,
       },
       sync: {
@@ -77,19 +80,20 @@ export const chartOptions: ChartOptions = {
 };
 
 export const gradientPlugin = {
-  beforeDatasetsDraw: (chart: any) => {
+  beforeDatasetsDraw: (chart: Chart) => {
     if (!chart.ctx || !chart.chartArea) return;
 
     const { ctx, chartArea } = chart;
     const { top, bottom } = chartArea;
 
-    chart.data.datasets.forEach((dataset: any) => {
-      if (!dataset.gradient || dataset.lastHeight !== bottom) {
+    chart.data.datasets?.forEach((dataset) => {
+      const customDataset = dataset as ChartDataset;
+      if (!customDataset.gradient || customDataset.lastHeight !== bottom) {
         const gradient = ctx.createLinearGradient(0, top, 0, bottom);
-        dataset.backgroundColor = gradient; 
-        dataset.borderColor = "#ff38c7";
-        dataset.gradient = gradient;
-        dataset.lastHeight = bottom;
+        customDataset.backgroundColor = gradient;
+        customDataset.borderColor = '#ff38c7';
+        customDataset.gradient = gradient;
+        customDataset.lastHeight = bottom;
       }
     });
 
@@ -98,7 +102,7 @@ export const gradientPlugin = {
 };
 
 export const crosshairPlugin = {
-  afterDraw: (chart: any) => {
+  afterDraw: (chart: AfterDrawData) => {
     if (chart.tooltip._active && chart.tooltip._active.length) {
       const ctx = chart.ctx;
       const tooltip = chart.tooltip;
