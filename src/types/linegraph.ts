@@ -78,3 +78,17 @@ export interface AfterDrawData {
     };
   };
 }
+
+// chart types
+export type ChartDataPoint = {
+  time: number;
+  value: number;
+};
+
+export type ChartAPI = {
+  updateData: (newData: ChartDataPoint[]) => void;
+};
+
+export interface ZoomableChart extends Chart {
+  resetZoom: () => void;
+}

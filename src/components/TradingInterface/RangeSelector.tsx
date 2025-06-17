@@ -8,21 +8,8 @@ import { RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import Text from '../ui/Text';
 import { LineGraphView } from '../line-graph';
 import { useEffect, useState, useRef } from 'react';
-import { TokenState } from '@/types/linegraph';
+import { ChartAPI, TokenState, ZoomableChart } from '@/types/linegraph';
 import { Line } from 'react-chartjs-2';
-
-type ChartDataPoint = {
-  time: number;
-  value: number;
-};
-
-type ChartAPI = {
-  updateData: (newData: ChartDataPoint[]) => void;
-};
-
-interface ZoomableChart extends Chart {
-  resetZoom: () => void;
-}
 
 interface RangeSelectorProps {
   selectedRange: 'full' | 'custom';
