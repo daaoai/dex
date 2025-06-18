@@ -1,13 +1,11 @@
-const rows = [
-  { symbol: 'BTC', tier: '0.02%', tvl: '$200.5M', apr: '0.85%', rewards: '+12.34%', vol1d: '$40.0M', vol30d: '$1.6B' },
-  { symbol: 'ETH', tier: '0.03%', tvl: '$215.2M', apr: '0.90%', rewards: '+13.21%', vol1d: '$42.7M', vol30d: '$1.7B' },
-  { symbol: 'ETH', tier: '0.03%', tvl: '$215.2M', apr: '0.90%', rewards: '+13.21%', vol1d: '$42.7M', vol30d: '$1.7B' },
-  { symbol: 'ETH', tier: '0.03%', tvl: '$215.2M', apr: '0.90%', rewards: '+13.21%', vol1d: '$42.7M', vol30d: '$1.7B' },
-  { symbol: 'ETH', tier: '0.03%', tvl: '$215.2M', apr: '0.90%', rewards: '+13.21%', vol1d: '$42.7M', vol30d: '$1.7B' },
-  { symbol: 'ETH', tier: '0.03%', tvl: '$215.2M', apr: '0.90%', rewards: '+13.21%', vol1d: '$42.7M', vol30d: '$1.7B' },
-];
+import { TopPool } from '@/types/pools';
+import PoolIcon from '../ui/logo/PoolLogo';
 
-export default function PoolsTable() {
+interface PoolsTableProps {
+  pools: TopPool[];
+}
+
+export default function PoolsTable({ pools }: PoolsTableProps) {
   return (
     <div className="overflow-auto rounded-lg bg-gray-800">
       <table className="min-w-full text-left">
@@ -21,22 +19,32 @@ export default function PoolsTable() {
           </tr>
         </thead>
         <tbody>
-          {rows.map((r, idx) => (
+          {pools.map((pool, idx) => (
             <tr key={idx} className="border-b border-none hover:bg-gray-700 bg-dark-black-10">
               <td className="px-4 py-2 bg-dark-black-300 text-white">{idx + 1}</td>
               <td className="px-4 py-2 flex items-center text-white space-x-2 bg-dark-black-300">
                 <span className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs">
-                  {r.symbol}
+                  <PoolIcon
+                    token0={{
+                      symbol: pool.token0.symbol,
+                    }}
+                    token1={{
+                      symbol: pool.token1.symbol,
+                    }}
+                    className="h-6 w-6"
+                  />
                 </span>
-                <span>{r.symbol}</span>
+                <span>
+                  {pool.token0.symbol}/{pool.token1.symbol}
+                </span>
               </td>
               <td className="px-4 py-2 text-white">v3</td>
-              <td className="px-4 py-2 text-white">{r.tier}</td>
-              <td className="px-4 py-2 text-white">{r.tvl}</td>
-              <td className="px-4 py-2 text-white">{r.apr}</td>
-              <td className="px-4 py-2  text-dark-purple-10">{r.rewards}</td>
-              <td className="px-4 py-2 text-white">{r.vol1d}</td>
-              <td className="px-4 py-2 text-white">{r.vol30d}</td>
+              <td className="px-4 py-2 text-white">{pool.feeTier}</td>
+              <td className="px-4 py-2 text-white">{pool.volumeUSD}</td>
+              <td className="px-4 py-2 text-white">{0}</td>
+              <td className="px-4 py-2  text-dark-purple-10">{0}</td>
+              <td className="px-4 py-2 text-white">{0}</td>
+              <td className="px-4 py-2 text-white">{0}</td>
             </tr>
           ))}
         </tbody>

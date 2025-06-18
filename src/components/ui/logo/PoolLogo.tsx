@@ -1,11 +1,16 @@
-import { Token } from '@/types/tokens';
 import clsx from 'clsx';
 import React from 'react';
 import DynamicLogo from './DynamicLogo';
 
 interface IconOverlapProps {
-  token0: Token;
-  token1: Token;
+  token0: {
+    logo?: string;
+    symbol: string;
+  };
+  token1: {
+    logo?: string;
+    symbol: string;
+  };
   className?: string;
 }
 
