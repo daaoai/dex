@@ -64,6 +64,14 @@ export default function RangeSelector({
   const handleTabClick = (tabId: string) => setSelectedTab(tabId);
   const rangeOptions = ['full', 'custom'] as const;
 
+  const handleZoomOut = () => {
+    if (chartRef.current && chartRef.current.chartInstance) {
+      const zoomChart = chartRef.current?.chartInstance as ZoomableChart | undefined;
+      zoomChart?.resetZoom();
+    }
+    setIsZoomed(false);
+  };
+
   return (
     <div className="bg-background-4 rounded-lg p-4 space-y-4">
       <Text type="p" className="text-lg font-medium">
@@ -141,17 +149,7 @@ export default function RangeSelector({
             ))}
           </div>
           <div className="flex space-x-1">
-            <Button
-              className="bg-zinc-800 p-1 rounded-md"
-              title="search"
-              onClick={() => {
-                if (chartRef.current && chartRef.current.chartInstance) {
-                  const zoomChart = chartRef.current?.chartInstance as ZoomableChart | undefined;
-                  zoomChart?.resetZoom();
-                }
-                setIsZoomed(false);
-              }}
-            >
+            <Button className="bg-zinc-800 p-1 rounded-md" title="search" onClick={() => handleZoomOut()}>
               <ZoomOut size={16} />
             </Button>
             <Button
@@ -165,11 +163,8 @@ export default function RangeSelector({
               className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 flex items-center"
               onClick={() => {
                 setIsZoomed(false);
-                if (chartRef.current && chartRef.current.chartInstance) {
-                  const zoomChart = chartRef.current?.chartInstance as ZoomableChart | undefined;
-                  zoomChart?.resetZoom();
-                  setSelectedTab('1d');
-                }
+                handleZoomOut();
+                setSelectedTab('1d');
               }}
             >
               <RotateCcw size={16} />
