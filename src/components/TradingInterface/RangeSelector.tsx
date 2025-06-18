@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Button } from '@/shadcn/components/ui/button';
@@ -9,15 +8,8 @@ import { RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import Text from '../ui/Text';
 import { LineGraphView } from '../line-graph';
 import { useEffect, useState, useRef } from 'react';
-
-type ChartDataPoint = {
-  time: number;
-  value: number;
-};
-
-type ChartAPI = {
-  updateData: (newData: ChartDataPoint[]) => void;
-};
+import { ChartAPI, TokenState, ZoomableChart } from '@/types/linegraph';
+import { Line } from 'react-chartjs-2';
 
 interface RangeSelectorProps {
   selectedRange: 'full' | 'custom';
@@ -58,9 +50,9 @@ export default function RangeSelector({
   ];
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [selectedTab, setSelectedTab] = useState<string>(activeTab.id || '1d');
-  const chartRef = useRef<any>(null);
+  const chartRef = useRef<Line>({} as Line);
   const [isZoomed, setIsZoomed] = useState(false);
-  const [tokenState, setTokenState] = useState(0);
+  const [tokenState, setTokenState] = useState<TokenState>({});
 
   useEffect(() => {
     if (selectedTab !== activeTab.id) {
@@ -71,6 +63,14 @@ export default function RangeSelector({
 
   const handleTabClick = (tabId: string) => setSelectedTab(tabId);
   const rangeOptions = ['full', 'custom'] as const;
+
+  const handleZoomOut = () => {
+    if (chartRef.current && chartRef.current.chartInstance) {
+      const zoomChart = chartRef.current?.chartInstance as ZoomableChart | undefined;
+      zoomChart?.resetZoom();
+    }
+    setIsZoomed(false);
+  };
 
   return (
     <div className="bg-background-4 rounded-lg p-4 space-y-4">
@@ -149,7 +149,7 @@ export default function RangeSelector({
             ))}
           </div>
           <div className="flex space-x-1">
-            <Button className="bg-zinc-800 p-1 rounded-md" title="search" onClick={() => setIsZoomed(false)}>
+            <Button className="bg-zinc-800 p-1 rounded-md" title="search" onClick={() => handleZoomOut()}>
               <ZoomOut size={16} />
             </Button>
             <Button
@@ -163,10 +163,8 @@ export default function RangeSelector({
               className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 flex items-center"
               onClick={() => {
                 setIsZoomed(false);
-                if (chartRef.current) {
-                  chartRef.current.chartInstance.resetZoom();
-                  setSelectedTab('1d');
-                }
+                handleZoomOut();
+                setSelectedTab('1d');
               }}
             >
               <RotateCcw size={16} />
