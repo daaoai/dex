@@ -1,4 +1,5 @@
 import { GraphPoolDetails, PoolDetails, Transaction } from '@/types/pools';
+import { formatToken } from '@/utils/address';
 import { formatUnits } from 'viem';
 
 /**
@@ -89,7 +90,7 @@ export const fetchPoolDetails = async (poolId: string): Promise<PoolDetails | nu
       },
       body: JSON.stringify({
         query: POOL_DETAILS_QUERY,
-        variables: { poolId },
+        variables: { poolId: poolId.toLowerCase() }, // Ensure poolId is in lowercase
       }),
     });
 
@@ -195,7 +196,7 @@ const transformGraphPoolToPoolDetails = (graphPool: GraphPoolDetails): PoolDetai
   };
 
   return {
-    id: graphPool.id,
+    address: formatToken(graphPool.id),
     price: currentPrice,
     feeTier,
     apr,
@@ -208,13 +209,13 @@ const transformGraphPoolToPoolDetails = (graphPool: GraphPoolDetails): PoolDetai
     chartData,
     transactions,
     token0: {
-      id: graphPool.token0.id,
+      address: formatToken(graphPool.token0.id),
       symbol: graphPool.token0.symbol,
       decimals: token0Decimals,
       name: graphPool.token0.name,
     },
     token1: {
-      id: graphPool.token1.id,
+      address: formatToken(graphPool.token1.id),
       symbol: graphPool.token1.symbol,
       decimals: token1Decimals,
       name: graphPool.token1.name,

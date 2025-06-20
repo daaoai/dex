@@ -73,10 +73,18 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
             </div>
           </div>
           <div className="flex space-x-4">
-            <Button className="bg-pink-600 hover:bg-pink-700 text-white">Swap</Button>
-            <Button variant="outline" className="border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white">
+            <Link
+              href={`/swap?token0=${poolDetails.token0.address}&token1=${poolDetails.token1.address}`}
+              className="bg-pink-600 hover:bg-pink-700 text-white"
+            >
+              Swap
+            </Link>
+            <Link
+              href={`/positions/create?token0=${poolDetails.token0.address}&token1=${poolDetails.token1.address}`}
+              className="border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
+            >
               Add liquidity
-            </Button>
+            </Link>
           </div>
         </div>
 
@@ -230,7 +238,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                   <span className="text-white">
                     {poolDetails.token0.symbol} / {poolDetails.token1.symbol}
                   </span>
-                  <span className="text-gray-400 text-sm">{poolDetails.id.slice(0, 8)}...</span>
+                  <span className="text-gray-400 text-sm">{poolDetails.address.slice(0, 8)}...</span>
                   <Button variant="ghost" size="sm" className="p-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -248,7 +256,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                     <span className="text-xs text-white">W</span>
                   </div>
                   <span className="text-white">{poolDetails.token0.symbol}</span>
-                  <span className="text-gray-400 text-sm">{poolDetails.token0.id.slice(0, 8)}...</span>
+                  <span className="text-gray-400 text-sm">{poolDetails.token0.address.slice(0, 8)}...</span>
                   <Button variant="ghost" size="sm" className="p-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -266,7 +274,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                     <span className="text-xs text-white">E</span>
                   </div>
                   <span className="text-white">{poolDetails.token1.symbol}</span>
-                  <span className="text-gray-400 text-sm">{poolDetails.token1.id.slice(0, 8)}...</span>
+                  <span className="text-gray-400 text-sm">{poolDetails.token1.address.slice(0, 8)}...</span>
                   <Button variant="ghost" size="sm" className="p-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path

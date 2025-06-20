@@ -27,7 +27,7 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
     const fetchTokens = async () => {
       setLoading(true);
       try {
-        const fetchedTokens = Object.values(tokensByChainId[supportedChainIds.monadTestnet]);
+        const fetchedTokens = Object.values(tokensByChainId[supportedChainIds.bsc]);
         setTokens(fetchedTokens);
         setFilteredTokens(fetchedTokens);
       } catch (error) {

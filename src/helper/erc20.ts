@@ -1,9 +1,11 @@
 import { chainsData } from '@/constants/chains';
 import { tokensByChainId } from '@/constants/tokens';
 import { Token } from '@/types/tokens';
+import { formatToken } from '@/utils/address';
 import { getPublicClient } from '@/utils/publicClient';
 import { erc20Abi, Hex } from 'viem';
 import { multicallForSameContract } from './multicall';
+
 const fetchErc20Info = async ({ address, chainId }: { address: Hex; chainId: number }) => {
   const multicallRes = (await multicallForSameContract({
     abi: erc20Abi,
@@ -25,14 +27,15 @@ const fetchErc20Info = async ({ address, chainId }: { address: Hex; chainId: num
 };
 
 export const getTokenDetails = async ({ address, chainId }: { address: Hex; chainId: number }): Promise<Token> => {
-  let tokenDetails: Token | undefined;
+  let tokenDetails: Token | null = null;
+  const formattedAddress = formatToken(address);
   try {
-    tokenDetails = getLocalTokenDetails({ address, chainId });
+    tokenDetails = getLocalTokenDetails({ address: formattedAddress, chainId });
   } catch {
     console.log('Token not found in local data for:', address);
   }
   if (!tokenDetails) {
-    return await fetchErc20Info({ address, chainId });
+    return await fetchErc20Info({ address: formattedAddress, chainId });
   }
   return tokenDetails;
 };

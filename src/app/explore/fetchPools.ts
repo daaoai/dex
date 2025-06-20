@@ -1,4 +1,5 @@
 import { GraphTopPool, TopPool } from '@/types/pools';
+import { formatToken } from '@/utils/address';
 import { calculate7DayAverageAPR } from '@/utils/apr';
 
 /**
@@ -91,17 +92,17 @@ const transformGraphPoolsToTopPools = (graphPools: GraphTopPool[]): TopPool[] =>
     const apr = calculate7DayAverageAPR(pool.poolDayData || [], feeTier, totalValueLockedUSD);
 
     return {
-      id: pool.id,
+      id: formatToken(pool.id),
       volumeUSD: parseFloat(pool.volumeUSD) || 0,
       feeTier,
       apr: Math.round(apr * 100) / 100, // Round to 2 decimal places
       token0: {
-        id: pool.token0.id,
+        id: formatToken(pool.token0.id),
         symbol: pool.token0.symbol,
         decimals: parseInt(pool.token0.decimals, 10),
       },
       token1: {
-        id: pool.token1.id,
+        id: formatToken(pool.token1.id),
         symbol: pool.token1.symbol,
         decimals: parseInt(pool.token1.decimals, 10),
       },

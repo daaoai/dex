@@ -1,5 +1,7 @@
+import { Hex } from 'viem';
+
 export interface GraphTopPool {
-  id: string;
+  id: Hex;
   volumeUSD: string;
   feeTier: string;
   untrackedVolumeUSD: string;
@@ -12,12 +14,12 @@ export interface GraphTopPool {
     volumeUSD: string;
   }>;
   token0: {
-    id: string;
+    id: Hex;
     symbol: string;
     decimals: string;
   };
   token1: {
-    id: string;
+    id: Hex;
     symbol: string;
     decimals: string;
   };
@@ -63,7 +65,7 @@ export interface PoolBalances {
 }
 
 export interface PoolDetails {
-  id: string;
+  address: string;
   price: number;
   feeTier: number;
   apr: number;
@@ -76,13 +78,13 @@ export interface PoolDetails {
   chartData: ChartDataPoint[];
   transactions: Transaction[];
   token0: {
-    id: string;
+    address: string;
     symbol: string;
     decimals: number;
     name: string;
   };
   token1: {
-    id: string;
+    address: string;
     symbol: string;
     decimals: number;
     name: string;
@@ -90,7 +92,7 @@ export interface PoolDetails {
 }
 
 export interface GraphPoolDetails {
-  id: string;
+  id: Hex;
   volumeUSD: string;
   feeTier: string;
   totalValueLockedUSD: string;
@@ -130,13 +132,13 @@ export interface GraphPoolDetails {
     };
   }>;
   token0: {
-    id: string;
+    id: Hex;
     symbol: string;
     decimals: string;
     name: string;
   };
   token1: {
-    id: string;
+    id: Hex;
     symbol: string;
     decimals: string;
     name: string;

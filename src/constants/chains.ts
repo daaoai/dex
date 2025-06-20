@@ -5,13 +5,13 @@ import { ChainsConfig } from '../types/chains';
 // const alchemyKey = process.env.NEXT_PUBLIC_ALCHEMY_KEY || 'eF4hCbU9Y8g1Mi_wXfz1zLaIKGLz5-V1';
 
 export const supportedChainIds = {
-  // bsc: 56,
+  bsc: 56,
   // mode: 34443,
   // monad: 10143,
   // bera: 80094,
 
   // testnets
-  monadTestnet: 10143,
+  // bsc: 10143,
 };
 
 export const viemChainsById: Record<number, viemChains.Chain> = Object.values(viemChains).reduce((acc, chainData) => {
@@ -26,7 +26,7 @@ export const viemChainsById: Record<number, viemChains.Chain> = Object.values(vi
 export const chainsData: {
   [key: number]: ChainsConfig;
 } = {
-  [supportedChainIds.monadTestnet]: {
+  [supportedChainIds.bsc]: {
     slug: 'monad-testnet',
     name: 'Monad Testnet',
     rpcUrls: ['https://testnet-rpc.monad.xyz', 'https://monad-testnet.drpc.org'],
