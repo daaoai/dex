@@ -6,7 +6,6 @@ import { fetchTopPoolsFromGraph } from './fetchPools';
 
 const ExplorePage = async () => {
   const pools = await fetchTopPoolsFromGraph();
-  console.log('Fetched pools:', pools);
   return (
     <main className="min-h-screen bg-gray-950 flex flex-col items-center py-10 px-4">
       <div className="w-full max-w-5xl">
