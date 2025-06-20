@@ -1,9 +1,9 @@
 import NewPositionsClient from '@/components/position/NewPosition';
 import { supportedChainIds } from '@/constants/chains';
 import { supportedFeeAndTickSpacing } from '@/constants/fee';
-import { getTokenDetails } from '@/helper/erc20';
+import { getTokenDetails } from '@/helper/token';
 import { Token } from '@/types/tokens';
-import { Hex, isAddress } from 'viem';
+import { isAddress } from 'viem';
 
 interface SearchParams {
   token0?: string;
@@ -29,12 +29,12 @@ export default async function NewPositionsPage({ searchParams }: CreatePositionP
 
   // Resolve token0
   if (token0Address && isAddress(token0Address)) {
-    initialToken0 = await getTokenDetails({ address: token0Address as Hex, chainId });
+    initialToken0 = await getTokenDetails({ address: token0Address, chainId });
   }
 
   // Resolve token1
   if (token1Address && isAddress(token1Address)) {
-    initialToken1 = await getTokenDetails({ address: token1Address as Hex, chainId });
+    initialToken1 = await getTokenDetails({ address: token1Address, chainId });
   }
 
   // Validate and set fee

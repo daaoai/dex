@@ -2,7 +2,7 @@ import { contractAddresses } from '@/constants/addresses';
 import { chainsData } from '@/constants/chains';
 import { UniswapNFTManager } from '@/contracts/uniswap/nftManager';
 import { UniswapV3Pool } from '@/contracts/uniswap/v3Pool';
-import { getTokensBalance } from '@/helper/balance';
+import { getTokensBalance } from '@/helper/token';
 import { V3Position } from '@/types/v3';
 import { getPublicClient } from '@/utils/publicClient';
 import { getMinAmount } from '@/utils/slippage';

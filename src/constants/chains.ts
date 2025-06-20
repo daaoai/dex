@@ -26,26 +26,47 @@ export const viemChainsById: Record<number, viemChains.Chain> = Object.values(vi
 export const chainsData: {
   [key: number]: ChainsConfig;
 } = {
+  // [supportedChainIds.monadTestnet]: {
+  //   slug: 'monad-testnet',
+  //   name: 'Monad Testnet',
+  //   rpcUrls: ['https://testnet-rpc.monad.xyz', 'https://monad-testnet.drpc.org'],
+  //   blockExplorer: 'https://testnet.monadexplorer.com',
+  //   networkType: 'testnet',
+  //   logo: 'https://tokens.pancakeswap.finance/images/monad-testnet/0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701.png',
+  //   wnativeToken: {
+  //     address: '0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701',
+  //     decimals: 18,
+  //     symbol: 'WMON',
+  //     name: 'Wrapped Monad',
+  //   },
+  //   nativeCurrency: {
+  //     address: zeroAddress,
+  //     name: 'Testnet MON Token',
+  //     symbol: 'MON',
+  //     decimals: 18,
+  //   },
+  //   geckoId: 'monad-testnet',
+  // },
   [supportedChainIds.bsc]: {
-    slug: 'monad-testnet',
-    name: 'Monad Testnet',
-    rpcUrls: ['https://testnet-rpc.monad.xyz', 'https://monad-testnet.drpc.org'],
-    blockExplorer: 'https://testnet.monadexplorer.com',
-    networkType: 'testnet',
-    logo: 'https://tokens.pancakeswap.finance/images/monad-testnet/0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701.png',
+    slug: 'bsc',
+    name: 'Binance Smart Chain',
+    rpcUrls: ['https://binance.llamarpc.com', 'wss://bsc-rpc.publicnode.com'],
+    blockExplorer: 'https://bscscan.com',
+    networkType: 'mainnet',
+    logo: 'https://icons.llamao.fi/icons/chains/rsz_binance.jpg',
     wnativeToken: {
-      address: '0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701',
+      address: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
       decimals: 18,
-      symbol: 'WMON',
-      name: 'Wrapped Monad',
+      symbol: 'WBNB',
+      name: 'Wrapped BNB',
     },
     nativeCurrency: {
       address: zeroAddress,
-      name: 'Testnet MON Token',
-      symbol: 'MON',
+      name: 'Binance Coin',
+      symbol: 'BNB',
       decimals: 18,
     },
-    geckoId: 'monad-testnet',
+    geckoId: 'binance-smart-chain',
   },
 };
 

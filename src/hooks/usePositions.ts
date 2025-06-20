@@ -2,7 +2,7 @@ import { contractAddresses } from '@/constants/addresses';
 import { UniswapNFTManager } from '@/contracts/uniswap/nftManager';
 import { UniswapV3Factory } from '@/contracts/uniswap/v3Factory';
 import { UniswapV3Pool } from '@/contracts/uniswap/v3Pool';
-import { getTokenDetails } from '@/helper/erc20';
+import { getTokenDetails } from '@/helper/token';
 import { Token } from '@/types/tokens';
 import { V3PoolDetails, V3Position, V3PositionRaw } from '@/types/v3';
 import { V3PoolUtils } from '@/utils/v3Pool';

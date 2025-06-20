@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { fetchTokenBalance } from '@/helper/token';
 import { Token } from '@/types/tokens';
 import Image from 'next/image';
-import Text from '../ui/Text';
+import { useEffect, useState } from 'react';
+import { useAccount, useChainId } from 'wagmi';
 import ConnectOrActionButton from '../position/LiquidityActionButton';
 import BalancePercentageButtons from '../ui/BalancePercentageButtons';
-import { useAccount, useChainId } from 'wagmi';
-import { fetchTokenBalance } from '@/helper/erc20';
+import Text from '../ui/Text';
 
 interface DepositTokensProps {
   srcTokenDetails: Token;

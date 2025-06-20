@@ -1,11 +1,12 @@
-import { chainsData } from '@/constants/chains';
 import { tokensByChainId } from '@/constants/tokens';
 import { Token } from '@/types/tokens';
+import { isNativeToken } from '@/utils/address';
 import { getPublicClient } from '@/utils/publicClient';
+import { isNativeCurrency } from '@/utils/token';
 import { erc20Abi, Hex } from 'viem';
-import { multicallForSameContract } from './multicall';
+import { multicallForSameContract, multicallWithSameAbi } from './multicall';
 
-const fetchErc20Info = async ({ address, chainId }: { address: Hex; chainId: number }) => {
+export const fetchErc20Info = async ({ address, chainId }: { address: Hex; chainId: number }) => {
   const multicallRes = (await multicallForSameContract({
     abi: erc20Abi,
     address,
@@ -23,23 +24,6 @@ const fetchErc20Info = async ({ address, chainId }: { address: Hex; chainId: num
     name: multicallRes[2] || multicallRes[0],
     address,
   };
-};
-
-export const getTokenDetails = async ({ address, chainId }: { address: Hex; chainId: number }): Promise<Token> => {
-  let tokenDetails: Token | undefined;
-  try {
-    tokenDetails = getLocalTokenDetails({ address, chainId });
-  } catch {
-    console.log('Token not found in local data for:', address);
-  }
-  if (!tokenDetails) {
-    return await fetchErc20Info({ address, chainId });
-  }
-  return tokenDetails;
-};
-export const isNativeCurrency = (address: string, chainId: number): boolean => {
-  const chainInfo = chainsData[chainId];
-  return chainInfo?.nativeCurrency.address === address;
 };
 
 export const fetchTokenBalance = async ({ token, account, chainId }: { token: Hex; account: Hex; chainId: number }) => {
@@ -60,10 +44,72 @@ export const fetchTokenBalance = async ({ token, account, chainId }: { token: He
   }
 };
 
+export const getTokenDetails = async ({ address, chainId }: { address: Hex; chainId: number }): Promise<Token> => {
+  let tokenDetails: Token | undefined;
+  try {
+    tokenDetails = getLocalTokenDetails({ address, chainId });
+  } catch {
+    console.log('Token not found in local data for:', address);
+  }
+  if (!tokenDetails) {
+    return await fetchErc20Info({ address, chainId });
+  }
+  return tokenDetails;
+};
+
 export const getLocalTokenDetails = ({ address, chainId }: { address: Hex; chainId: number }): Token => {
   const tokenDetails = tokensByChainId[chainId]?.[address];
   if (!tokenDetails) {
     throw new Error('Token not found');
   }
   return tokenDetails;
+};
+
+export const getTokensBalance = async (
+  tokens: Hex[],
+  chainId: number,
+  account: Hex,
+): Promise<Record<string, bigint>> => {
+  try {
+    const tokensWithoutNative = tokens.filter((token) => !isNativeToken(token, chainId));
+    const publicClient = getPublicClient(chainId);
+
+    const [erc20Balances, nativeBalance] = await Promise.allSettled([
+      multicallWithSameAbi({
+        chainId,
+        contracts: [...tokensWithoutNative],
+        abi: erc20Abi,
+        allMethods: tokensWithoutNative.map(() => 'balanceOf'),
+        allParams: tokensWithoutNative.map(() => [account]),
+      }),
+      publicClient.getBalance({
+        address: account,
+      }),
+    ]);
+
+    const erc20BalancesResult: bigint[] =
+      erc20Balances.status === 'fulfilled'
+        ? (erc20Balances.value as bigint[])
+        : tokensWithoutNative.map(() => BigInt(0));
+    const nativeBalanceResult: bigint = nativeBalance.status === 'fulfilled' ? nativeBalance.value : BigInt(0);
+
+    const balances: Record<string, bigint> = {};
+    tokensWithoutNative.forEach((token, idx) => {
+      balances[token] = erc20BalancesResult[idx];
+    });
+    tokens.forEach((token) => {
+      if (isNativeToken(token, chainId)) {
+        balances[token] = nativeBalanceResult;
+      }
+    });
+    return balances;
+  } catch {
+    return tokens.reduce(
+      (acc, token) => {
+        acc[token] = BigInt(0);
+        return acc;
+      },
+      {} as Record<string, bigint>,
+    );
+  }
 };

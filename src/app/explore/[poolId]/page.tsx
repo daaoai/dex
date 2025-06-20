@@ -74,12 +74,14 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
           </div>
           <div className="flex space-x-4">
             <Link
-              href={`/swap?token0=${poolDetails.token0.address}&token1=${poolDetails.token1.address}`}
+              prefetch={true}
+              href={`/trade?srcToken=${poolDetails.token0.address}&destToken=${poolDetails.token1.address}`}
               className="bg-pink-600 hover:bg-pink-700 text-white"
             >
               Swap
             </Link>
             <Link
+              prefetch={true}
               href={`/positions/create?token0=${poolDetails.token0.address}&token1=${poolDetails.token1.address}`}
               className="border-pink-600 text-pink-600 hover:bg-pink-600 hover:text-white"
             >

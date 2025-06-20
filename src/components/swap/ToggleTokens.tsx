@@ -1,8 +1,8 @@
 'use client';
 
-import { ArrowDown } from 'lucide-react';
+import { fetchTokenBalance } from '@/helper/token';
 import { Token } from '@/types/tokens';
-import { fetchTokenBalance } from '@/helper/erc20';
+import { ArrowDown } from 'lucide-react';
 import { useAccount, useChainId } from 'wagmi';
 
 type ToggleTokensProps = {
