@@ -1,36 +1,46 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Settings } from 'lucide-react';
-import { useAccount, useChainId } from 'wagmi';
-import { Token } from '@/types/tokens';
-import TokenSelectionModal from '@/components/TokenSelectorModal';
-import { Button } from '@/shadcn/components/ui/button';
-import { useSwap } from '@/hooks/useSwap';
-import { useQuoter } from '@/hooks/useQuoter';
-import { fetchTokenBalance } from '@/helper/erc20';
-import { formatUnits } from 'viem';
+import SelectTokenCard from '@/components/swap/SelectTokenCard';
 import { SettingsModal } from '@/components/swap/SettingsModal';
 import ToggleTokens from '@/components/swap/ToggleTokens';
-import SelectTokenCard from '@/components/swap/SelectTokenCard';
+import TokenSelectionModal from '@/components/TokenSelectorModal';
+import { supportedChainIds } from '@/constants/chains';
+import { fetchTokenBalance } from '@/helper/token';
+import { useQuoter } from '@/hooks/useQuoter';
+import { useSwap } from '@/hooks/useSwap';
+import { Button } from '@/shadcn/components/ui/button';
+import { Token } from '@/types/tokens';
+import { Settings } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { formatUnits } from 'viem';
+import { useAccount } from 'wagmi';
 import Text from '../ui/Text';
 
-export default function SwapModal() {
-  const [srcToken, setSrcToken] = useState<Token>({
-    name: '',
-    symbol: '',
-    logo: undefined,
-    address: '0x',
-    decimals: 18,
-  });
+interface SwapModalProps {
+  initialSrcToken?: Token | null;
+  initialDestToken?: Token | null;
+}
 
-  const [destToken, setDestToken] = useState<Token>({
-    name: '',
-    symbol: '',
-    logo: undefined,
-    address: '0x',
-    decimals: 18,
-  });
+export default function SwapModal({ initialSrcToken, initialDestToken }: SwapModalProps = {}) {
+  const [srcToken, setSrcToken] = useState<Token>(
+    initialSrcToken || {
+      name: '',
+      symbol: '',
+      logo: undefined,
+      address: '0x',
+      decimals: 18,
+    },
+  );
+
+  const [destToken, setDestToken] = useState<Token>(
+    initialDestToken || {
+      name: '',
+      symbol: '',
+      logo: undefined,
+      address: '0x',
+      decimals: 18,
+    },
+  );
 
   const [srcAmount, setSrcAmount] = useState('');
   const [destAmount, setDestAmount] = useState('');
@@ -44,7 +54,7 @@ export default function SwapModal() {
   const [deadline, setDeadline] = useState(5);
   const [slippageModalOpen, setSlippageModalOpen] = useState(false);
 
-  const chainId = useChainId();
+  const chainId = supportedChainIds.bsc;
   const { swapExactIn } = useSwap({ chainId });
   const { quoteExactInputSingle } = useQuoter({ chainId });
   const { address: account } = useAccount();
@@ -122,6 +132,23 @@ export default function SwapModal() {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    if (!account || (!initialSrcToken && !initialDestToken)) return;
+    const fetchBalances = async () => {
+      if (account) {
+        const srcBalance = initialSrcToken
+          ? await fetchTokenBalance({ token: initialSrcToken.address, account, chainId })
+          : 0n;
+        setSrcBalance(srcBalance);
+
+        const destBalance = initialDestToken
+          ? await fetchTokenBalance({ token: initialDestToken.address, account, chainId })
+          : 0n;
+        setDestBalance(destBalance);
+      }
+    };
+    fetchBalances();
+  }, []);
 
   return (
     <div className="bg-transparent border border-stroke rounded-3xl p-2 w-full max-w-md mx-auto shadow-2xl">
