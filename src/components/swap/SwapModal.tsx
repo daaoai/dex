@@ -151,7 +151,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
   }, []);
 
   return (
-    <div className="bg-transparent border border-stroke rounded-3xl p-2 w-full max-w-md mx-auto shadow-2xl">
+    <div className="w-full max-w-md mx-auto shadow-2xl">
       <div className=" text-white flex justify-between items-center mb-2 p-2">
         <Text type="h2" className="text-xl ">
           Swap

@@ -17,6 +17,10 @@ const config: Config = {
         'background-4': 'var(--color-background-4)',
         'background-5': 'var(--color-background-5)',
         'background-6': 'var(--color-background-6)',
+        'background-7': 'var(--color-background-7)',
+        'background-8': 'var(--color-background-8)',
+        'background-9': 'var(--color-background-9)',
+        'background-10': 'var(--color-background-10)',
 
         grey: 'var(--color-grey)',
         'grey-2': 'var(--color-grey-2)',

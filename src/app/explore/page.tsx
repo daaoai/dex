@@ -7,15 +7,15 @@ import { fetchTopPoolsFromGraph } from './fetchPools';
 const ExplorePage = async () => {
   const pools = await fetchTopPoolsFromGraph();
   return (
-    <main className="min-h-screen bg-gray-950 flex flex-col items-center py-10 px-4">
-      <div className="w-full max-w-5xl">
+    <main className="min-h-screen bg-black flex flex-col items-center py-10 px-4">
+      <div className="w-full max-w-7xl">
         <Text type="h1" className="text-3xl md:text-4xl font-bold text-white mb-6 text-center">
           {exploreContent.title}
         </Text>
         <Text type="p" className="text-gray-400 mb-8 text-center">
           {exploreContent.description}
         </Text>
-        <div className="bg-gray-900 rounded-xl shadow-lg p-6">
+        <div className="rounded-xl shadow-lg p-6">
           <PoolsTable pools={pools} />
         </div>
       </div>
