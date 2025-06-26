@@ -17,18 +17,18 @@ import Text from '../ui/Text';
 
 export default function SwapModal() {
   const [srcToken, setSrcToken] = useState<Token>({
-    name: '',
-    symbol: '',
+    name: 'Wrapped BNB',
+    symbol: 'WBNB',
     logo: undefined,
-    address: '0x',
+    address: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
     decimals: 18,
   });
 
   const [destToken, setDestToken] = useState<Token>({
-    name: '',
-    symbol: '',
+    name: 'Tether USD',
+    symbol: 'USDT',
     logo: undefined,
-    address: '0x',
+    address: '0x55d398326f99059ff775485246999027b3197955',
     decimals: 18,
   });
 
