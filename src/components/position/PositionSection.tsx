@@ -18,11 +18,11 @@ const PositionsSection = ({ filters, setFilters }: Props) => {
   return (
     <div className="space-y-4">
       <div className="flex flex-col items-start gap-4">
-        <Text type="h3" className="text-xl text-white font-semibold">
+        <Text type="h3" className="text-lg text-white font-normal text-primary-9">
           {positionsSectionContent.title}
         </Text>
         <div className="flex gap-2 items-center">
-          <Link href="/positions/create" className="bg-white  text-black px-4 py-2 rounded">
+          <Link href="/positions/create" className="bg-white  text-black px-3 py-1 rounded">
             {positionsSectionContent.new}
           </Link>
           <DropdownFilter filters={filters} setFilters={setFilters} />

@@ -43,12 +43,19 @@ input[type='number'].no-spinner {
   --color-stroke: #68707d;
   --color-stroke-2: #1f2530;
   --color-stroke-3: #2f343e;
+  --color-stroke-4: #1f2530;
+  --color-stroke-5: #1f2530;
+  --color-stroke-6: #623aff;
 
   --color-primary: #4627fb;
   --color-primary-2: #8d6af5;
   --color-primary-3: #926ef5;
   --color-primary-4: #9c4cfc;
   --color-primary-5: #b89fff;
+  --color-primary-6: #9f8cff;
+  --color-primary-7: #dbdfff;
+  --color-primary-8: #cbc1ff;
+  --color-primary-9: #dbdfff;
 
   --color-secondary: #926ef5;
   --color-secondary-2: #49b063;

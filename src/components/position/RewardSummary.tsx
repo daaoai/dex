@@ -19,10 +19,7 @@ export default function RewardsSummary() {
             {REWARD_CONTENT.rewards.label}
           </Text>
         </div>
-        <Button
-          type="button"
-          className="px-4 py-2 rounded bg-black text-pink-500  focus:outline-none focus:ring-2 focus:ring-pink-500"
-        >
+        <Button type="button" className="px-4 py-2 rounded bg-black text-primary-7">
           {REWARD_CONTENT.actions.collect}
         </Button>
       </header>
@@ -31,7 +28,7 @@ export default function RewardsSummary() {
         <Link href="#" className="inline-block mb-1 text-white  focus:outline-none focus:ring-2 focus:ring-white">
           {REWARD_CONTENT.actions.explore}
         </Link>
-        <Text type="p" className="text-white">
+        <Text type="p" className="text-white text-primary-8">
           {REWARD_CONTENT.description}
         </Text>
       </div>

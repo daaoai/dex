@@ -178,7 +178,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
       />
 
       <SelectTokenCard
-        title="Sell"
+        title="Selling"
         token={srcToken}
         amount={srcAmount}
         setAmount={setSrcAmount}
@@ -207,7 +207,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
       />
 
       <SelectTokenCard
-        title="Buy"
+        title="Buying"
         token={destToken}
         amount={destAmount}
         isDisabled

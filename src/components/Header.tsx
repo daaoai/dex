@@ -16,7 +16,7 @@ export default function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="flex items-center justify-between bg-black p-4">
+    <header className="flex items-center justify-between bg-black p-4 border-b border-stroke-4">
       <nav className="flex items-center space-x-6">
         <Link href="/">
           <Image src="/synthari-logo.svg" alt="Logo" width={120} height={120} className="inline-block" />
@@ -27,18 +27,18 @@ export default function Header() {
             key={href}
             href={href}
             className={`font-semibold ${
-              pathname === href ? 'text-white' : 'text-gray-400'
+              pathname === href ? 'text-primary-6' : 'text-gray-400'
             } hover:text-white transition-colors`}
           >
             {name}
           </Link>
         ))}
 
-        <input
+        {/* <input
           type="text"
           placeholder="Search Token"
-          className="ml-4 px-3 py-1 rounded border-2  placeholder-gray-500 focus:outline-none"
-        />
+          className="ml-4 px-3 py-1 rounded border-2 border-stroke-5 bg-black text-white  placeholder-gray-500 focus:outline-none"
+        /> */}
       </nav>
 
       <ConnectButton />

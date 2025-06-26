@@ -35,12 +35,19 @@ const config: Config = {
         stroke: 'var(--color-stroke)',
         'stroke-2': 'var(--color-stroke-2)',
         'stroke-3': 'var(--color-stroke-3)',
+        'stroke-4': 'var(--color-stroke-4)',
+        'stroke-5': 'var(--color-stroke-5)',
+        'stroke-6': 'var(--color-stroke-6)',
 
         primary: 'var(--color-primary)',
         'primary-2': 'var(--color-primary-2)',
         'primary-3': 'var(--color-primary-3)',
         'primary-4': 'var(--color-primary-4)',
         'primary-5': 'var(--color-primary-5)',
+        'primary-6': 'var(--color-primary-6)',
+        'primary-7': 'var(--color-primary-7)',
+        'primary-8': 'var(--color-primary-8)',
+        'primary-9': 'var(--color-primary-9)',
 
         secondary: 'var(--color-secondary)',
         'secondary-2': 'var(--color-secondary-2)',
@@ -55,7 +62,7 @@ const config: Config = {
       backgroundImage: {
         dots: 'radial-gradient(rgb(0 0 0 / 6%) 1px, transparent 2px)',
         'btn-gradient': 'linear-gradient(to right, #492AFF, #F49167)',
-        'gradient-purple': 'linear-gradient(90deg, #3F21FC, #916DF5)',
+        'gradient-purple': 'linear-gradient(90deg, #DBDFFF, #9F8CFF)',
       },
       textColor: {
         'gradient-purple': 'transparent',
