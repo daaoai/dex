@@ -52,7 +52,6 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
   const [selectType, setSelectType] = useState<'src' | 'dest' | null>(null);
   const [slippage, setSlippage] = useState(0.5);
   const [deadline, setDeadline] = useState(5);
-  const [slippageModalOpen, setSlippageModalOpen] = useState(false);
 
   const chainId = supportedChainIds.bsc;
   const { swapExactIn } = useSwap({ chainId });
@@ -156,23 +155,19 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
         <Text type="h2" className="text-xl ">
           Swap
         </Text>
-        <div className="relative inline-block">
-          <Button onClick={() => setSlippageModalOpen(true)} variant="ghost" size="icon">
-            <Settings width={20} height={20} />
-          </Button>
-          <SettingsModal
-            className="mt-[100px] ml-[800px]"
-            isOpen={slippageModalOpen}
-            onClose={() => setSlippageModalOpen(false)}
-            onSave={(value) => setSlippage(value)}
-            setSlippage={setSlippage}
-            slippage={slippage}
-            setDeadline={setDeadline}
-            deadline={deadline}
-          />
-        </div>
+        <SettingsModal
+          trigger={
+            <Button variant="ghost" size="icon">
+              <Settings width={20} height={20} />
+            </Button>
+          }
+          onSave={(value) => setSlippage(value)}
+          slippage={slippage}
+          setSlippage={setSlippage}
+          deadline={deadline}
+          setDeadline={setDeadline}
+        />
       </div>
-
       <TokenSelectionModal
         onClose={() => {
           setShowSelector(false);
@@ -225,7 +220,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
       <Button
         onClick={handleSwap}
         disabled={loading}
-        className="h-[50px] w-full bg-gradient-to-r from-gradient to-gradient-2 text-white py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl  active:scale-[0.98]"
+        className="h-[50px] w-full bg-background-11 text-white py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl  active:scale-[0.98]"
       >
         {loading ? 'Processing...' : 'Continue'}
       </Button>

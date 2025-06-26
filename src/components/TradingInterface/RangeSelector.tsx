@@ -184,7 +184,7 @@ export default function RangeSelector({
               {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
             </div>
             {selectedRange !== 'full' && (
-              <div className="absolute right-2 bottom-2 flex flex-col space-y-1">
+              <div className="absolute right-2 bottom-2 flex flex-col">
                 <Button className="w-7 h-7 text-lg font-bold bg-zinc-700" onClick={increaseMinPrice}>
                   +
                 </Button>

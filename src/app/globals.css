@@ -27,6 +27,8 @@ input[type='number'].no-spinner {
   --color-background-8: #0d1117;
   --color-background-9: #120d25;
   --color-background-10: #161b27;
+  --color-background-11: #623aff;
+  --color-background-12: #0d1117;
 
   --color-black: #000000;
 
@@ -38,6 +40,7 @@ input[type='number'].no-spinner {
 
   --color-stroke: #68707d;
   --color-stroke-2: #1f2530;
+  --color-stroke-3: #2f343e;
 
   --color-primary: #4627fb;
   --color-primary-2: #8d6af5;

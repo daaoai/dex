@@ -34,8 +34,8 @@ export default function SelectTokenCard({
 
   return (
     <div
-      className={`border border-stroke rounded-3xl p-4 hover:border-stroke transition-colors mb-4 ${
-        isSell ? 'bg-background-10 -mb-3.5' : 'bg-background-5'
+      className={`group border border-stroke-3 rounded-lg p-4 transition-colors mb-4 ${
+        isSell ? 'bg-background-10 -mb-3.5' : 'bg-background-12'
       }`}
     >
       <div className="flex justify-between items-center mb-3">
@@ -44,7 +44,9 @@ export default function SelectTokenCard({
         </Text>
 
         {isSell && balance && setAmount && (
-          <BalancePercentageButtons balance={balance} decimals={decimals} setAmount={setAmount} />
+          <div className="opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-y-2 group-hover:translate-y-0">
+            <BalancePercentageButtons balance={balance} decimals={decimals} setAmount={setAmount} />
+          </div>
         )}
       </div>
 
@@ -63,9 +65,9 @@ export default function SelectTokenCard({
         )}
         <Button
           onClick={onTokenClick}
-          className={`flex items-center gap-2 px-3 py-2 rounded-3xl w-fit ${
+          className={`flex items-center gap-2 px-3 py-2 font-bold rounded-lg w-fit ${
             isSell
-              ? 'bg-transparent border-white/30 border text-white hover:bg-zinc-600'
+              ? 'bg-transparent border-stroke-3 border text-white hover:bg-zinc-600'
               : 'bg-primary text-white hover:bg-blue-600'
           }`}
         >

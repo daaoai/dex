@@ -21,6 +21,8 @@ const config: Config = {
         'background-8': 'var(--color-background-8)',
         'background-9': 'var(--color-background-9)',
         'background-10': 'var(--color-background-10)',
+        'background-11': 'var(--color-background-11)',
+        'background-12': 'var(--color-background-12)',
 
         grey: 'var(--color-grey)',
         'grey-2': 'var(--color-grey-2)',
@@ -30,6 +32,7 @@ const config: Config = {
 
         stroke: 'var(--color-stroke)',
         'stroke-2': 'var(--color-stroke-2)',
+        'stroke-3': 'var(--color-stroke-3)',
 
         primary: 'var(--color-primary)',
         'primary-2': 'var(--color-primary-2)',
