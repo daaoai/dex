@@ -23,6 +23,8 @@ const config: Config = {
         'background-10': 'var(--color-background-10)',
         'background-11': 'var(--color-background-11)',
         'background-12': 'var(--color-background-12)',
+        'background-13': 'var(--color-background-13)',
+        'background-14': 'var(--color-background-14)',
 
         grey: 'var(--color-grey)',
         'grey-2': 'var(--color-grey-2)',

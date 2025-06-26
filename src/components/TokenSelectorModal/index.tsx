@@ -59,18 +59,14 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
   }, [searchQuery, tokens]);
 
   return (
-    <ModalWrapper
-      isOpen={isOpen}
-      onClose={onClose}
-      className="text-white w-full max-w-md max-h-[90vh]  p-4 overflow-auto"
-    >
+    <ModalWrapper isOpen={isOpen} onClose={onClose} className="text-white w-full !max-w-md max-h-[90vh]  p-4">
       <div className="w-full">
-        <div className="bg-background rounded-lg w-full max-w-md max-h-[90vh] overflow-auto">
-          <div className="p-4 flex justify-between items-center border-b ">
+        <div className="bg-background-14 rounded-lg w-full max-w-md max-h-[90vh]">
+          <div className="p-4 flex justify-between items-center">
             <Text type="h2" className="text-xl font-semibold">
               {tokenSelectorContent.selectToken}
             </Text>
-            <Button onClick={onClose} className="text-white hover:text-white bg-background">
+            <Button onClick={onClose} className="text-white bg-transparent">
               <X className="h-6 w-6" />
             </Button>
           </div>
@@ -97,11 +93,11 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
                 {tokenSelectorContent.loading}
               </Text>
             ) : (
-              <div className="space-y-2 mt-3">
+              <div className="space-y-2 mt-3 overflow-y-auto max-h-[65vh]">
                 {filteredTokens.map((token) => (
                   <Button
                     key={token.address}
-                    className="w-full bg-transparent rounded-lg p-2 flex  justify-start items-center gap-3 h-15"
+                    className="w-full group bg-transparent rounded-lg p-2 flex  hover:bg-background-13 justify-start items-center gap-3 h-15"
                     onClick={() => onSelect(token)}
                   >
                     <div className="w-8 h-8 rounded-full  flex items-center justify-center">
@@ -117,9 +113,17 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
                       <Text type="p" className="font-medium">
                         {token.name}
                       </Text>
-                      <Text type="p" className="text-sm text-gray-400">
-                        {token.symbol}
-                      </Text>
+                      <div className="flex items-center gap-2">
+                        <Text type="p" className="text-sm text-gray-400">
+                          {token.symbol}
+                        </Text>
+                        <span
+                          className="hidden group-hover:inline-block text-xs text-gray-500 break-all ml-2
+                                     translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-200"
+                        >
+                          {token.address}
+                        </span>
+                      </div>
                     </div>
                   </Button>
                 ))}
