@@ -7,7 +7,7 @@ import { Button } from '@/shadcn/components/ui/button';
 import { V3Position } from '@/types/v3';
 import { truncateNumber } from '@/utils/truncateNumber';
 import clsx from 'clsx';
-import { Circle, Settings, X } from 'lucide-react';
+import { Bolt, Circle, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { formatUnits } from 'viem';
 import TokenInput from './TokenInput';
@@ -82,7 +82,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
         <Text type="h2" className="text-lg font-semibold text-white">
           Add Liquidity
         </Text>
-        <Settings className="w-5 h-5 text-muted-foreground cursor-pointer" />
+        <Bolt className="w-5 h-5 text-muted-foreground cursor-pointer" />
       </div>
 
       {/* Pair and Range */}

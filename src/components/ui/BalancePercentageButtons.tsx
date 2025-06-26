@@ -15,7 +15,7 @@ const BalancePercentageButtons: React.FC<BalancePercentageButtonsProps> = ({ bal
         <button
           key={percent}
           type="button"
-          className=" text-xs text-grey bg-background-5 px-2 py-0.5 rounded-3xl"
+          className=" text-xs text-grey bg-black  px-2 py-0.5 rounded-3xl"
           onClick={() => handleClick(percent)}
         >
           {percent === 100 ? 'Max' : `${percent}%`}

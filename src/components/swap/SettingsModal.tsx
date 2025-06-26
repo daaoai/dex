@@ -13,6 +13,7 @@ interface SettingsModalProps {
   setDeadline: (value: number) => void;
   onSave: (value: number) => void;
   className?: string;
+  children?: React.ReactNode; // <-- Add this line
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({

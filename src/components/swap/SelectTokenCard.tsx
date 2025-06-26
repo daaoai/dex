@@ -30,12 +30,12 @@ export default function SelectTokenCard({
   isDisabled = false,
   isLoading = false,
 }: SelectTokenCardProps) {
-  const isSell = title.toLowerCase() === 'sell';
+  const isSell = title.toLowerCase() === 'selling';
 
   return (
     <div
       className={`group border border-stroke-3 rounded-lg p-4 transition-colors mb-4 ${
-        isSell ? 'bg-background-10 -mb-3.5' : 'bg-background-12'
+        isSell ? 'bg-background-17 -mb-3.5' : 'bg-background-18'
       }`}
     >
       <div className="flex justify-between items-center mb-3">
@@ -63,13 +63,14 @@ export default function SelectTokenCard({
             className="text-3xl font-light bg-transparent text-white outline-none placeholder-grey-2 w-36"
           />
         )}
+
         <Button
           onClick={onTokenClick}
-          className={`flex items-center gap-2 px-3 py-2 font-bold rounded-lg w-fit ${
-            isSell
-              ? 'bg-transparent border-stroke-3 border text-white hover:bg-zinc-600'
-              : 'bg-primary text-white hover:bg-blue-600'
-          }`}
+          className={`flex items-center cursor-pointer gap-2 px-3 py-2 font-bold rounded-2xl w-fit text-gray-400 border border-stroke-7 hover:border-[#623AFF]
+    ${token.symbol || token.logo ? 'bg-black' : 'bg-background-19'} 
+    hover:shadow-[0_4px_12px_0_#623AFF40,0_-4px_12px_0_#623AFF40] 
+    transition-shadow duration-300
+  `}
         >
           {token.logo && (
             <Image

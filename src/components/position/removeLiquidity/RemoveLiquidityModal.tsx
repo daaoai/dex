@@ -6,7 +6,7 @@ import { useState } from 'react';
 import useRemoveLiquidity from '@/hooks/useRemoveLiquidity';
 import { supportedChainIds } from '@/constants/chains';
 import { formatUnits } from 'viem';
-import { X, Settings, Circle } from 'lucide-react';
+import { X, Bolt, Circle } from 'lucide-react';
 import clsx from 'clsx';
 import Text from '@/components/ui/Text';
 import PoolIcon from '@/components/ui/logo/PoolLogo';
@@ -40,7 +40,7 @@ export default function RemoveLiquidityModal({ onClose, position }: Props) {
         <Text type="h2" className="text-xl font-bold text-white">
           {removeLiquidityContent.title}
         </Text>
-        <Settings className="w-4 h-4 text-gray-400 hover:text-white cursor-pointer" />
+        <Bolt className="w-4 h-4 text-gray-400 hover:text-white cursor-pointer" />
       </div>
 
       <div className="flex items-center gap-3 mb-4">

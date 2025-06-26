@@ -2,7 +2,8 @@
 import TokenSelectionModal from '@/components/TokenSelectorModal';
 import CryptoTradingInterface from '@/components/TradingInterface';
 import { Token } from '@/types/tokens';
-import { ChevronDown, Settings } from 'lucide-react';
+import { ChevronDown, Bolt } from 'lucide-react';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -63,7 +64,7 @@ export default function NewPositionsClient({
               {newPositionsContent.header.v3}
             </Button>
             <Button className="bg-gray-800 hover:bg-gray-700 text-white p-2 rounded-lg">
-              <Settings className="h-5 w-5" />
+              <Bolt className="h-5 w-5" />
             </Button>
           </div>
         </div>

@@ -10,7 +10,7 @@ import { useQuoter } from '@/hooks/useQuoter';
 import { useSwap } from '@/hooks/useSwap';
 import { Button } from '@/shadcn/components/ui/button';
 import { Token } from '@/types/tokens';
-import { Settings } from 'lucide-react';
+import { Bolt } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
@@ -152,20 +152,20 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
   return (
     <div className="w-full max-w-md mx-auto shadow-2xl">
       <div className=" text-white flex justify-between items-center mb-2 p-2">
-        <Text type="h2" className="text-xl ">
+        <Text type="h2" className="text-md bg-background-16 px-4 py-2 rounded-3xl">
           Swap
         </Text>
         <SettingsModal
-          trigger={
-            <Button variant="ghost" size="icon">
-              <Settings width={20} height={20} />
-            </Button>
-          }
-          onSave={(value) => setSlippage(value)}
           slippage={slippage}
           setSlippage={setSlippage}
           deadline={deadline}
           setDeadline={setDeadline}
+          onSave={(value) => setSlippage(value)}
+          trigger={
+            <Button variant="ghost" size="icon" className="transition-transform duration-500 hover:rotate-[360deg]">
+              <Bolt width={20} height={20} />
+            </Button>
+          }
         />
       </div>
       <TokenSelectionModal
@@ -220,7 +220,23 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
       <Button
         onClick={handleSwap}
         disabled={loading}
-        className="h-[50px] w-full bg-background-11 text-white py-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl  active:scale-[0.98]"
+        className={`
+    w-full 
+    bg-[#623AFF] 
+    text-white 
+    font-bold 
+    text-base 
+    leading-none
+    px-6 py-6 
+    rounded-xl 
+    disabled:opacity-50 disabled:cursor-not-allowed 
+    transition-all duration-300
+    shadow-[0_2px_10px_rgba(98,58,255,0.35)] 
+    hover:shadow-[0_4px_16px_rgba(98,58,255,0.45)] 
+    active:scale-[0.97] 
+    flex items-center justify-center
+    border border-stroke-8 -mt-2
+  `}
       >
         {loading ? 'Processing...' : 'Continue'}
       </Button>

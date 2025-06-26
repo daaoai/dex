@@ -1,4 +1,4 @@
-import { ChevronDown, Settings, Filter, Edit3 } from 'lucide-react';
+import { ChevronDown, Bolt, Filter, Edit3 } from 'lucide-react';
 import TradingColumn from './TradingColumn';
 import { tradingData } from '@/junk/trenchedData';
 import Text from '../ui/Text';
@@ -18,7 +18,7 @@ export default function TradingDashboard() {
 
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2 text-sm text-gray-400">
-            <Settings className="w-4 h-4" />
+            <Bolt className="w-4 h-4" />
             <Text type="span">Devs</Text>
           </div>
 
