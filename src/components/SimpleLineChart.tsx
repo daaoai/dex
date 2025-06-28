@@ -14,7 +14,20 @@ export const SimpleLineChart: React.FC<SimpleLineChartProps> = ({
   showGrid = true,
   strokeColor = '#ec4899',
 }) => {
-  if (!data || data.length === 0) {
+  // Filter out invalid data points
+  const validData =
+    data?.filter(
+      (d) =>
+        d &&
+        typeof d.x === 'number' &&
+        typeof d.y === 'number' &&
+        !isNaN(d.x) &&
+        !isNaN(d.y) &&
+        isFinite(d.x) &&
+        isFinite(d.y),
+    ) || [];
+
+  if (validData.length === 0) {
     return (
       <div
         className="flex items-center justify-center text-gray-500 bg-gray-800 rounded"
@@ -26,28 +39,35 @@ export const SimpleLineChart: React.FC<SimpleLineChartProps> = ({
   }
 
   // Find min and max values for scaling
-  const values = data.map((d) => d.y);
+  const values = validData.map((d) => d.y);
   const minValue = Math.min(...values);
   const maxValue = Math.max(...values);
-  const range = maxValue - minValue;
+
+  // Handle edge case where all values are the same
+  const range = maxValue === minValue ? 1 : maxValue - minValue;
   const padding = range * 0.1; // 10% padding
 
   // Create SVG path
   const width = 600;
   const chartHeight = height - 40; // Leave space for labels
 
-  const points = data
+  const points = validData
     .map((point, index) => {
-      const x = (index / (data.length - 1)) * width;
+      const x = (index / Math.max(1, validData.length - 1)) * width;
       const y = chartHeight - ((point.y - minValue + padding) / (range + 2 * padding)) * chartHeight;
-      return `${x},${y}`;
+
+      // Ensure coordinates are valid numbers
+      const safeX = isFinite(x) ? x : 0;
+      const safeY = isFinite(y) ? y : chartHeight / 2;
+
+      return `${safeX},${safeY}`;
     })
     .join(' L');
 
-  const pathD = `M${points}`;
+  const pathD = points ? `M${points}` : '';
 
-  // Create gradient for fill
-  const gradientId = `gradient-${Math.random().toString(36).substr(2, 9)}`;
+  // Create deterministic gradient ID to avoid hydration mismatches
+  const gradientId = `gradient-${validData.length}-${minValue.toFixed(2).replace('.', '-')}-${maxValue.toFixed(2).replace('.', '-')}`;
 
   return (
     <div className="relative bg-gray-900 rounded p-4" style={{ height: `${height}px` }}>
@@ -75,19 +95,24 @@ export const SimpleLineChart: React.FC<SimpleLineChartProps> = ({
         <path d={pathD} fill="none" stroke={strokeColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 
         {/* Hover points */}
-        {data.map((point, index) => {
-          const x = (index / (data.length - 1)) * width;
+        {validData.map((point, index) => {
+          const x = (index / Math.max(1, validData.length - 1)) * width;
           const y = chartHeight - ((point.y - minValue + padding) / (range + 2 * padding)) * chartHeight;
+
+          // Ensure coordinates are valid numbers
+          const safeX = isFinite(x) ? x : 0;
+          const safeY = isFinite(y) ? y : chartHeight / 2;
+
           return (
             <circle
               key={index}
-              cx={x}
-              cy={y}
+              cx={safeX}
+              cy={safeY}
               r="0"
               fill={strokeColor}
               className="hover:r-2 transition-all duration-200"
             >
-              <title>${point.y.toFixed(2)}</title>
+              <title>${isFinite(point.y) ? point.y.toFixed(2) : '0.00'}</title>
             </circle>
           );
         })}
@@ -96,9 +121,9 @@ export const SimpleLineChart: React.FC<SimpleLineChartProps> = ({
       {/* Y-axis labels */}
       {showGrid && (
         <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-400 py-4">
-          <span>${maxValue.toFixed(2)}</span>
-          <span>${((maxValue + minValue) / 2).toFixed(2)}</span>
-          <span>${minValue.toFixed(2)}</span>
+          <span>${isFinite(maxValue) ? maxValue.toFixed(2) : '0.00'}</span>
+          <span>${isFinite((maxValue + minValue) / 2) ? ((maxValue + minValue) / 2).toFixed(2) : '0.00'}</span>
+          <span>${isFinite(minValue) ? minValue.toFixed(2) : '0.00'}</span>
         </div>
       )}
     </div>

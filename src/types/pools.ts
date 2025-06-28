@@ -1,4 +1,5 @@
 import { Hex } from 'viem';
+import { Token } from './tokens';
 
 export interface GraphTopPool {
   id: Hex;
@@ -30,16 +31,8 @@ export interface TopPool {
   volumeUSD: number;
   feeTier: number;
   apr: number;
-  token0: {
-    id: string;
-    symbol: string;
-    decimals: number;
-  };
-  token1: {
-    id: string;
-    symbol: string;
-    decimals: number;
-  };
+  token0: Token;
+  token1: Token;
 }
 
 export interface Transaction {
@@ -77,18 +70,8 @@ export interface PoolDetails {
   poolBalances: PoolBalances;
   chartData: ChartDataPoint[];
   transactions: Transaction[];
-  token0: {
-    address: string;
-    symbol: string;
-    decimals: number;
-    name: string;
-  };
-  token1: {
-    address: string;
-    symbol: string;
-    decimals: number;
-    name: string;
-  };
+  token0: Token;
+  token1: Token;
 }
 
 export interface GraphPoolDetails {

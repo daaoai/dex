@@ -1,3 +1,5 @@
+import { supportedChainIds } from '@/constants/chains';
+import { getLocalTokenDetails } from '@/helper/token';
 import { GraphTopPool, TopPool } from '@/types/pools';
 import { formatToken } from '@/utils/address';
 import { calculate7DayAverageAPR } from '@/utils/apr';
@@ -91,20 +93,30 @@ const transformGraphPoolsToTopPools = (graphPools: GraphTopPool[]): TopPool[] =>
     // Calculate APR using 7-day average for stability
     const apr = calculate7DayAverageAPR(pool.poolDayData || [], feeTier, totalValueLockedUSD);
 
+    const token0Address = formatToken(pool.token0.id);
+    const token1Address = formatToken(pool.token1.id);
+
+    const token0LocalInfo = getLocalTokenDetails({ address: token0Address, chainId: supportedChainIds.bsc });
+    const token1LocalInfo = getLocalTokenDetails({ address: token1Address, chainId: supportedChainIds.bsc });
+
     return {
       id: formatToken(pool.id),
       volumeUSD: parseFloat(pool.volumeUSD) || 0,
       feeTier,
       apr: Math.round(apr * 100) / 100, // Round to 2 decimal places
       token0: {
-        id: formatToken(pool.token0.id),
+        address: formatToken(pool.token0.id),
         symbol: pool.token0.symbol,
         decimals: parseInt(pool.token0.decimals, 10),
+        logo: token0LocalInfo?.logo || '',
+        name: token0LocalInfo?.name || pool.token0.symbol,
       },
       token1: {
-        id: formatToken(pool.token1.id),
+        address: formatToken(pool.token1.id),
         symbol: pool.token1.symbol,
         decimals: parseInt(pool.token1.decimals, 10),
+        logo: token1LocalInfo?.logo || '',
+        name: token1LocalInfo?.name || pool.token1.symbol,
       },
     };
   });
