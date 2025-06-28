@@ -27,6 +27,7 @@ export class UniswapNFTManager {
     deadline,
     fee,
     poolAddress,
+    isInitialized,
   }: CreatePositionParams) => {
     const mintCallData = encodeFunctionData({
       abi: uniswapV3NftManagerAbi,
@@ -48,7 +49,7 @@ export class UniswapNFTManager {
       ],
     });
 
-    if (poolAddress === zeroAddress) {
+    if (poolAddress === zeroAddress || !isInitialized) {
       const createPoolCallData = encodeFunctionData({
         abi: uniswapV3NftManagerAbi,
         functionName: 'createAndInitializePoolIfNecessary',

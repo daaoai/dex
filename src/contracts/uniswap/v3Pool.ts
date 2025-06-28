@@ -31,6 +31,16 @@ export class UniswapV3Pool {
     };
   };
 
+  liquidity = async () => {
+    const liquidity = (await this.publicClient.readContract({
+      abi: this.abi,
+      functionName: 'liquidity',
+      args: [],
+      address: this.address,
+    })) as bigint;
+    return liquidity;
+  };
+
   getV3PoolDetails = async (): Promise<V3PoolRawData> => {
     const methods = ['token0', 'token1', 'slot0', 'tickSpacing', 'fee'];
     const multicallRes = (await multicallForSameContract({

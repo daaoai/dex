@@ -7,7 +7,7 @@ import { calculate7DayAverageAPR } from '@/utils/apr';
  * @returns Promise<TopPool[]> - Array of top pools ordered by volume
  */
 export const fetchTopPoolsFromGraph = async (): Promise<TopPool[]> => {
-  const SUBGRAPH_ENDPOINT = 'https://api.studio.thegraph.com/query/113461/bnb-v-3-subgraph/version/latest';
+  const SUBGRAPH_ENDPOINT = 'https://api.studio.thegraph.com/query/113471/synthari-bnb-v-3/version/latest';
 
   const POOLS_QUERY = `
     query GetTopPools {

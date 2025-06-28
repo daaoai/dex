@@ -4,7 +4,7 @@ export const bscTokens = {
     decimals: 18,
     name: 'BNB',
     symbol: 'BNB',
-    coingeckoId: 'BNB',
+    coingeckoId: 'bnb',
     logo: 'https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png?1547034615',
   },
   '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c': {
@@ -13,8 +13,7 @@ export const bscTokens = {
     name: 'WBNB',
     symbol: 'WBNB',
     logo: 'https://static.debank.com/image/coin/logo_url/bnb/9784283a36f23a58982fc964574ea530.png',
-
-    coingeckoId: 'WBNB',
+    coingeckoId: 'wbnb',
   },
   '0x55d398326f99059fF775485246999027B3197955': {
     address: '0x55d398326f99059fF775485246999027B3197955',
@@ -24,7 +23,7 @@ export const bscTokens = {
     symbol: 'USDT',
     logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
 
-    coingeckoId: 'USDT',
+    coingeckoId: 'usdt',
   },
   '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d': {
     address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
@@ -34,7 +33,7 @@ export const bscTokens = {
     symbol: 'USDC',
     logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
 
-    coingeckoId: 'USDC',
+    coingeckoId: 'usdc',
   },
   '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3': {
     address: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
@@ -44,7 +43,7 @@ export const bscTokens = {
     symbol: 'DAI',
     logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png',
 
-    coingeckoId: 'DAI',
+    coingeckoId: 'dai',
   },
   '0x2170Ed0880ac9A755fd29B2688956BD959F933F8': {
     address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
@@ -54,7 +53,7 @@ export const bscTokens = {
     symbol: 'WETH',
     logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png',
 
-    coingeckoId: 'WETH',
+    coingeckoId: 'weth',
   },
   '0x67ee3Cb086F8a16f34beE3ca72FAD36F7Db929e2': {
     address: '0x67ee3Cb086F8a16f34beE3ca72FAD36F7Db929e2',
@@ -64,7 +63,7 @@ export const bscTokens = {
     symbol: 'DODO',
     logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x43Dfc4159D86F3A37A5A4B3D4580b888ad7d4DDd/logo.png',
 
-    coingeckoId: 'DODO',
+    coingeckoId: 'dodo',
   },
   '0xCC42724C6683B7E57334c4E856f4c9965ED682bD': {
     address: '0xCC42724C6683B7E57334c4E856f4c9965ED682bD',
@@ -74,7 +73,7 @@ export const bscTokens = {
     symbol: 'MATIC',
     logo: 'https://static.debank.com/image/matic_token/logo_url/matic/6f5a6b6f0732a7a235131bd7804d357c.png',
 
-    coingeckoId: 'MATIC',
+    coingeckoId: 'matic',
   },
   '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56': {
     address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
@@ -123,7 +122,7 @@ export const bscTokens = {
     name: 'USDFI',
     symbol: 'USDFI',
 
-    coingeckoId: 'USDFI',
+    coingeckoId: 'usdfi',
   },
   '0x181002D60d504d30a39601Ae13Af3191cb102580': {
     address: '0x181002D60d504d30a39601Ae13Af3191cb102580',
@@ -132,7 +131,7 @@ export const bscTokens = {
     name: 'LUSD Stablecoin',
     symbol: 'LUSD',
 
-    coingeckoId: 'LUSD',
+    coingeckoId: 'lusd',
   },
   '0x170C84E3b1D282f9628229836086716141995200': {
     address: '0x170C84E3b1D282f9628229836086716141995200',
@@ -141,7 +140,7 @@ export const bscTokens = {
     name: 'Optimism',
     symbol: 'OP',
 
-    coingeckoId: 'OP',
+    coingeckoId: 'op',
   },
   '0x42f3008F6945f052C31e7680F7f78c512099b904': {
     address: '0x42f3008F6945f052C31e7680F7f78c512099b904',
@@ -151,7 +150,7 @@ export const bscTokens = {
     symbol: 'WALBT',
     logo: 'https://static.debank.com/image/bsc_token/logo_url/0x42f3008f6945f052c31e7680f7f78c512099b904/9867892d0aaa519c537d8189a0551750.png',
 
-    coingeckoId: 'WALBT',
+    coingeckoId: 'walbt',
   },
   '0x1fD991fb6c3102873ba68a4e6e6a87B3a5c10271': {
     address: '0x1fD991fb6c3102873ba68a4e6e6a87B3a5c10271',

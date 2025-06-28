@@ -47,4 +47,4 @@ export const quoterV2Abi = [
       { name: 'gasEstimate', type: 'uint256' },
     ],
   },
-];
+] as const;

@@ -83,7 +83,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
 
             <Link
               prefetch={true}
-              href={`/positions/create?token0=${poolDetails.token0.address}&token1=${poolDetails.token1.address}`}
+              href={`/positions/create?token0=${poolDetails.token0.address}&token1=${poolDetails.token1.address}&fee=${poolDetails.feeTier}`}
               className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#1c121f] text-pink-400 hover:bg-[#2a1a33] transition"
             >
               <Plus size={18} />

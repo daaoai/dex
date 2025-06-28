@@ -1,6 +1,5 @@
 import { GraphPoolDetails, PoolDetails, Transaction } from '@/types/pools';
 import { formatToken } from '@/utils/address';
-import { formatUnits } from 'viem';
 
 /**
  * Fetches detailed pool data from The Graph subgraph
@@ -181,8 +180,8 @@ const transformGraphPoolToPoolDetails = (graphPool: GraphPoolDetails): PoolDetai
   const token0Decimals = parseInt(graphPool.token0.decimals, 10);
   const token1Decimals = parseInt(graphPool.token1.decimals, 10);
 
-  const formattedToken0Balance = formatUnits(BigInt(graphPool.totalValueLockedToken0 || '0'), token0Decimals);
-  const formattedToken1Balance = formatUnits(BigInt(graphPool.totalValueLockedToken1 || '0'), token1Decimals);
+  const formattedToken0Balance = graphPool.totalValueLockedToken0 || '0';
+  const formattedToken1Balance = graphPool.totalValueLockedToken1 || '0';
 
   const token0BalanceUSD = parseFloat(formattedToken0Balance) * parseFloat(graphPool.token0Price);
   const token1BalanceUSD = parseFloat(formattedToken1Balance) * parseFloat(graphPool.token1Price);

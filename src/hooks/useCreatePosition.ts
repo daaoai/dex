@@ -5,6 +5,7 @@ import { UniswapNFTManager } from '@/contracts/uniswap/nftManager';
 import { UniswapV3Factory } from '@/contracts/uniswap/v3Factory';
 import { UniswapV3Pool } from '@/contracts/uniswap/v3Pool';
 import { getTokenDetails, getTokensBalance } from '@/helper/token';
+import { Token } from '@/types/tokens';
 import { V3PoolDetails } from '@/types/v3';
 import { getPublicClient } from '@/utils/publicClient';
 import { getMinAmount } from '@/utils/slippage';
@@ -18,6 +19,7 @@ import useEffectAfterMount from './useEffectAfterMount';
 type CurrentPoolData = {
   tick: number;
   sqrtPriceX96: bigint;
+  isInitialized: boolean;
 };
 
 // const getPriceFromPercent = (percent: number, currentPrice: number) => {
@@ -40,6 +42,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
   const [currentPoolData, setCurrentPoolData] = useState<CurrentPoolData>({
     tick: 0,
     sqrtPriceX96: 0n,
+    isInitialized: false,
   });
 
   const [txnInProgress, setTxnInProgress] = useState(false);
@@ -63,17 +66,21 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     try {
       const pool = new UniswapV3Pool(chainId, poolAddress);
       setIsDataLoading(true);
-      const { currentTick, sqrtPriceX96 } = await pool.slot0();
+      const [{ currentTick, sqrtPriceX96 }, liquidity] = await Promise.all([pool.slot0(), pool.liquidity()]);
 
       setCurrentPoolData({
         tick: currentTick,
         sqrtPriceX96,
+        isInitialized: sqrtPriceX96 > 0n,
       });
       updateCurrentPrice(sqrtPriceX96);
 
       return {
         currentTick,
         sqrtPriceX96,
+        liquidity,
+        isInitialized: sqrtPriceX96 > 0n,
+        hasLiquidity: liquidity > 0n,
       };
     } catch (error) {
       console.error('Error fetching pool data:', error);
@@ -112,30 +119,55 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
       setPoolDetails(poolDetails);
       if (poolAddress !== zeroAddress) {
         const currentPoolData = await updateCurrentPoolData(poolAddress);
-        if (currentPoolData) {
+        if (currentPoolData && currentPoolData.isInitialized) {
+          // Pool is initialized
+          setCurrentPoolData({
+            tick: currentPoolData.currentTick,
+            sqrtPriceX96: currentPoolData.sqrtPriceX96,
+            isInitialized: true,
+          });
           setLowerTick(currentPoolData.currentTick - poolDetails.tickSpacing);
           setUpperTick(currentPoolData.currentTick + poolDetails.tickSpacing);
+
+          if (!currentPoolData.hasLiquidity) {
+            console.warn('Pool exists and is initialized but has no liquidity');
+          }
+        } else {
+          // Pool exists but not initialized - treat as new pool
+          handleUninitializedPool(poolDetails, token0Details, token1Details);
         }
       } else {
-        // set default values
-        const price = 1;
-        const currentTick = V3PoolUtils.getTickFromPrice({
-          decimal0: token0Details.decimals,
-          decimal1: token1Details.decimals,
-          price,
-          tickSpacing: poolDetails.tickSpacing,
-        });
-        const sqrtPriceX96 = V3PoolUtils.getSqrtPriceX96FromTick({ tick: currentTick });
-        setCurrentPoolData({
-          tick: currentTick,
-          sqrtPriceX96,
-        });
-        setLowerTick(currentTick - poolDetails.tickSpacing);
-        setUpperTick(currentTick + poolDetails.tickSpacing);
+        // Pool doesn't exist
+        handleUninitializedPool(poolDetails, token0Details, token1Details);
       }
     } catch (error) {
       console.error('Error fetching price:', error);
     }
+  };
+
+  const handleUninitializedPool = (
+    poolDetails: { address: `0x${string}`; token0: Token; token1: Token; fee: number; tickSpacing: number },
+    token0Details: Token,
+    token1Details: Token,
+  ) => {
+    // Set default values for uninitialized pool
+    const price = 0.5; // or get from external price feed
+    const currentTick = V3PoolUtils.getTickFromPrice({
+      decimal0: token0Details.decimals,
+      decimal1: token1Details.decimals,
+      price,
+      tickSpacing: poolDetails.tickSpacing,
+    });
+    const sqrtPriceX96 = V3PoolUtils.getSqrtPriceX96FromTick({ tick: currentTick });
+
+    setCurrentPoolData({
+      tick: currentTick,
+      sqrtPriceX96,
+      isInitialized: false,
+    });
+
+    setLowerTick(currentTick - poolDetails.tickSpacing);
+    setUpperTick(currentTick + poolDetails.tickSpacing);
   };
 
   const updateLowerPrice = (tickLower: number) => {
@@ -316,12 +348,29 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
       await approveToken(amount0, poolDetails.token0.address);
       await approveToken(amount1, poolDetails.token1.address);
 
+      if (lowerTick >= upperTick) {
+        throw new Error('tickLower must be less than tickUpper');
+      }
+
+      // Check tick spacing
+      const tickSpacing = supportedFeeAndTickSpacing.find((item) => item.fee === poolDetails.fee)?.tickSpacing;
+      if (lowerTick % poolDetails.tickSpacing !== 0 || upperTick % poolDetails.tickSpacing !== 0) {
+        throw new Error(`Ticks must be divisible by tickSpacing (${tickSpacing})`);
+      }
+
+      const deadline = BigInt(Math.floor(Date.now() / 1000) + 60 * 5); // 5 minutes from now
+
+      // Check deadline
+      if (deadline <= Math.floor(Date.now() / 1000)) {
+        throw new Error('Deadline must be in the future');
+      }
+
       const callData = UniswapNFTManager.generateMintCallData({
         amount0Desired: amount0,
         amount1Desired: amount1,
         amount0Min: getMinAmount(amount0, Number(slippageTolerance)),
         amount1Min: getMinAmount(amount1, Number(slippageTolerance)),
-        deadline: BigInt(Math.floor(Date.now() / 1000) + 60 * 5), // 5 minutes from now
+        deadline,
         fee: poolDetails.fee,
         recipient: account,
         sqrtPriceX96: currentPoolData.sqrtPriceX96,
@@ -331,6 +380,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
         token0: poolDetails.token0.address,
         token1: poolDetails.token1.address,
         poolAddress: poolDetails.address,
+        isInitialized: currentPoolData.isInitialized,
       });
 
       const publicClient = getPublicClient(chainId);

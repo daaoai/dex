@@ -109,6 +109,7 @@ export type CreatePositionParams = {
   recipient: Hex;
   deadline: bigint;
   sqrtPriceX96: bigint;
+  isInitialized: boolean;
 };
 
 export type DecreaseLiquidityParams = {
