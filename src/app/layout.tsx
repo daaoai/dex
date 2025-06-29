@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Daao App',
-  description: 'Daao App',
+  title: 'Syntahri.io',
+  description: 'syntahri.io',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
