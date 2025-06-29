@@ -40,7 +40,7 @@ export default function NewPositionsClient({
   const { appChainId } = useSelector((state: RootState) => state.common, shallowEqual);
 
   return (
-    <div className="min-h-screen bg-black text-white px-20">
+    <div className="min-h-screen bg-black text-white px-4 sm:px-6 md:px-10 lg:px-20">
       <div className="max-w-[1200px] mx-auto px-4 py-6">
         <div className="flex items-center gap-2 text-sm mb-4">
           <Link href="/positions" className="text-gray-400 hover:text-white cursor-pointer">
@@ -52,7 +52,7 @@ export default function NewPositionsClient({
           <Text type="p">{newPositionsContent.breadcrumbs.newPositions}</Text>
         </div>
 
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <Text type="h1" className="text-3xl font-bold">
             {newPositionsContent.header.title}
           </Text>
@@ -69,8 +69,8 @@ export default function NewPositionsClient({
           </div>
         </div>
 
-        <div className="grid md:grid-cols-[1fr,2fr] gap-8">
-          <div className="bg-background-6 rounded-xl p-6 w-full max-w-xs self-start border-2 border-stroke-2">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr,2fr] gap-6 md:gap-8">
+          <div className="bg-background-6 rounded-xl p-6 w-full md:max-w-xs self-start border-2 border-stroke-2">
             <div className="flex items-start gap-4 cursor-pointer" onClick={() => setStep(1)}>
               <div
                 className={`w-10 h-10 min-w-[40px] rounded-md flex items-center justify-center font-semibold text-sm ${
@@ -88,9 +88,7 @@ export default function NewPositionsClient({
                 </Text>
               </div>
             </div>
-
             <div className="h-8 border-l border-gray-700 ml-5" />
-
             <div className="flex items-start gap-4 cursor-pointer" onClick={() => setStep(2)}>
               <div
                 className={`w-10 h-10 min-w-[40px] rounded-md flex items-center justify-center font-semibold text-sm ${
@@ -109,7 +107,6 @@ export default function NewPositionsClient({
               </div>
             </div>
           </div>
-
           {step === 1 ? (
             <>
               <div className="bg-background-8 border-2 border-stroke-2 rounded-lg p-6">
