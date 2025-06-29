@@ -162,8 +162,8 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
           setDeadline={setDeadline}
           onSave={(value) => setSlippage(value)}
           trigger={
-            <Button variant="ghost" size="icon" className="transition-transform duration-500 hover:rotate-[360deg]">
-              <Bolt width={20} height={20} />
+            <Button variant="ghost" size="icon">
+              <Bolt width={20} height={20} className="transition-transform duration-500 group-hover:rotate-[360deg]" />
             </Button>
           }
         />
@@ -180,8 +180,8 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
       <SelectTokenCard
         title="Selling"
         token={srcToken}
-        amount={srcAmount}
-        setAmount={setSrcAmount}
+        amount={typeof srcAmount === 'string' ? srcAmount : ''}
+        setAmount={(val: string) => setSrcAmount(isNaN(Number(val)) ? '' : val)}
         onTokenClick={() => openSelector('src')}
         balance={srcBalance}
         decimals={srcToken.decimals}
@@ -222,7 +222,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
         disabled={loading}
         className={`
     w-full 
-    bg-[#623AFF] 
+    bg-background-21
     text-white 
     font-bold 
     text-base 

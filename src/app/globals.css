@@ -34,8 +34,10 @@ input[type='number'].no-spinner {
   --color-background-15: #161b27;
   --color-background-16: #211c55;
   --color-background-17: #161b27;
-  --color-background-18: #0d1117;
   --color-background-19: #161b27;
+  --color-background-20: #4425fb;
+  --color-background-21: #623aff;
+  --color-background-23: #22252b;
 
   --color-black: #000000;
 
@@ -53,6 +55,7 @@ input[type='number'].no-spinner {
   --color-stroke-6: #623aff;
   --color-stroke-7: #2f343e;
   --color-stroke-8: #7f5ffa;
+  --color-stroke-9: #2f343e;
 
   --color-primary: #68707d;
 
@@ -92,6 +95,7 @@ input[type='number'].no-spinner {
 
   --color-stroke: #68707d;
   --color-stroke-2: #1f2530;
+  --color-stroke-3: #2f343e;
 
   --color-primary: #4627fb;
   --color-primary-2: #8d6af5;

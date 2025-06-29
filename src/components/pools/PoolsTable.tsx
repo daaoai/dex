@@ -11,31 +11,26 @@ export default function PoolsTable({ pools }: PoolsTableProps) {
   const router = useRouter();
 
   return (
-    <div className="overflow-auto rounded-md bg-gray-800">
-      <table className="min-w-full text-left border border-gray-500 rounded-md">
-        <thead className="border-b border-gray-500">
+    <div className="overflow-auto">
+      <table className="min-w-full text-left border border-gray-700">
+        <thead className="border-b">
           <tr>
-            {['#', 'Pool', 'Protocol', 'Fee tier', 'TVL', 'Pool APR', 'Rewards APR', '1D vol', '30D vol'].map(
-              (h, i) => (
-                <th
-                  key={h}
-                  className={`px-4 py-2 text-gray-400 bg-background-8 ${i === 0 ? 'border-r border-gray-500' : ''}`}
-                >
-                  {h}
-                </th>
-              ),
-            )}
+            {['#', 'Pool', 'Protocol', 'Fee tier', 'TVL', 'Pool APR', 'Rewards APR', '1D vol', '30D vol'].map((h) => (
+              <th key={h} className={`px-4 py-2 text-gray-400 bg-background-8 border-b border-gray-700 `}>
+                {h}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          {pools.map((pool, idx) => (
+          {pools.map((pool) => (
             <tr
               key={pool.id}
-              className="border-b border-none hover:bg-gray-700 bg-black cursor-pointer transition-colors"
+              className="border-b border-gray-700 hover:bg-background-19 bg-black cursor-pointer transition-colors"
               onClick={() => router.push(`/explore/${pool.id}`)}
             >
-              <td className="px-4 py-2 text-white border-r border-gray-500">{idx + 1}</td>
-              <td className="px-4 py-2 flex items-center text-white space-x-2">
+              <td className="px-4 py-5 text-white">{'#'}</td>
+              <td className="px-4 py-5 flex items-center text-white space-x-2 border-r border-gray-700">
                 <span className="flex items-center justify-center text-xs">
                   <PoolIcon
                     token0={{
@@ -51,13 +46,13 @@ export default function PoolsTable({ pools }: PoolsTableProps) {
                   {pool.token0.symbol}/{pool.token1.symbol}
                 </span>
               </td>
-              <td className="px-4 py-2 text-white">v3</td>
-              <td className="px-4 py-2 text-white">{pool.feeTier}</td>
-              <td className="px-4 py-2 text-white">{pool.volumeUSD}</td>
-              <td className="px-4 py-2 text-white">{0}</td>
-              <td className="px-4 py-2 text-white">{0}</td>
-              <td className="px-4 py-2 text-white">{0}</td>
-              <td className="px-4 py-2 text-white">{0}</td>
+              <td className="px-4 py-5 text-white ">v3</td>
+              <td className="px-4 py-5 text-white">{pool.feeTier}</td>
+              <td className="px-4 py-5 text-white">{pool.volumeUSD}</td>
+              <td className="px-4 py-5 text-white">{0}</td>
+              <td className="px-4 py-5 text-white">{0}</td>
+              <td className="px-4 py-5 text-white">{0}</td>
+              <td className="px-4 py-5 text-white">{0}</td>
             </tr>
           ))}
         </tbody>

@@ -112,7 +112,7 @@ export default function NewPositionsClient({
 
           {step === 1 ? (
             <>
-              <div className="bg-background border-2 border-stroke-2 rounded-lg p-6">
+              <div className="bg-background-8 border-2 border-stroke-2 rounded-lg p-6">
                 <Text type="h2" className="text-xl font-semibold mb-4">
                   {newPositionsContent.selectPair.title}
                 </Text>
@@ -121,13 +121,13 @@ export default function NewPositionsClient({
                 </Text>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <Button
-                    className="bg-grey-3 rounded-lg p-4 flex items-center justify-between"
+                  <button
+                    className="bg-background-23 rounded-lg p-4 flex items-center justify-between h-full"
                     onClick={() => setShowTokenModal({ show: true, tokenType: 'token0' })}
                   >
                     {token0 ? (
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full  flex items-center justify-center">
                           <Image src={token0.logo || '/placeholder.svg'} alt={token0.symbol} width={16} height={16} />
                         </div>
                         <span>{token0.symbol}</span>
@@ -136,15 +136,15 @@ export default function NewPositionsClient({
                       <Text type="p">{newPositionsContent.selectPair.chooseToken}</Text>
                     )}
                     <ChevronDown className="h-5 w-5 text-gray-400" />
-                  </Button>
+                  </button>
 
                   <button
-                    className="bg-white text-black rounded-lg p-4 flex items-center justify-between"
+                    className="bg-background-23 h-full rounded-lg p-4 flex items-center justify-between"
                     onClick={() => setShowTokenModal({ show: true, tokenType: 'token1' })}
                   >
                     {token1 ? (
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full  flex items-center justify-center">
                           <Image src={token1.logo || '/placeholder.svg'} alt={token1.symbol} width={16} height={16} />
                         </div>
                         <Text type="p">{token1.symbol}</Text>

@@ -14,7 +14,7 @@ const NoPositions = ({ positions }: NoPositionsProps) => {
   if (positions.length > 0) return null;
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-10 flex flex-col items-center text-center text-white space-y-6">
+    <div className="bg-background-12 border border-zinc-800 rounded-2xl p-10 flex flex-col items-center text-center text-white space-y-6">
       <div className="bg-zinc-800 rounded-xl p-4">
         <Waves size={32} />
       </div>
@@ -27,13 +27,13 @@ const NoPositions = ({ positions }: NoPositionsProps) => {
       <div className="flex gap-4">
         <Link
           href="/explore"
-          className="bg-zinc-800 text-white font-medium py-2 px-4 rounded-xl hover:bg-zinc-700 transition"
+          className="bg-zinc-800 text-white font-medium py-2 px-4 rounded-md hover:bg-zinc-700 transition"
         >
           {noPositionsContent.explore}
         </Link>
         <Link
           href="/positions/create"
-          className="bg-white text-black font-medium py-2 px-4 rounded-xl hover:bg-zinc-200 transition"
+          className="bg-white text-black font-medium py-2 px-4 rounded-md hover:bg-zinc-200 transition"
         >
           {noPositionsContent.new}
         </Link>

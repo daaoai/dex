@@ -35,7 +35,7 @@ export default function SelectTokenCard({
   return (
     <div
       className={`group border border-stroke-3 rounded-lg p-4 transition-colors mb-4 ${
-        isSell ? 'bg-background-17 -mb-3.5' : 'bg-background-18'
+        isSell ? 'bg-background-17 -mb-3.5' : 'bg-background-8'
       }`}
     >
       <div className="flex justify-between items-center mb-3">

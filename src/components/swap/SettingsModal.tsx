@@ -13,7 +13,7 @@ interface SettingsModalProps {
   setDeadline: (value: number) => void;
   onSave: (value: number) => void;
   className?: string;
-  children?: React.ReactNode; // <-- Add this line
+  children?: React.ReactNode;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -39,7 +39,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent
         className={clsx(
-          'flex flex-col z-50 !max-w-md !w-[300px] absolute border-none -left-4 rounded-[20px] bg-background shadow-xl p-4 space-y-4',
+          'flex flex-col z-50 !max-w-md !w-[300px] absolute border-none -left-4 rounded-[20px] bg-black border-2 border-stroke-9 shadow-xl p-4 space-y-4',
           className,
         )}
         side="bottom"
@@ -48,8 +48,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         {/* Slippage */}
         <div className="flex items-center justify-between w-full">
           <div className="text-grey text-sm font-medium">Max Slippage</div>
-          <div className="flex items-center bg-black rounded-full px-1 py-1 gap-1 w-[140px]">
-            <button className="text-sm px-4 py-1.5 rounded-full font-medium text-white bg-primary mr-2" disabled>
+          <div className="flex items-center bg-black rounded-full px-1 py-1 gap-1 w-[140px] p-2 border border-stroke-3">
+            <button className="text-sm px-4 py-1.5 rounded-full font-medium text-white bg-background-20 mr-2" disabled>
               Auto
             </button>
             <input
