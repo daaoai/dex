@@ -60,8 +60,8 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
 
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose} className="text-white w-full !max-w-md max-h-[90vh]  p-4">
-      <div className="w-full">
-        <div className="bg-background-14 rounded-lg w-full max-w-md max-h-[90vh]">
+      <div className="w-full my-12">
+        <div className="bg-background-14 rounded-lg w-full max-w-md max-h-[90vh] my-12">
           <div className="p-4 flex justify-between items-center">
             <Text type="h2" className="text-xl font-semibold">
               {tokenSelectorContent.selectToken}
