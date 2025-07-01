@@ -8,6 +8,7 @@ import { truncateNumber } from '@/utils/truncateNumber';
 import { LineChart, Plus, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { fetchPoolDetails } from './fetchPoolDetails';
+import DynamicLogo from '@/components/ui/logo/DynamicLogo';
 
 interface PoolDetailsPageProps {
   params: Promise<{
@@ -53,8 +54,8 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
             <PoolIcon
-              token0={{ symbol: poolDetails.token0.symbol }}
-              token1={{ symbol: poolDetails.token1.symbol }}
+              token0={{ symbol: poolDetails.token0.symbol, logo: poolDetails.token0.logo }}
+              token1={{ symbol: poolDetails.token1.symbol, logo: poolDetails.token1.logo }}
               className="h-12 w-12"
             />
             <div>
@@ -243,16 +244,16 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
             <div className="bg-background rounded-xl p-6 my-8">
               <h3 className="text-white font-semibold mb-4">Links</h3>
               <div className="">
-                <div className="flex items-center ">
+                <div className="flex items-center">
                   <PoolIcon
-                    token0={{ symbol: poolDetails.token0.symbol }}
-                    token1={{ symbol: poolDetails.token1.symbol }}
+                    token0={{ symbol: poolDetails.token0.symbol, logo: poolDetails.token0.logo }}
+                    token1={{ symbol: poolDetails.token1.symbol, logo: poolDetails.token1.logo }}
                     className="h-6 w-6"
                   />
                   <span className="pl-4 text-white">
                     {poolDetails.token0.symbol} / {poolDetails.token1.symbol}
                   </span>
-                  <span className="text-gray-400 text-sm">{poolDetails.address.slice(0, 8)}...</span>
+                  <span className="text-gray-400 text-sm ml-2">{poolDetails.address.slice(0, 8)}...</span>
                   <Button variant="ghost" size="sm" className="p-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -265,9 +266,13 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                   </Button>
                 </div>
 
-                <div className="flex items-center space-x-3">
-                  <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center">
-                    <span className="text-xs text-white">W</span>
+                <div className="flex items-center space-x-3 mt-2">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center">
+                    <DynamicLogo
+                      logoUrl={poolDetails.token0.logo}
+                      alt={poolDetails.token0.symbol[0]}
+                      className="rounded-full"
+                    />
                   </div>
                   <span className="text-white">{poolDetails.token0.symbol}</span>
                   <span className="text-gray-400 text-sm">{poolDetails.token0.address.slice(0, 8)}...</span>
@@ -277,15 +282,19 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                       />
                     </svg>
                   </Button>
                 </div>
 
-                <div className="flex items-center space-x-3">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                    <span className="text-xs text-white">E</span>
+                <div className="flex items-center space-x-3 mt-2">
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center">
+                    <DynamicLogo
+                      logoUrl={poolDetails.token1.logo}
+                      alt={poolDetails.token1.symbol[0]}
+                      className="rounded-full"
+                    />
                   </div>
                   <span className="text-white">{poolDetails.token1.symbol}</span>
                   <span className="text-gray-400 text-sm">{poolDetails.token1.address.slice(0, 8)}...</span>

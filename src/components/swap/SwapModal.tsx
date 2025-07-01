@@ -48,6 +48,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
     const isDest = selectType === 'dest';
 
     if (!isSource && !isDest) return;
+
     if (isSource) {
       setSrcBalance(0n);
       setSrcToken(token);

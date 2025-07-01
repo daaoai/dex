@@ -35,9 +35,11 @@ export default function PoolsTable({ pools }: PoolsTableProps) {
                   <PoolIcon
                     token0={{
                       symbol: pool.token0.symbol,
+                      logo: pool.token0.logo,
                     }}
                     token1={{
                       symbol: pool.token1.symbol,
+                      logo: pool.token1.logo,
                     }}
                     className="h-6 w-6"
                   />

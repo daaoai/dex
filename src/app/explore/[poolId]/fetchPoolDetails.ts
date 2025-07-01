@@ -242,17 +242,17 @@ const transformGraphPoolToPoolDetails = (graphPool: GraphPoolDetails): PoolDetai
     transactions,
     token0: {
       address: formatToken(graphPool.token0.id),
-      symbol: graphPool.token0.symbol,
+      symbol: token0LocalInfo?.symbol || graphPool.token0.symbol,
       decimals: token0Decimals,
-      name: graphPool.token0.name,
-      logo: token0LocalInfo?.logo || '',
+      name: token0LocalInfo?.name || graphPool.token0.name,
+      logo: token0LocalInfo?.logo,
     },
     token1: {
       address: formatToken(graphPool.token1.id),
-      symbol: graphPool.token1.symbol,
+      symbol: token1LocalInfo?.symbol || graphPool.token1.symbol,
       decimals: token1Decimals,
-      name: graphPool.token1.name,
-      logo: token1LocalInfo?.logo || '',
+      name: token1LocalInfo?.name || graphPool.token1.name,
+      logo: token1LocalInfo?.logo,
     },
   };
 };
