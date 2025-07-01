@@ -1,6 +1,7 @@
+import { supportedChainIds } from '@/constants/chains';
+import { getLocalTokenDetails } from '@/helper/token';
 import { GraphPoolDetails, PoolDetails, Transaction } from '@/types/pools';
 import { formatToken } from '@/utils/address';
-import { formatUnits } from 'viem';
 
 /**
  * Fetches detailed pool data from The Graph subgraph
@@ -139,11 +140,26 @@ const transformGraphPoolToPoolDetails = (graphPool: GraphPoolDetails): PoolDetai
   const chartData = (graphPool.poolDayData || [])
     .slice(0, 7)
     .reverse()
-    .map((dayData, index) => ({
-      x: index,
-      y: parseFloat(dayData.close) || parseFloat(dayData.open) || currentPrice,
-      timestamp: dayData.date * 1000,
-    }));
+    .map((dayData, index) => {
+      // Try multiple price sources
+      const prices = [
+        parseFloat(dayData.close),
+        parseFloat(dayData.open),
+        parseFloat(dayData.high),
+        parseFloat(dayData.low),
+        currentPrice,
+      ].filter((price) => !isNaN(price) && price > 0);
+
+      // Use the first valid price
+      const price = prices.length > 0 ? prices[0] : 1;
+
+      return {
+        x: index,
+        y: price,
+        timestamp: dayData.date * 1000,
+      };
+    })
+    .filter((point) => !isNaN(point.y) && isFinite(point.y) && point.y > 0);
 
   // Transform transactions
   const transactions: Transaction[] = (graphPool.swaps || []).map((swap) => {
@@ -181,8 +197,8 @@ const transformGraphPoolToPoolDetails = (graphPool: GraphPoolDetails): PoolDetai
   const token0Decimals = parseInt(graphPool.token0.decimals, 10);
   const token1Decimals = parseInt(graphPool.token1.decimals, 10);
 
-  const formattedToken0Balance = formatUnits(BigInt(graphPool.totalValueLockedToken0 || '0'), token0Decimals);
-  const formattedToken1Balance = formatUnits(BigInt(graphPool.totalValueLockedToken1 || '0'), token1Decimals);
+  const formattedToken0Balance = graphPool.totalValueLockedToken0 || '0';
+  const formattedToken1Balance = graphPool.totalValueLockedToken1 || '0';
 
   const token0BalanceUSD = parseFloat(formattedToken0Balance) * parseFloat(graphPool.token0Price);
   const token1BalanceUSD = parseFloat(formattedToken1Balance) * parseFloat(graphPool.token1Price);
@@ -191,20 +207,36 @@ const transformGraphPoolToPoolDetails = (graphPool: GraphPoolDetails): PoolDetai
   const poolBalances = {
     token0: formattedToken0Balance,
     token1: formattedToken1Balance,
-    token0Percentage: (token0BalanceUSD / totalValueUSD) * 100,
-    token1Percentage: (token1BalanceUSD / totalValueUSD) * 100,
+    token0Percentage: totalValueUSD > 0 && isFinite(token0BalanceUSD) ? (token0BalanceUSD / totalValueUSD) * 100 : 50,
+    token1Percentage: totalValueUSD > 0 && isFinite(token1BalanceUSD) ? (token1BalanceUSD / totalValueUSD) * 100 : 50,
   };
+
+  // Ensure all numeric values are safe and finite to prevent NaN/hydration issues
+  const safeCurrentPrice = isFinite(currentPrice) ? currentPrice : 0;
+  const safeFeeTier = isFinite(feeTier) ? feeTier : 0;
+  const safeApr = isFinite(apr) ? apr : 0;
+  const safeTotalValueLockedUSD = isFinite(totalValueLockedUSD) ? totalValueLockedUSD : 0;
+  const safeTvlChange = isFinite(tvlChange) ? tvlChange : 0;
+  const safeTodayVolume = isFinite(todayVolume) ? todayVolume : 0;
+  const safeVolumeChange = isFinite(volumeChange) ? volumeChange : 0;
+  const safeDailyFees = isFinite(dailyFees) ? dailyFees : 0;
+
+  const token0Address = formatToken(graphPool.token0.id);
+  const token1Address = formatToken(graphPool.token1.id);
+
+  const token0LocalInfo = getLocalTokenDetails({ address: token0Address, chainId: supportedChainIds.bsc });
+  const token1LocalInfo = getLocalTokenDetails({ address: token1Address, chainId: supportedChainIds.bsc });
 
   return {
     address: formatToken(graphPool.id),
-    price: currentPrice,
-    feeTier,
-    apr,
-    tvl: totalValueLockedUSD.toFixed(2),
-    tvlChange,
-    volume24h: todayVolume.toFixed(2),
-    volumeChange,
-    fees24h: (dailyFees / 1000).toFixed(2),
+    price: safeCurrentPrice,
+    feeTier: safeFeeTier,
+    apr: safeApr,
+    tvl: safeTotalValueLockedUSD.toFixed(2),
+    tvlChange: safeTvlChange,
+    volume24h: safeTodayVolume.toFixed(2),
+    volumeChange: safeVolumeChange,
+    fees24h: (safeDailyFees / 1000).toFixed(2),
     poolBalances,
     chartData,
     transactions,
@@ -213,12 +245,14 @@ const transformGraphPoolToPoolDetails = (graphPool: GraphPoolDetails): PoolDetai
       symbol: graphPool.token0.symbol,
       decimals: token0Decimals,
       name: graphPool.token0.name,
+      logo: token0LocalInfo?.logo || '',
     },
     token1: {
       address: formatToken(graphPool.token1.id),
       symbol: graphPool.token1.symbol,
       decimals: token1Decimals,
       name: graphPool.token1.name,
+      logo: token1LocalInfo?.logo || '',
     },
   };
 };

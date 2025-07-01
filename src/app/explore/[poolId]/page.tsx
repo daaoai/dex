@@ -1,13 +1,13 @@
-import React from 'react';
+import { SimpleLineChart } from '@/components/SimpleLineChart';
+import PoolIcon from '@/components/ui/logo/PoolLogo';
+import Text from '@/components/ui/Text';
+import { positionContent } from '@/content/positionContent';
+import { Button } from '@/shadcn/components/ui/button';
+import { Transaction } from '@/types/pools';
+import { truncateNumber } from '@/utils/truncateNumber';
+import { LineChart, Plus, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { fetchPoolDetails } from './fetchPoolDetails';
-import Text from '@/components/ui/Text';
-import { Button } from '@/shadcn/components/ui/button';
-import PoolIcon from '@/components/ui/logo/PoolLogo';
-import { SimpleLineChart } from '@/components/SimpleLineChart';
-import { Transaction } from '@/types/pools';
-import { LineChart, Plus, RefreshCw } from 'lucide-react';
-import { positionContent } from '@/content/positionContent';
 
 interface PoolDetailsPageProps {
   params: Promise<{
@@ -66,7 +66,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                 <span className="text-sm text-gray-400">{poolDetails.feeTier}%</span>
               </h1>
               <div className="flex items-center space-x-4 mt-2">
-                <span className="text-gray-400">${poolDetails.price.toLocaleString()}</span>
+                <span className="text-gray-400">${poolDetails.price}</span>
                 <span className="text-gray-500">Past day</span>
               </div>
             </div>
@@ -83,7 +83,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
 
             <Link
               prefetch={true}
-              href={`/positions/create?token0=${poolDetails.token0.address}&token1=${poolDetails.token1.address}`}
+              href={`/positions/create?token0=${poolDetails.token0.address}&token1=${poolDetails.token1.address}&fee=${poolDetails.feeTier * 10000}`}
               className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#1c121f] text-pink-400 hover:bg-[#2a1a33] transition"
             >
               <Plus size={18} />
@@ -156,7 +156,6 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                     <tr className="text-gray-400 text-sm border-b border-gray-800">
                       <th className="text-left py-2">Time</th>
                       <th className="text-left py-2">Type</th>
-                      <th className="text-left py-2">USD</th>
                       <th className="text-left py-2">{poolDetails.token0.symbol}</th>
                       <th className="text-left py-2">{poolDetails.token1.symbol}</th>
                       <th className="text-left py-2">Wallet</th>
@@ -175,9 +174,8 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                             {tx.type} {poolDetails.token0.symbol}
                           </span>
                         </td>
-                        <td className="py-3 text-white">${tx.usd.toLocaleString()}</td>
-                        <td className="py-3 text-white">{tx.token0Amount.toLocaleString()}</td>
-                        <td className="py-3 text-white">{tx.token1Amount.toLocaleString()}</td>
+                        <td className="py-3 text-white">{truncateNumber(tx.token0Amount)}</td>
+                        <td className="py-3 text-white">{truncateNumber(tx.token1Amount)}</td>
                         <td className="py-3 text-gray-300">{tx.wallet}</td>
                       </tr>
                     ))}

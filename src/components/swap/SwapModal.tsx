@@ -6,7 +6,6 @@ import ToggleTokens from '@/components/swap/ToggleTokens';
 import TokenSelectionModal from '@/components/TokenSelectorModal';
 import { supportedChainIds } from '@/constants/chains';
 import { fetchTokenBalance } from '@/helper/token';
-import { useQuoter } from '@/hooks/useQuoter';
 import { useSwap } from '@/hooks/useSwap';
 import { Button } from '@/shadcn/components/ui/button';
 import { Token } from '@/types/tokens';
@@ -54,8 +53,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
   const [deadline, setDeadline] = useState(5);
 
   const chainId = supportedChainIds.bsc;
-  const { swapExactIn } = useSwap({ chainId });
-  const { quoteExactInputSingle } = useQuoter({ chainId });
+  const { swap, getQuote } = useSwap({ chainId });
   const { address: account } = useAccount();
 
   const openSelector = (type: 'src' | 'dest') => {
@@ -85,14 +83,17 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
   };
 
   const fetchQuote = async () => {
+    if (!account) return;
     setQuoteLoading(true);
     if (srcToken.address !== '0x' && destToken.address !== '0x' && srcAmount && !isNaN(Number(srcAmount))) {
       try {
-        const quoted = await quoteExactInputSingle({
+        const quoted = await getQuote({
           tokenIn: srcToken,
           tokenOut: destToken,
-          amount: srcAmount,
-          fee: 3000,
+          amount: Number(srcAmount),
+          deadline: deadline * 60,
+          recipient: account,
+          slippage,
         });
 
         const formatted = formatUnits(quoted, destToken.decimals);
@@ -111,19 +112,19 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
 
   useEffect(() => {
     fetchQuote();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [srcAmount, srcToken, destToken, quoteExactInputSingle]);
+  }, [srcAmount, srcToken, destToken]);
 
   const handleSwap = async () => {
+    if (!account) return;
     try {
       setLoading(true);
-      await swapExactIn({
+      await swap({
         tokenIn: srcToken,
         tokenOut: destToken,
-        amountIn: srcAmount,
-        amountOut: destAmount,
+        amountIn: Number(srcAmount),
+        recipient: account,
         slippage,
-        deadline,
+        deadline: deadline * 60,
       });
     } catch (e) {
       console.error('Swap error:', e);
