@@ -63,7 +63,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                 <span>
                   {poolDetails.token0.symbol} / {poolDetails.token1.symbol}
                 </span>
-                <span className="text-sm bg-gray-800 px-2 py-1 rounded">v2</span>
+                <span className="text-sm bg-gray-800 px-2 py-1 rounded">v3</span>
                 <span className="text-sm text-gray-400">{poolDetails.feeTier}%</span>
               </h1>
               <div className="flex items-center space-x-4 mt-2">
@@ -102,7 +102,8 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                 <>
                   <div className="mb-4">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="flex space-x-2">
+                      <div></div>
+                      {/* <div className="flex space-x-2">
                         <Button variant="ghost" size="sm" className="bg-gray-800 text-white">
                           1H
                         </Button>
@@ -118,14 +119,14 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                         <Button variant="ghost" size="sm">
                           1Y
                         </Button>
-                      </div>
+                      </div> */}
                       <div className="flex items-center space-x-2">
-                        <span className="text-gray-400">Volume</span>
-                        <Button variant="ghost" size="sm">
+                        <span className="text-gray-300">Volume</span>
+                        {/* <Button variant="ghost" size="sm">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                           </svg>
-                        </Button>
+                        </Button> */}
                       </div>
                     </div>
                   </div>
@@ -221,7 +222,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                   <span className="text-gray-400 text-sm">TVL</span>
                   <div className="text-white text-xl font-semibold">
                     ${poolDetails.tvl}
-                    <span className="text-green-400 text-sm ml-2">↗ {poolDetails.tvlChange}%</span>
+                    {/* <span className="text-green-400 text-sm ml-2">↗ {poolDetails.tvlChange}%</span> */}
                   </div>
                 </div>
 
@@ -229,7 +230,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                   <span className="text-gray-400 text-sm">24H volume</span>
                   <div className="text-white text-xl font-semibold">
                     ${poolDetails.volume24h}
-                    <span className="text-green-400 text-sm ml-2">↗ {poolDetails.volumeChange}%</span>
+                    {/* <span className="text-green-400 text-sm ml-2">↗ {poolDetails.volumeChange}%</span> */}
                   </div>
                 </div>
 
@@ -275,7 +276,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                     />
                   </div>
                   <span className="text-white">{poolDetails.token0.symbol}</span>
-                  <span className="text-gray-400 text-sm">{poolDetails.token0.address.slice(0, 8)}...</span>
+                  <span className="text-gray-300 text-sm">{poolDetails.token0.address.slice(0, 8)}...</span>
                   <Button variant="ghost" size="sm" className="p-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -297,7 +298,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                     />
                   </div>
                   <span className="text-white">{poolDetails.token1.symbol}</span>
-                  <span className="text-gray-400 text-sm">{poolDetails.token1.address.slice(0, 8)}...</span>
+                  <span className="text-gray-300 text-sm">{poolDetails.token1.address.slice(0, 8)}...</span>
                   <Button variant="ghost" size="sm" className="p-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
