@@ -1,6 +1,6 @@
 import { RouteRequest, RouteApiResponse } from '@/types/route';
 
-const ROUTE_API_BASE_URL = process.env.NEXT_PUBLIC_ROUTE_API_URL || 'http://localhost:8080';
+const ROUTE_API_BASE_URL = 'https://synthari-swap-backend.vercel.app';
 
 export class RouteService {
   private static async makeRequest<T>(endpoint: string, data?: unknown): Promise<T> {
