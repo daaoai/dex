@@ -2,14 +2,14 @@
 
 import SelectTokenCard from '@/components/swap/SelectTokenCard';
 import { SettingsModal } from '@/components/swap/SettingsModal';
-import ToggleTokens from '@/components/swap/ToggleTokens';
 import TokenSelectionModal from '@/components/TokenSelectorModal';
 import { supportedChainIds } from '@/constants/chains';
 import { fetchTokenBalance } from '@/helper/token';
+import { useDebouncedCallback } from '@/hooks/useDebounce';
 import { useSwap } from '@/hooks/useSwap';
 import { Button } from '@/shadcn/components/ui/button';
 import { Token } from '@/types/tokens';
-import { Bolt } from 'lucide-react';
+import { ArrowDown, Bolt } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
@@ -21,26 +21,8 @@ interface SwapModalProps {
 }
 
 export default function SwapModal({ initialSrcToken, initialDestToken }: SwapModalProps = {}) {
-  const [srcToken, setSrcToken] = useState<Token>(
-    initialSrcToken || {
-      name: '',
-      symbol: '',
-      logo: undefined,
-      address: '0x',
-      decimals: 18,
-    },
-  );
-
-  const [destToken, setDestToken] = useState<Token>(
-    initialDestToken || {
-      name: '',
-      symbol: '',
-      logo: undefined,
-      address: '0x',
-      decimals: 18,
-    },
-  );
-
+  const [srcToken, setSrcToken] = useState<Token | null>(initialSrcToken || null);
+  const [destToken, setDestToken] = useState<Token | null>(initialDestToken || null);
   const [srcAmount, setSrcAmount] = useState('');
   const [destAmount, setDestAmount] = useState('');
   const [srcBalance, setSrcBalance] = useState<bigint>(0n);
@@ -66,16 +48,12 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
     const isDest = selectType === 'dest';
 
     if (!isSource && !isDest) return;
-
-    const setToken = isSource ? setSrcToken : setDestToken;
-    const setBalance = isSource ? setSrcBalance : setDestBalance;
-
-    setToken(token);
-    setBalance(0n);
-
-    if (account) {
-      const balance = await fetchTokenBalance({ token: token.address, account, chainId });
-      setBalance(balance);
+    if (isSource) {
+      setSrcBalance(0n);
+      setSrcToken(token);
+    } else {
+      setDestToken(token);
+      setDestBalance(0n);
     }
 
     setShowSelector(false);
@@ -83,9 +61,9 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
   };
 
   const fetchQuote = async () => {
-    if (!account) return;
+    if (!account || !srcToken || !destToken) return;
     setQuoteLoading(true);
-    if (srcToken.address !== '0x' && destToken.address !== '0x' && srcAmount && !isNaN(Number(srcAmount))) {
+    if (!isNaN(Number(srcAmount)) && Number(srcAmount)) {
       try {
         const quoted = await getQuote({
           tokenIn: srcToken,
@@ -110,12 +88,8 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
     }
   };
 
-  useEffect(() => {
-    fetchQuote();
-  }, [srcAmount, srcToken, destToken]);
-
   const handleSwap = async () => {
-    if (!account) return;
+    if (!account || !srcToken || !destToken) return;
     try {
       setLoading(true);
       await swap({
@@ -132,23 +106,37 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
       setLoading(false);
     }
   };
+
+  const handleToggle = () => {
+    const temp = srcToken;
+    setSrcToken(destToken);
+    setDestToken(temp);
+    setSrcBalance(0n);
+    setDestBalance(0n);
+    setSrcAmount('0');
+    setDestAmount('0');
+  };
+
+  // useEffects
+
+  const debouncedFetchQuote = useDebouncedCallback(fetchQuote, 400);
   useEffect(() => {
-    if (!account || (!initialSrcToken && !initialDestToken)) return;
+    debouncedFetchQuote();
+  }, [srcAmount, srcToken?.address, destToken?.address]);
+
+  useEffect(() => {
+    if (!account || (!srcToken?.address && !destToken?.address)) return;
     const fetchBalances = async () => {
       if (account) {
-        const srcBalance = initialSrcToken
-          ? await fetchTokenBalance({ token: initialSrcToken.address, account, chainId })
-          : 0n;
+        const srcBalance = srcToken ? await fetchTokenBalance({ token: srcToken.address, account, chainId }) : 0n;
         setSrcBalance(srcBalance);
 
-        const destBalance = initialDestToken
-          ? await fetchTokenBalance({ token: initialDestToken.address, account, chainId })
-          : 0n;
+        const destBalance = destToken ? await fetchTokenBalance({ token: destToken.address, account, chainId }) : 0n;
         setDestBalance(destBalance);
       }
     };
     fetchBalances();
-  }, []);
+  }, [srcToken?.address, destToken?.address]);
 
   return (
     <div className="w-full max-w-md mx-auto shadow-2xl">
@@ -181,40 +169,30 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
       <SelectTokenCard
         title="Selling"
         token={srcToken}
-        amount={typeof srcAmount === 'string' ? srcAmount : ''}
+        amount={srcAmount}
         setAmount={(val: string) => setSrcAmount(isNaN(Number(val)) ? '' : val)}
         onTokenClick={() => openSelector('src')}
         balance={srcBalance}
-        decimals={srcToken.decimals}
       />
 
-      <ToggleTokens
-        tokens={{
-          src: srcToken,
-          dest: destToken,
-          setSrc: setSrcToken,
-          setDest: setDestToken,
-        }}
-        amounts={{
-          src: srcAmount,
-          dest: destAmount,
-          setSrc: setSrcAmount,
-          setDest: setDestAmount,
-        }}
-        balances={{
-          setSrc: setSrcBalance,
-          setDest: setDestBalance,
-        }}
-      />
+      <div className="flex justify-center -mt-8 -mb-6">
+        <button
+          onClick={handleToggle}
+          className="bg-background hover:bg-background-2 p-3 rounded-full border-black border-4 transition-all duration-300 hover:border-stroke-6 group"
+          aria-label="Switch tokens"
+        >
+          <ArrowDown className="w-4 h-4 text-grey transition-transform duration-300 group-hover:rotate-180 group-hover:text-stroke-6 font-extrabold" />
+        </button>
+      </div>
 
       <SelectTokenCard
         title="Buying"
         token={destToken}
         amount={destAmount}
+        setAmount={() => {}}
         isDisabled
         onTokenClick={() => openSelector('dest')}
         balance={destBalance}
-        decimals={destToken.decimals}
         isLoading={quoteLoading}
       />
 
@@ -222,22 +200,22 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
         onClick={handleSwap}
         disabled={loading}
         className={`
-    w-full 
-    bg-background-21
-    text-white 
-    font-bold 
-    text-base 
-    leading-none
-    px-6 py-6 
-    rounded-xl 
-    disabled:opacity-50 disabled:cursor-not-allowed 
-    transition-all duration-300
-    shadow-[0_2px_10px_rgba(98,58,255,0.35)] 
-    hover:shadow-[0_4px_16px_rgba(98,58,255,0.45)] 
-    active:scale-[0.97] 
-    flex items-center justify-center
-    border border-stroke-8 -mt-2
-  `}
+            w-full 
+            bg-background-21
+            text-white 
+            font-bold 
+            text-base 
+            leading-none
+            px-6 py-6 
+            rounded-xl 
+            disabled:opacity-50 disabled:cursor-not-allowed 
+            transition-all duration-300
+            shadow-[0_2px_10px_rgba(98,58,255,0.35)] 
+            hover:shadow-[0_4px_16px_rgba(98,58,255,0.45)] 
+            active:scale-[0.97] 
+            flex items-center justify-center
+            border border-stroke-8 -mt-2
+        `}
       >
         {loading ? 'Processing...' : 'Continue'}
       </Button>
