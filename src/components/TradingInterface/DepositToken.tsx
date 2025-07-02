@@ -80,14 +80,14 @@ export default function DepositTokens({
           </div>
         </div>
         <div className="flex justify-between mt-1">
-          <Text type="p" className="text-sm text-gray-400 mt-2">
-            ${srcTokenAmount}
-          </Text>
           <BalancePercentageButtons
             balance={srcBalance}
             decimals={srcTokenDetails.decimals}
             setAmount={handleSrcTokenAmountChange}
           />
+          <Text type="p" className="text-sm text-gray-400 mt-2">
+            {srcBalance}
+          </Text>
         </div>
       </div>
 
@@ -114,9 +114,10 @@ export default function DepositTokens({
             <Text type="span">{destTokenDetails.symbol}</Text>
           </div>
         </div>
-        <Text type="p" className="text-sm text-gray-400 mt-2">
-          ${destTokenAmount}
-        </Text>
+
+        {/* <Text type="p" className="text-sm text-gray-400 mt-2">
+          {destBalance}
+        </Text> */}
       </div>
 
       <ConnectOrActionButton
