@@ -74,7 +74,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                 <span className="text-sm text-gray-400">{poolDetails.feeTier}%</span>
               </h1>
               <div className="flex flex-wrap items-center gap-4 mt-2 text-sm">
-                <span className="text-gray-400">${poolDetails.price}</span>
+                <span className="text-gray-400">${truncateNumber(poolDetails.price)}</span>
                 <span className="text-gray-500">Past day</span>
               </div>
             </div>
@@ -157,46 +157,53 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                 </div>
               )}
             </div>
+            {poolDetails.transactions.length > 0 && (
+              <>
+                <h2 className="text-xl font-semibold text-white mt-12 mb-4">Transactions</h2>
 
-            <h2 className="text-xl font-semibold text-white mt-12 mb-4">Transactions</h2>
-
-            <div className="w-full">
-              <div className="overflow-x-auto">
-                <table className="min-w-full text-sm text-left">
-                  <thead>
-                    <tr className="text-gray-400 border-b border-gray-800">
-                      <th className="py-2 px-4 whitespace-nowrap">Time</th>
-                      <th className="py-2 px-4 whitespace-nowrap">Type</th>
-                      <th className="py-2 px-4 whitespace-nowrap">{poolDetails.token0.symbol}</th>
-                      <th className="py-2 px-4 whitespace-nowrap">{poolDetails.token1.symbol}</th>
-                      <th className="py-2 px-4 whitespace-nowrap">Wallet</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {poolDetails.transactions.map((tx: Transaction, index: number) => (
-                      <tr
-                        key={index}
-                        className="border-b border-gray-800 hover:bg-gray-800/40 transition-colors duration-200"
-                      >
-                        <td className="py-3 px-4 text-gray-300 whitespace-nowrap">{tx.timeAgo}</td>
-                        <td className="py-3 px-4 whitespace-nowrap">
-                          <span
-                            className={`px-2 py-1 rounded text-xs ${
-                              tx.type === 'Sell' ? 'text-red-400 bg-red-400/10' : 'text-green-400 bg-blue-400/10'
-                            }`}
+                <div className="w-full">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full text-sm text-left">
+                      <thead>
+                        <tr className="text-gray-400 border-b border-gray-800">
+                          <th className="py-2 px-4 whitespace-nowrap">Time</th>
+                          <th className="py-2 px-4 whitespace-nowrap">Type</th>
+                          <th className="py-2 px-4 whitespace-nowrap">{poolDetails.token0.symbol}</th>
+                          <th className="py-2 px-4 whitespace-nowrap">{poolDetails.token1.symbol}</th>
+                          <th className="py-2 px-4 whitespace-nowrap">Wallet</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {poolDetails.transactions.map((tx: Transaction, index: number) => (
+                          <tr
+                            key={index}
+                            className="border-b border-gray-800 hover:bg-gray-800/40 transition-colors duration-200"
                           >
-                            {tx.type} {poolDetails.token0.symbol}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-white whitespace-nowrap">{truncateNumber(tx.token0Amount)}</td>
-                        <td className="py-3 px-4 text-white whitespace-nowrap">{truncateNumber(tx.token1Amount)}</td>
-                        <td className="py-3 px-4 text-gray-300 whitespace-nowrap">{tx.wallet}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                            <td className="py-3 px-4 text-gray-300 whitespace-nowrap">{tx.timeAgo}</td>
+                            <td className="py-3 px-4 whitespace-nowrap">
+                              <span
+                                className={`px-2 py-1 rounded text-xs ${
+                                  tx.type === 'Sell' ? 'text-red-400 bg-red-400/10' : 'text-green-400 bg-blue-400/10'
+                                }`}
+                              >
+                                {tx.type} {poolDetails.token0.symbol}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-white whitespace-nowrap">
+                              {truncateNumber(tx.token0Amount)}
+                            </td>
+                            <td className="py-3 px-4 text-white whitespace-nowrap">
+                              {truncateNumber(tx.token1Amount)}
+                            </td>
+                            <td className="py-3 px-4 text-gray-300 whitespace-nowrap">{tx.wallet}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Sidebar */}
@@ -216,10 +223,10 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                   <span className="text-gray-400 text-sm">Pool balances</span>
                   <div className="mt-1">
                     <div className="text-white">
-                      {poolDetails.poolBalances.token0} {poolDetails.token0.symbol}
+                      {truncateNumber(poolDetails.poolBalances.token0)} {poolDetails.token0.symbol}
                     </div>
                     <div className="text-white">
-                      {poolDetails.poolBalances.token1} {poolDetails.token1.symbol}
+                      {truncateNumber(poolDetails.poolBalances.token1)} {poolDetails.token1.symbol}
                     </div>
                   </div>
                   <div className="w-full bg-gray-700 rounded-full h-2 mt-2">

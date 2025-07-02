@@ -50,11 +50,23 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
     if (!isSource && !isDest) return;
 
     if (isSource) {
+      if (token.address === destToken?.address) {
+        setDestToken(null);
+        setDestAmount('');
+        setDestBalance(0n);
+      }
       setSrcBalance(0n);
       setSrcToken(token);
+      setSrcAmount('');
     } else {
+      if (token.address === srcToken?.address) {
+        setSrcToken(null);
+        setSrcAmount('');
+        setSrcBalance(0n);
+      }
       setDestToken(token);
       setDestBalance(0n);
+      setDestAmount('');
     }
 
     setShowSelector(false);

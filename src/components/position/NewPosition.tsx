@@ -152,15 +152,6 @@ export default function NewPositionsClient({
                   </button>
                 </div>
 
-                <div className="mb-6">
-                  <Button className="text-gray-400 bg-background hover:text-white flex items-center gap-2">
-                    {newPositionsContent.addHook.label}
-                    <Text type="p" className="text-gray-600">
-                      {newPositionsContent.addHook.advanced}
-                    </Text>
-                  </Button>
-                </div>
-
                 <div className="mb-6 flex flex-col md:flex-row justify-between items-start">
                   <div className="w-full md:w-[40%]">
                     <Text type="h3" className="text-xl font-semibold mb-2">

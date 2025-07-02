@@ -26,10 +26,6 @@ export const newPositionsContent = {
       'Choose the tokens you want to provide liquidity for. You can select tokens on all supported networks.',
     chooseToken: 'Choose token',
   },
-  addHook: {
-    label: 'Add a Hook',
-    advanced: '(Advanced)',
-  },
   feeTier: {
     title: 'Fee tier',
     description: 'The amount earned providing liquidity. Choose an amount that suits your risk tolerance and strategy.',
