@@ -57,33 +57,37 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
             className={clsx('bg-grey-3 rounded-lg overflow-hidden shadow-md flex flex-col cursor-pointer transition')}
             onClick={() => router.push(`/positions/${tokenId}`)}
           >
-            <div className="flex items-center p-4 gap-12 bg-background">
-              <PoolIcon token0={token0Details} token1={token1Details} />
-              <div>
-                <div className="text-white font-semibold text-lg">
-                  {token0Details.symbol} / {token1Details.symbol}
+            <div className="flex flex-col md:flex-row items-start md:items-center p-4 gap-6 bg-background justify-between">
+              <div className="flex items-center gap-4">
+                {' '}
+                <PoolIcon token0={token0Details} token1={token1Details} />
+                <div>
+                  <div className="text-white font-semibold text-lg">
+                    {token0Details.symbol} / {token1Details.symbol}
+                  </div>
+                  <Text type="p" className="flex items-center gap-1 text-sm">
+                    <Circle
+                      className={clsx('w-2 h-2', isInRange ? 'text-green-500' : 'text-red-500')}
+                      fill={isInRange ? 'currentColor' : 'currentColor'}
+                    />
+                    <span className={isInRange ? 'text-green-500' : 'text-red-500'}>
+                      {isInRange ? positionsTableContent.inRange : positionsTableContent.outOfRange}
+                    </span>
+                  </Text>
                 </div>
-                <Text type="p" className="flex items-center gap-1 text-sm">
-                  <Circle
-                    className={clsx('w-2 h-2', isInRange ? 'text-green-500' : 'text-red-500')}
-                    fill={isInRange ? 'currentColor' : 'currentColor'}
-                  />
-                  <span className={isInRange ? 'text-green-500' : 'text-red-500'}>
-                    {isInRange ? positionsTableContent.inRange : positionsTableContent.outOfRange}
-                  </span>
-                </Text>
+                <div className="flex gap-1">
+                  <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded-l ">
+                    {positionsTableContent.v3}
+                  </Text>
+                  <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded-r ">
+                    {fee / 10000}%
+                  </Text>
+                </div>
               </div>
-              <div className="flex gap-1">
-                <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded-l ">
-                  {positionsTableContent.v3}
-                </Text>
-                <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded-r ">
-                  {fee / 10000}%
-                </Text>
-              </div>
+              <p>graph</p>
             </div>
 
-            <div className="grid text-white bg-background-2 p-4" style={{ gridTemplateColumns: '1fr 1fr 0.5fr 1fr' }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 text-white bg-background-2 p-4 gap-6">
               <div>
                 <Text type="p" className="text-sm text-gray-400">
                   {positionsTableContent.position}

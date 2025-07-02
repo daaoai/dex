@@ -46,8 +46,8 @@ export default function PositionsPage() {
   }, []);
 
   return (
-    <section className="flex flex-col gap-12 bg-black p-6 px-20 min-h-screen">
-      <div className="flex w-full gap-20">
+    <section className="flex flex-col gap-12 bg-black p-3 sm:px-20 min-h-screen">
+      <div className="flex flex-col lg:flex-row w-full gap-8 lg:gap-20">
         <div className="flex flex-col gap-8 flex-1">
           <RewardsSummary />
           <PositionsSection filters={filters} setFilters={setFilters} />
@@ -59,7 +59,7 @@ export default function PositionsPage() {
             <NoPositions positions={[]} />
           )}
         </div>
-        <div className="w-1/3">
+        <div className="w-full lg:w-1/3">
           <TopPoolsSidebar />
         </div>
       </div>

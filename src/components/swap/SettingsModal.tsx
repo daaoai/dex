@@ -38,12 +38,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     >
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent
-        className={clsx(
-          'flex flex-col z-50 !max-w-md !w-[300px] absolute border-none -left-4 rounded-[20px] bg-black border-2 border-stroke-9 shadow-xl p-4 space-y-4',
-          className,
-        )}
         side="bottom"
         align="end"
+        sideOffset={8}
+        alignOffset={0}
+        avoidCollisions
+        collisionPadding={16}
+        className={clsx(
+          'flex flex-col z-50 max-w-md w-[70vw] sm:w-[300px] border-none rounded-[20px] bg-black border-2 border-stroke-9 shadow-xl p-4 translate-x-0 sm:translate-x-64',
+          className,
+        )}
       >
         {/* Slippage */}
         <div className="flex items-center justify-between w-full">
