@@ -29,12 +29,12 @@ export default function PoolsTable({ pools }: PoolsTableProps) {
         <tbody>
           {pools.map((pool, index) => (
             <motion.tr
-              key={pool.id}
+              key={pool.address}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.03 }}
               className="cursor-pointer border-b border-gray-800 hover:bg-gray-800/40 transition-colors duration-200 group"
-              onClick={() => router.push(`/explore/${pool.id}`)}
+              onClick={() => router.push(`/explore/${pool.address}`)}
             >
               <td className="px-4 py-4 font-medium text-white">#</td>
               <td className="px-4 py-4 flex items-center space-x-3">

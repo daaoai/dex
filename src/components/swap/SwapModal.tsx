@@ -11,7 +11,7 @@ import { Button } from '@/shadcn/components/ui/button';
 import { Token } from '@/types/tokens';
 import { ArrowDown, Bolt } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import Text from '../ui/Text';
 
@@ -139,6 +139,14 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
     fetchBalances();
   }, [srcToken?.address, destToken?.address]);
 
+  const isButtonDisabled =
+    loading ||
+    !srcToken ||
+    !destToken ||
+    BigInt(parseUnits(srcAmount || '0', srcToken.decimals)) > BigInt(srcBalance) ||
+    BigInt(parseUnits(srcAmount || '0', srcToken.decimals)) <= 0n ||
+    BigInt(parseUnits(destAmount || '0', destToken.decimals)) <= 0n;
+
   return (
     <div className="w-full max-w-md mx-auto shadow-2xl">
       <div className=" text-white flex justify-between items-center mb-2 p-2">
@@ -199,7 +207,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
 
       <Button
         onClick={handleSwap}
-        disabled={loading}
+        disabled={isButtonDisabled}
         className={`
             w-full 
             bg-background-21
@@ -218,7 +226,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
             border border-stroke-8 -mt-2
         `}
       >
-        {loading ? 'Processing...' : 'Continue'}
+        {loading ? 'Processing...' : 'Swap'}
       </Button>
     </div>
   );

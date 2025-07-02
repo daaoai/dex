@@ -10,3 +10,8 @@ export const isNativeToken = (address: string, chainId: number): boolean => {
 export const formatToken = (address: Hex) => {
   return checksumAddress(address);
 };
+
+export const generateExplorerLink = (chainId: number, address: string): string => {
+  const chainExplorerUrl = chainsData[chainId].blockExplorer;
+  return `${chainExplorerUrl}/address/${address}`;
+};

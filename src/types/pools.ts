@@ -27,7 +27,7 @@ export interface GraphTopPool {
 }
 
 export interface TopPool {
-  id: string;
+  address: string;
   volumeUSD: number;
   feeTier: number;
   apr: number;

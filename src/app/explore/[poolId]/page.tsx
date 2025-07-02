@@ -5,13 +5,14 @@ import { positionContent } from '@/content/positionContent';
 import { Button } from '@/shadcn/components/ui/button';
 import { Transaction } from '@/types/pools';
 import { truncateNumber } from '@/utils/truncateNumber';
-import { LineChart, Plus, RefreshCw } from 'lucide-react';
+import { LineChart, LinkIcon, Plus, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { fetchPoolDetails } from './fetchPoolDetails';
 import DynamicLogo from '@/components/ui/logo/DynamicLogo';
 import ClickToCopy from '@/utils/copyToClipboard';
 import clsx from 'clsx';
 import { getEllipsisTxt } from '@/utils/getEllipsisText';
+import { generateExplorerLink } from '@/utils/address';
 
 interface PoolDetailsPageProps {
   params: Promise<{
@@ -37,6 +38,8 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
       </main>
     );
   }
+
+  const chainId = 56; // BSC as default
 
   return (
     <main className="min-h-screen bg-black py-6 px-4">
@@ -270,6 +273,17 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                     <Button variant="ghost" size="sm" className="p-1">
                       <ClickToCopy copyText={poolDetails.address} className="cursor-pointer" />
                     </Button>
+                    <Button variant="ghost" size="sm" className="p-1">
+                      <Link
+                        href={generateExplorerLink(chainId, poolDetails.address)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="View on block explorer"
+                        className="flex items-center"
+                      >
+                        <LinkIcon className="text-gray-300 w-4 h-4" />
+                      </Link>
+                    </Button>
                   </div>
                 </div>
 
@@ -289,6 +303,17 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                     <Button variant="ghost" size="sm" className="p-1">
                       <ClickToCopy copyText={poolDetails.token0.address} className="cursor-pointer" />
                     </Button>
+                    <Button variant="ghost" size="sm" className="p-1">
+                      <Link
+                        href={generateExplorerLink(chainId, poolDetails.token0.address)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="View on block explorer"
+                        className="flex items-center"
+                      >
+                        <LinkIcon className="text-gray-300 w-4 h-4" />
+                      </Link>
+                    </Button>
                   </div>
                 </div>
 
@@ -307,6 +332,17 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                     </Text>
                     <Button variant="ghost" size="sm" className="p-1">
                       <ClickToCopy copyText={poolDetails.token1.address} className="cursor-pointer" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="p-1">
+                      <Link
+                        href={generateExplorerLink(chainId, poolDetails.token1.address)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="View on block explorer"
+                        className="flex items-center"
+                      >
+                        <LinkIcon className="text-gray-300 w-4 h-4" />
+                      </Link>
                     </Button>
                   </div>
                 </div>

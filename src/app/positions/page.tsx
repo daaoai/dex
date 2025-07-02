@@ -10,12 +10,16 @@ import { RootState } from '../../../store';
 import { setPositions } from '../../../store/reducers/position';
 import NoPositions from '@/components/position/NoPositionFound';
 import RewardsSummary from '@/components/position/RewardSummary';
+import { TopPool } from '@/types/pools';
+import { fetchTopPoolsFromGraph } from '../explore/fetchPools';
 
 export default function PositionsPage() {
   const chainId = useChainId();
   const { fetchPositions } = usePositions(chainId);
   const { positions } = useSelector((state: RootState) => state.position, shallowEqual);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [topPools, setTopPools] = useState<TopPool[]>([]);
+  const [loadingPositions, setLoadingPositions] = useState<boolean>(true);
+  const [loadingPools, setLoadingPools] = useState<boolean>(true);
   const [filters, setFilters] = useState({
     inRange: true,
     outOfRange: true,
@@ -26,13 +30,19 @@ export default function PositionsPage() {
 
   const handleLoadPositions = async () => {
     if (positions.length > 0) {
-      setLoading(false);
+      setLoadingPositions(false);
       return;
     }
-    setLoading(true);
+    setLoadingPositions(true);
     const fetchedPositions = await fetchPositions();
     dispatch(setPositions(fetchedPositions));
-    setLoading(false);
+    setLoadingPositions(false);
+  };
+
+  const handleLoadTopPools = async () => {
+    const pools = await fetchTopPoolsFromGraph();
+    setTopPools(pools);
+    setLoadingPools(false);
   };
 
   const filteredPositions = positions.filter((pos) => {
@@ -43,6 +53,7 @@ export default function PositionsPage() {
 
   useEffect(() => {
     handleLoadPositions();
+    handleLoadTopPools();
   }, []);
 
   return (
@@ -51,7 +62,7 @@ export default function PositionsPage() {
         <div className="flex flex-col gap-8 flex-1">
           <RewardsSummary />
           <PositionsSection filters={filters} setFilters={setFilters} />
-          {loading ? (
+          {loadingPositions ? (
             <PositionsTable positions={[]} loading={true} />
           ) : filteredPositions.length > 0 ? (
             <PositionsTable positions={filteredPositions} loading={false} />
@@ -60,7 +71,7 @@ export default function PositionsPage() {
           )}
         </div>
         <div className="w-full lg:w-1/3">
-          <TopPoolsSidebar />
+          <TopPoolsSidebar topPools={topPools.slice(0, 3)} loading={loadingPools} />
         </div>
       </div>
     </section>
