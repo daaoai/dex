@@ -62,9 +62,13 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
   }, [searchQuery, tokens]);
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose} className="text-white w-full !max-w-md max-h-[90vh]  p-4">
+    <ModalWrapper
+      isOpen={isOpen}
+      onClose={onClose}
+      className="text-white w-full !max-w-md max-h-[75vh] md:max-h-[90vh] p-4"
+    >
       <div className="w-full my-12">
-        <div className="bg-black border border-stroke-2 rounded-lg w-full max-w-md max-h-[90vh] my-12">
+        <div className="bg-black border border-stroke-2 rounded-lg w-full max-w-md max-h-[75vh] md:max-h-[90vh]my-12">
           <div className="p-4 flex justify-between items-center">
             <Text type="h2" className="text-xl font-semibold">
               {tokenSelectorContent.selectToken}
@@ -90,7 +94,7 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
                 {tokenSelectorContent.loading}
               </Text>
             ) : (
-              <div className="space-y-2 mt-3 overflow-y-auto max-h-[60vh]">
+              <div className="space-y-2 mt-3 overflow-y-auto overflow-x-hidden max-h-[45vh] md:max-h-[55vh]">
                 {filteredTokens.map((token) => (
                   <Button
                     key={token.address}
