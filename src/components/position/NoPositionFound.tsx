@@ -14,7 +14,7 @@ const NoPositions = ({ positions }: NoPositionsProps) => {
   if (positions.length > 0) return null;
 
   return (
-    <div className="bg-background-12 border border-zinc-800 rounded-2xl p-10 flex flex-col items-center text-center text-white space-y-6">
+    <div className="bg-black border border-zinc-800 rounded-2xl p-10 flex flex-col items-center text-center text-white space-y-6">
       <div className="bg-zinc-800 rounded-xl p-4">
         <Waves size={32} />
       </div>

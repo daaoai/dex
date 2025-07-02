@@ -24,7 +24,7 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
     return (
       <div className="space-y-4">
         {[...Array(3)].map((_, i) => (
-          <div className="relative overflow-hidden rounded-xl bg-grey-3 h-24 shimmer" key={i} />
+          <div className="relative overflow-hidden rounded-xl bg-black h-24 shimmer" key={i} />
         ))}
       </div>
     );
@@ -54,17 +54,32 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
         return (
           <div
             key={tokenId.toString()}
-            className={clsx('bg-grey-3 rounded-lg overflow-hidden shadow-md flex flex-col cursor-pointer transition')}
+            className={clsx(
+              'bg-grey-3 rounded-lg overflow-hidden shadow-md flex flex-col cursor-pointer transition border border-stroke-2',
+            )}
             onClick={() => router.push(`/positions/${tokenId}`)}
           >
-            <div className="flex flex-col md:flex-row items-start md:items-center p-4 gap-6 bg-background justify-between">
-              <div className="flex items-center gap-4">
-                {' '}
-                <PoolIcon token0={token0Details} token1={token1Details} />
-                <div>
-                  <div className="text-white font-semibold text-lg">
-                    {token0Details.symbol} / {token1Details.symbol}
+            <div className="flex flex-col md:flex-row items-start md:items-center p-4 gap-6 bg-background-2 justify-between">
+              <div className="flex items-center justify-between w-full gap-4">
+                <div className="flex items-center gap-4">
+                  <PoolIcon token0={token0Details} token1={token1Details} />
+                  <div>
+                    <div className="text-white font-semibold text-lg">
+                      {token0Details.symbol} / {token1Details.symbol}
+                    </div>
                   </div>
+                  <div className="flex gap-1">
+                    <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded-l ">
+                      {positionsTableContent.v3}
+                    </Text>
+                    <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded-r ">
+                      {fee / 10000}%
+                    </Text>
+                  </div>
+                </div>
+
+                <div>
+                  {' '}
                   <Text type="p" className="flex items-center gap-1 text-sm">
                     <Circle
                       className={clsx('w-2 h-2', isInRange ? 'text-green-500' : 'text-red-500')}
@@ -75,18 +90,10 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
                     </span>
                   </Text>
                 </div>
-                <div className="flex gap-1">
-                  <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded-l ">
-                    {positionsTableContent.v3}
-                  </Text>
-                  <Text type="span" className="bg-gray-700 text-white text-xs px-2 py-1 rounded-r ">
-                    {fee / 10000}%
-                  </Text>
-                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 text-white bg-background-2 p-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 text-white bg-black -2 p-4 gap-6">
               <div>
                 <Text type="p" className="text-sm text-gray-400">
                   {positionsTableContent.position}
