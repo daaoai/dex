@@ -68,7 +68,7 @@ export default function DepositTokens({
         Specify the token amounts for your liquidity contribution.
       </Text>
 
-      <div className="bg-zinc-800 p-4 rounded-md">
+      <div className="bg-zinc-800 p-4 rounded-md group">
         <div className="flex justify-between items-center">
           <input
             type="text"
@@ -76,6 +76,7 @@ export default function DepositTokens({
             onChange={(e) => handleSrcTokenAmountChange(e.target.value)}
             aria-label={srcTokenDetails.symbol + ' Amount'}
             className="text-3xl font-bold bg-transparent outline-none w-full"
+            placeholder="0"
           />
 
           <div className="flex items-center">
@@ -90,13 +91,16 @@ export default function DepositTokens({
             <Text type="span">{srcTokenDetails.symbol}</Text>
           </div>
         </div>
-        <div className="flex justify-between mt-1">
-          <BalancePercentageButtons
-            balance={srcBalance}
-            decimals={srcTokenDetails.decimals}
-            setAmount={handleSrcTokenAmountChange}
-          />
-          <Text type="p" className="text-sm text-gray-400 mt-2">
+        <div className="flex justify-between">
+          <div className="flex justify-between mt-1 opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-y-2 group-hover:translate-y-0">
+            <BalancePercentageButtons
+              balance={srcBalance}
+              decimals={srcTokenDetails.decimals}
+              setAmount={handleSrcTokenAmountChange}
+            />
+          </div>
+
+          <Text type="p" className="text-sm text-gray-400 mt-2 text-end">
             {truncateNumber(formatUnits(srcBalance, srcTokenDetails.decimals))}
           </Text>
         </div>

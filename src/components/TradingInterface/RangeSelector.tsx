@@ -185,10 +185,10 @@ export default function RangeSelector({
             </div>
             {selectedRange !== 'full' && (
               <div className="absolute right-2 bottom-2 flex flex-col">
-                <Button className="w-7 h-7 text-lg font-bold bg-zinc-700" onClick={increaseMinPrice}>
+                <Button className="w-7 h-7 text-lg font-bold bg-zinc-700 p-0" onClick={increaseMinPrice}>
                   +
                 </Button>
-                <Button className="w-7 h-7 text-lg font-bold bg-zinc-700" onClick={decreaseMinPrice}>
+                <Button className="w-7 h-7 text-lg font-bold bg-zinc-700 p-0" onClick={decreaseMinPrice}>
                   −
                 </Button>
               </div>
