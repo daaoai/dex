@@ -60,7 +60,7 @@ export default function PositionsTable({ positions, loading }: PositionsTablePro
             onClick={() => router.push(`/positions/${tokenId}`)}
           >
             <div className="flex flex-col md:flex-row items-start md:items-center p-4 gap-6 bg-background-2 justify-between">
-              <div className="flex items-center justify-between w-full gap-4">
+              <div className="flex flex-col items-start md:flex-row md:items-center justify-between w-full gap-4">
                 <div className="flex items-center gap-4">
                   <PoolIcon token0={token0Details} token1={token1Details} />
                   <div>
