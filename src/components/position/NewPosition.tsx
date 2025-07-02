@@ -59,7 +59,14 @@ export default function NewPositionsClient({
             {newPositionsContent.header.title}
           </Text>
           <div className="flex gap-2">
-            <Button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+            <Button
+              className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+              onClick={() => {
+                setToken0(null);
+                setToken1(null);
+                setFee(3000);
+              }}
+            >
               {newPositionsContent.header.reset}
             </Button>
             <Button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
