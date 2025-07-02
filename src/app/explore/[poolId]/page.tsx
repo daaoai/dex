@@ -9,6 +9,9 @@ import { LineChart, Plus, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { fetchPoolDetails } from './fetchPoolDetails';
 import DynamicLogo from '@/components/ui/logo/DynamicLogo';
+import ClickToCopy from '@/utils/copyToClipboard';
+import clsx from 'clsx';
+import { getEllipsisTxt } from '@/utils/getEllipsisText';
 
 interface PoolDetailsPageProps {
   params: Promise<{
@@ -51,32 +54,35 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+          {/* Left Section */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <PoolIcon
               token0={{ symbol: poolDetails.token0.symbol, logo: poolDetails.token0.logo }}
               token1={{ symbol: poolDetails.token1.symbol, logo: poolDetails.token1.logo }}
               className="h-12 w-12"
             />
             <div>
-              <h1 className="text-2xl font-bold text-white flex items-center space-x-2">
+              <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center flex-wrap gap-2">
                 <span>
                   {poolDetails.token0.symbol} / {poolDetails.token1.symbol}
                 </span>
                 <span className="text-sm bg-gray-800 px-2 py-1 rounded">v3</span>
                 <span className="text-sm text-gray-400">{poolDetails.feeTier}%</span>
               </h1>
-              <div className="flex items-center space-x-4 mt-2">
+              <div className="flex flex-wrap items-center gap-4 mt-2 text-sm">
                 <span className="text-gray-400">${poolDetails.price}</span>
                 <span className="text-gray-500">Past day</span>
               </div>
             </div>
           </div>
-          <div className="flex space-x-4">
+
+          {/* Right Section (Buttons) */}
+          <div className="flex flex-col sm:flex-row gap-4">
             <Link
               prefetch={true}
               href={`/trade?srcToken=${poolDetails.token0.address}&destToken=${poolDetails.token1.address}`}
-              className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#1c121f] text-pink-400 hover:bg-[#2a1a33] transition"
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-[#1c121f] text-pink-400 hover:bg-[#2a1a33] transition"
             >
               <RefreshCw size={18} />
               <span>Swap</span>
@@ -85,10 +91,10 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
             <Link
               prefetch={true}
               href={`/positions/create?token0=${poolDetails.token0.address}&token1=${poolDetails.token1.address}&fee=${poolDetails.feeTier * 10000}`}
-              className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#1c121f] text-pink-400 hover:bg-[#2a1a33] transition"
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-[#1c121f] text-pink-400 hover:bg-[#2a1a33] transition"
             >
               <Plus size={18} />
-              <span> Add liquidity</span>
+              <span>Add liquidity</span>
             </Link>
           </div>
         </div>
@@ -97,7 +103,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
           {/* Main Chart Section */}
           <div className="lg:col-span-2">
             {/* Price Chart */}
-            <div className="bg-background rounded-xl p-6">
+            <div className=" p-6">
               {poolDetails.chartData && poolDetails.chartData.length > 0 ? (
                 <>
                   <div className="mb-4">
@@ -151,34 +157,37 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
 
             <h2 className="text-xl font-semibold text-white mt-12 mb-4">Transactions</h2>
 
-            <div className="bg-background rounded-xl p-6">
+            <div className="w-full">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="min-w-full text-sm text-left">
                   <thead>
-                    <tr className="text-gray-400 text-sm border-b border-gray-800">
-                      <th className="text-left py-2">Time</th>
-                      <th className="text-left py-2">Type</th>
-                      <th className="text-left py-2">{poolDetails.token0.symbol}</th>
-                      <th className="text-left py-2">{poolDetails.token1.symbol}</th>
-                      <th className="text-left py-2">Wallet</th>
+                    <tr className="text-gray-400 border-b border-gray-800">
+                      <th className="py-2 px-4 whitespace-nowrap">Time</th>
+                      <th className="py-2 px-4 whitespace-nowrap">Type</th>
+                      <th className="py-2 px-4 whitespace-nowrap">{poolDetails.token0.symbol}</th>
+                      <th className="py-2 px-4 whitespace-nowrap">{poolDetails.token1.symbol}</th>
+                      <th className="py-2 px-4 whitespace-nowrap">Wallet</th>
                     </tr>
                   </thead>
                   <tbody>
                     {poolDetails.transactions.map((tx: Transaction, index: number) => (
-                      <tr key={index} className="border-b border-gray-800 hover:bg-gray-800/40 transition">
-                        <td className="py-3 text-gray-300">{tx.timeAgo}</td>
-                        <td className="py-3">
+                      <tr
+                        key={index}
+                        className="border-b border-gray-800 hover:bg-gray-800/40 transition-colors duration-200"
+                      >
+                        <td className="py-3 px-4 text-gray-300 whitespace-nowrap">{tx.timeAgo}</td>
+                        <td className="py-3 px-4 whitespace-nowrap">
                           <span
                             className={`px-2 py-1 rounded text-xs ${
-                              tx.type === 'Sell' ? 'text-red-400 bg-red-400/10' : 'text-blue-400 bg-blue-400/10'
+                              tx.type === 'Sell' ? 'text-red-400 bg-red-400/10' : 'text-green-400 bg-blue-400/10'
                             }`}
                           >
                             {tx.type} {poolDetails.token0.symbol}
                           </span>
                         </td>
-                        <td className="py-3 text-white">{truncateNumber(tx.token0Amount)}</td>
-                        <td className="py-3 text-white">{truncateNumber(tx.token1Amount)}</td>
-                        <td className="py-3 text-gray-300">{tx.wallet}</td>
+                        <td className="py-3 px-4 text-white whitespace-nowrap">{truncateNumber(tx.token0Amount)}</td>
+                        <td className="py-3 px-4 text-white whitespace-nowrap">{truncateNumber(tx.token1Amount)}</td>
+                        <td className="py-3 px-4 text-gray-300 whitespace-nowrap">{tx.wallet}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -190,11 +199,11 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
           {/* Sidebar */}
           <div className="">
             {/* Stats */}
-            <div className="mb-8 bg-background rounded-xl p-6">
+            <div className="md:mb-8  p-6">
               <span className="text-gray-400">Total APR</span>
               <h3 className="text-2xl font-bold text-white">{poolDetails.apr.toFixed(2)}%</h3>
             </div>
-            <div className="bg-background rounded-xl p-6">
+            <div className=" p-6">
               <div className="flex flex-col gap-4">
                 <div>
                   <span className="text-gray-400 text-sm">Stats</span>
@@ -242,7 +251,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
             </div>
 
             {/* Links */}
-            <div className="bg-background rounded-xl p-6 my-8">
+            <div className="p-6 my-8">
               <h3 className="text-white font-semibold mb-4">Links</h3>
               <div className="">
                 <div className="flex items-center">
@@ -254,17 +263,14 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                   <span className="pl-4 text-white">
                     {poolDetails.token0.symbol} / {poolDetails.token1.symbol}
                   </span>
-                  <span className="text-gray-400 text-sm ml-2">{poolDetails.address.slice(0, 8)}...</span>
-                  <Button variant="ghost" size="sm" className="p-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </Button>
+                  <div className="pl-4 flex gap-2 items-center">
+                    <Text type="p" className={clsx('text-xs text-white')}>
+                      {getEllipsisTxt(poolDetails.address)}
+                    </Text>
+                    <Button variant="ghost" size="sm" className="p-1">
+                      <ClickToCopy copyText={poolDetails.address} className="cursor-pointer" />
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="flex items-center space-x-3 mt-2">
@@ -276,17 +282,14 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                     />
                   </div>
                   <span className="text-white">{poolDetails.token0.symbol}</span>
-                  <span className="text-gray-300 text-sm">{poolDetails.token0.address.slice(0, 8)}...</span>
-                  <Button variant="ghost" size="sm" className="p-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </Button>
+                  <div className="pl-4 flex gap-2 items-center">
+                    <Text type="p" className={clsx('text-xs text-white')}>
+                      {getEllipsisTxt(poolDetails.token0.address)}
+                    </Text>
+                    <Button variant="ghost" size="sm" className="p-1">
+                      <ClickToCopy copyText={poolDetails.token0.address} className="cursor-pointer" />
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="flex items-center space-x-3 mt-2">
@@ -298,17 +301,14 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                     />
                   </div>
                   <span className="text-white">{poolDetails.token1.symbol}</span>
-                  <span className="text-gray-300 text-sm">{poolDetails.token1.address.slice(0, 8)}...</span>
-                  <Button variant="ghost" size="sm" className="p-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </Button>
+                  <div className="pl-4 flex gap-2 items-center">
+                    <Text type="p" className={clsx('text-xs text-white')}>
+                      {getEllipsisTxt(poolDetails.token1.address)}
+                    </Text>
+                    <Button variant="ghost" size="sm" className="p-1">
+                      <ClickToCopy copyText={poolDetails.token1.address} className="cursor-pointer" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>

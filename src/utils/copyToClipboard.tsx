@@ -1,3 +1,4 @@
+'use client';
 import { Copy, Check } from 'lucide-react';
 import clsx from 'clsx';
 import { useState, useRef, useEffect } from 'react';
@@ -45,7 +46,11 @@ const ClickToCopy: React.FC<ClickToCopyProps> = ({ copyText, className, size = '
       <Tooltip open={copied}>
         <TooltipTrigger asChild>
           <div className={clsx('cursor-pointer flex items-center', className)} onClick={handleCopyClick}>
-            {copied ? <Check size={sizeMap[size]} className="text-green-500" /> : <Copy size={sizeMap[size]} />}
+            {copied ? (
+              <Check size={sizeMap[size]} className="text-green-500" />
+            ) : (
+              <Copy size={sizeMap[size]} className="text-white" />
+            )}
           </div>
         </TooltipTrigger>
         <TooltipContent side="right">
