@@ -10,6 +10,9 @@ import Text from '../ui/Text';
 import { Button } from '@/shadcn/components/ui/button';
 import DynamicLogo from '../ui/logo/DynamicLogo';
 import { tokenSelectorContent } from '@/content/tokenSelector';
+import clsx from 'clsx';
+import { getEllipsisTxt } from '@/utils/getEllipsisText';
+import ClickToCopy from '@/utils/copyToClipboard';
 
 interface TokenSelectionModalProps {
   onClose: () => void;
@@ -73,12 +76,6 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
 
           <div className="p-4">
             <div className="relative mb-4">
-              <Text
-                type="span"
-                className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-white"
-              >
-                /
-              </Text>
               <input
                 type="text"
                 placeholder={tokenSelectorContent.searchPlaceholder}
@@ -117,12 +114,15 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
                         <Text type="p" className="text-sm text-gray-400">
                           {token.symbol}
                         </Text>
-                        <span
-                          className="hidden group-hover:inline-block text-xs text-gray-500 break-all ml-2
-                                     translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-200"
-                        >
-                          {token.address}
-                        </span>
+
+                        <div className="flex items-center gap-1">
+                          <Text type="p" className={clsx('text-xs text-gray-20')}>
+                            {' '}
+                            {getEllipsisTxt(token.address)}
+                          </Text>
+
+                          <ClickToCopy copyText={token.address} className="cursor-pointer" />
+                        </div>
                       </div>
                     </div>
                   </Button>
