@@ -1,7 +1,9 @@
 'use client';
+
 import { TopPool } from '@/types/pools';
 import PoolIcon from '../ui/logo/PoolLogo';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 
 interface PoolsTableProps {
   pools: TopPool[];
@@ -10,52 +12,55 @@ interface PoolsTableProps {
 export default function PoolsTable({ pools }: PoolsTableProps) {
   const router = useRouter();
 
+  const headers = ['#', 'Pool', 'Protocol', 'Fee tier', 'TVL', 'Pool APR', 'Rewards APR', '1D vol', '30D vol'];
+
   return (
-    <div className="overflow-auto">
-      <table className="min-w-full text-left border border-gray-700">
-        <thead className="border-b">
-          <tr>
-            {['#', 'Pool', 'Protocol', 'Fee tier', 'TVL', 'Pool APR', 'Rewards APR', '1D vol', '30D vol'].map((h) => (
-              <th key={h} className={`px-4 py-2 text-gray-400 bg-background-8 border-b border-gray-700 `}>
-                {h}
+    <div className="overflow-auto rounded-xl border border-gray-800 shadow-inner shadow-black/20">
+      <table className="min-w-full text-sm text-left text-white">
+        <thead>
+          <tr className="bg-gray-900 text-gray-400 text-xs uppercase tracking-wider">
+            {headers.map((header) => (
+              <th key={header} className="px-4 py-3 border-b border-gray-800 whitespace-nowrap">
+                {header}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {pools.map((pool) => (
-            <tr
+          {pools.map((pool, index) => (
+            <motion.tr
               key={pool.id}
-              className="border-b border-gray-700 hover:bg-background-19 bg-black cursor-pointer transition-colors"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.03 }}
+              className="cursor-pointer border-b border-gray-800 hover:bg-gray-800/40 transition-colors duration-200 group"
               onClick={() => router.push(`/explore/${pool.id}`)}
             >
-              <td className="px-4 py-5 text-white">{'#'}</td>
-              <td className="px-4 py-5 flex items-center text-white space-x-2 border-r border-gray-700">
-                <span className="flex items-center justify-center text-xs">
-                  <PoolIcon
-                    token0={{
-                      symbol: pool.token0.symbol,
-                      logo: pool.token0.logo,
-                    }}
-                    token1={{
-                      symbol: pool.token1.symbol,
-                      logo: pool.token1.logo,
-                    }}
-                    className="h-6 w-6"
-                  />
-                </span>
-                <span className="pl-4">
+              <td className="px-4 py-4 font-medium text-white">#</td>
+              <td className="px-4 py-4 flex items-center space-x-3">
+                <PoolIcon
+                  token0={{
+                    symbol: pool.token0.symbol,
+                    logo: pool.token0.logo,
+                  }}
+                  token1={{
+                    symbol: pool.token1.symbol,
+                    logo: pool.token1.logo,
+                  }}
+                  className="h-6 w-6 transition-transform group-hover:scale-105"
+                />
+                <span className="pl-2 font-semibold">
                   {pool.token0.symbol}/{pool.token1.symbol}
                 </span>
               </td>
-              <td className="px-4 py-5 text-white ">v3</td>
-              <td className="px-4 py-5 text-white">{pool.feeTier}</td>
-              <td className="px-4 py-5 text-white">{pool.volumeUSD}</td>
-              <td className="px-4 py-5 text-white">{0}</td>
-              <td className="px-4 py-5 text-white">{0}</td>
-              <td className="px-4 py-5 text-white">{0}</td>
-              <td className="px-4 py-5 text-white">{0}</td>
-            </tr>
+              <td className="px-4 py-4 text-gray-300">v3</td>
+              <td className="px-4 py-4 text-pink-400">{pool.feeTier}</td>
+              <td className="px-4 py-4 text-white">{pool.volumeUSD}</td>
+              <td className="px-4 py-4 text-green-400">{0}</td>
+              <td className="px-4 py-4 text-blue-400">{0}</td>
+              <td className="px-4 py-4 text-white">{0}</td>
+              <td className="px-4 py-4 text-white">{0}</td>
+            </motion.tr>
           ))}
         </tbody>
       </table>
