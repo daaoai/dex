@@ -81,7 +81,7 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
                 placeholder={tokenSelectorContent.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-gray-800 text-white rounded-lg py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-gray-700"
+                className="w-full bg-gray-800 text-white rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-gray-700"
               />
             </div>
 
@@ -90,7 +90,7 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
                 {tokenSelectorContent.loading}
               </Text>
             ) : (
-              <div className="space-y-2 mt-3 overflow-y-auto max-h-[65vh]">
+              <div className="space-y-2 mt-3 overflow-y-auto max-h-[60vh]">
                 {filteredTokens.map((token) => (
                   <Button
                     key={token.address}

@@ -43,7 +43,7 @@ export default function NewPositionsClient({
 
   return (
     <div className="min-h-screen bg-black text-white px-4 sm:px-6 md:px-10 lg:px-20">
-      <div className="max-w-[1200px] mx-auto px-4 py-6">
+      <div className="max-w-[1200px] mx-auto md:px-4 py-6">
         <div className="flex items-center gap-2 text-sm mb-4">
           <Link href="/positions" className="text-gray-400 hover:text-white cursor-pointer">
             {newPositionsContent.breadcrumbs.yourPositions}
@@ -68,8 +68,8 @@ export default function NewPositionsClient({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-[1.2fr,1.5fr] gap-6 md:gap-8">
-          <div className="bg-background-6 rounded-xl p-6 w-full md:max-w-xs self-start border-2 border-stroke-2">
+        <div className="grid grid-cols-1 md:grid-cols-[1.4fr,1.5fr] gap-6 md:gap-8">
+          <div className="bg-background-6 rounded-xl p-6 w-full md:max-w-md self-start border-2 border-stroke-2">
             <div className="flex items-start gap-4 cursor-pointer" onClick={() => setStep(1)}>
               <div
                 className={`w-10 h-10 min-w-[40px] rounded-md flex items-center justify-center font-semibold text-sm ${
@@ -161,8 +161,8 @@ export default function NewPositionsClient({
                   </Button>
                 </div>
 
-                <div className="mb-6 flex justify-between items-start">
-                  <div className="w-[40%]">
+                <div className="mb-6 flex flex-col md:flex-row justify-between items-start">
+                  <div className="w-full md:w-[40%]">
                     <Text type="h3" className="text-xl font-semibold mb-2">
                       {newPositionsContent.feeTier.title}
                     </Text>
@@ -170,20 +170,20 @@ export default function NewPositionsClient({
                       {newPositionsContent.feeTier.description}
                     </Text>
                   </div>
-                  <div className="w-[50%]">
+                  <div className="w-full md:w-[50%]">
                     <Select value={fee.toString()} onValueChange={(val) => setFee(Number(val))}>
                       <SelectTrigger className="w-full bg-black text-white border border-gray-700 rounded-md">
                         <SelectValue placeholder="Select fee tier" />
                       </SelectTrigger>
 
-                      <SelectContent className="w-full min-w-[300px] bg-black text-white border border-gray-700 rounded-md">
+                      <SelectContent className="w-full min-w-[230px] md:min-w-[250px] bg-black text-white border border-gray-700 rounded-md">
                         {supportedFeeAndTickSpacing.map((feeOption) => (
                           <SelectItem
                             key={feeOption.fee}
                             value={feeOption.fee.toString()}
                             className="py-3 px-4 w-full cursor-pointer hover:bg-gray-700 rounded-md transition-colors"
                           >
-                            <div className="w-full flex flex-col sm:flex-row justify-between gap-1 sm:gap-4 items-start sm:items-center">
+                            <div className="w-full flex flex-row justify-between gap-4 items-center">
                               <Text type="h4" className="font-semibold">
                                 {(feeOption.fee / 10000).toFixed(2)}% fee
                               </Text>
