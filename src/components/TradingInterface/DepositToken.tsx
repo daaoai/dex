@@ -8,6 +8,8 @@ import { useAccount, useChainId } from 'wagmi';
 import ConnectOrActionButton from '../position/LiquidityActionButton';
 import BalancePercentageButtons from '../ui/BalancePercentageButtons';
 import Text from '../ui/Text';
+import { formatUnits } from 'viem';
+import { truncateNumber } from '@/utils/truncateNumber';
 
 interface DepositTokensProps {
   srcTokenDetails: Token;
@@ -31,14 +33,23 @@ export default function DepositTokens({
   handleDeposit,
 }: DepositTokensProps) {
   const [srcBalance, setSrcBalance] = useState<bigint>(0n);
+  const [destBalance, setDestBalance] = useState<bigint>(0n);
   const { address: account } = useAccount();
   const chainId = useChainId();
   useEffect(() => {
     if (account) {
       const init = async () => {
         try {
-          const balance = await fetchTokenBalance({ token: srcTokenDetails.address, account, chainId });
-          setSrcBalance(balance);
+          const [srcBalance, destBalance] = await Promise.all([
+            fetchTokenBalance({ token: srcTokenDetails.address, account, chainId }),
+            fetchTokenBalance({
+              token: destTokenDetails.address,
+              account,
+              chainId,
+            }),
+          ]);
+          setSrcBalance(srcBalance);
+          setDestBalance(destBalance);
         } catch (error) {
           console.error('Failed to fetch token balance:', error);
           setSrcBalance(0n);
@@ -86,7 +97,7 @@ export default function DepositTokens({
             setAmount={handleSrcTokenAmountChange}
           />
           <Text type="p" className="text-sm text-gray-400 mt-2">
-            {srcBalance}
+            {truncateNumber(formatUnits(srcBalance, srcTokenDetails.decimals))}
           </Text>
         </div>
       </div>
@@ -115,9 +126,9 @@ export default function DepositTokens({
           </div>
         </div>
 
-        {/* <Text type="p" className="text-sm text-gray-400 mt-2">
-          {destBalance}
-        </Text> */}
+        <Text type="p" className="text-sm text-gray-400 mt-2">
+          {truncateNumber(formatUnits(destBalance, destTokenDetails.decimals))}
+        </Text>
       </div>
 
       <ConnectOrActionButton
