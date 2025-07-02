@@ -2,7 +2,7 @@
 import TokenSelectionModal from '@/components/TokenSelectorModal';
 import CryptoTradingInterface from '@/components/TradingInterface';
 import { Token } from '@/types/tokens';
-import { ChevronDown, Bolt } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,6 +14,8 @@ import Text from '@/components/ui/Text';
 import { Button } from '@/shadcn/components/ui/button';
 import { newPositionsContent } from '@/content/positionContent';
 import { supportedFeeAndTickSpacing } from '@/constants/fee';
+
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shadcn/components/ui/select';
 
 interface NewPositionsClientProps {
   initialToken0?: Token | null;
@@ -63,13 +65,10 @@ export default function NewPositionsClient({
             <Button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
               {newPositionsContent.header.v3}
             </Button>
-            <Button className="bg-gray-800 hover:bg-gray-700 text-white p-2 rounded-lg">
-              <Bolt className="h-5 w-5" />
-            </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-[1fr,2fr] gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-[1.2fr,1.5fr] gap-6 md:gap-8">
           <div className="bg-background-6 rounded-xl p-6 w-full md:max-w-xs self-start border-2 border-stroke-2">
             <div className="flex items-start gap-4 cursor-pointer" onClick={() => setStep(1)}>
               <div
@@ -109,7 +108,7 @@ export default function NewPositionsClient({
           </div>
           {step === 1 ? (
             <>
-              <div className="bg-background-8 border-2 border-stroke-2 rounded-lg p-6">
+              <div className="bg-background-8 border border-stroke-2 rounded-lg p-6">
                 <Text type="h2" className="text-xl font-semibold mb-4">
                   {newPositionsContent.selectPair.title}
                 </Text>
@@ -162,40 +161,42 @@ export default function NewPositionsClient({
                   </Button>
                 </div>
 
-                <div className="mb-6">
-                  <Text type="h3" className="text-xl font-semibold mb-2">
-                    {newPositionsContent.feeTier.title}
-                  </Text>
-                  <Text type="p" className="text-gray-400 mb-4">
-                    {newPositionsContent.feeTier.description}
-                  </Text>
+                <div className="mb-6 flex justify-between items-start">
+                  <div className="w-[40%]">
+                    <Text type="h3" className="text-xl font-semibold mb-2">
+                      {newPositionsContent.feeTier.title}
+                    </Text>
+                    <Text type="p" className="text-gray-400 mb-4 text-xs">
+                      {newPositionsContent.feeTier.description}
+                    </Text>
+                  </div>
+                  <div className="w-[50%]">
+                    <Select value={fee.toString()} onValueChange={(val) => setFee(Number(val))}>
+                      <SelectTrigger className="w-full bg-black text-white border border-gray-700 rounded-md">
+                        <SelectValue placeholder="Select fee tier" />
+                      </SelectTrigger>
 
-                  <div className="space-y-2">
-                    {supportedFeeAndTickSpacing.map((feeOption) => (
-                      <div
-                        key={feeOption.fee}
-                        className={`bg-dark-black-300 rounded-lg p-4 cursor-pointer border-2 transition-colors ${
-                          fee === feeOption.fee
-                            ? 'border-white bg-gray-800'
-                            : 'border-transparent hover:border-gray-600'
-                        }`}
-                        onClick={() => setFee(feeOption.fee)}
-                      >
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <Text type="h4" className="font-semibold mb-1">
-                              {(feeOption.fee / 10000).toFixed(2)}% fee
-                            </Text>
-                            <Text type="p" className="text-gray-400">
-                              {feeOption.fee === 500 && 'Best for stable pairs'}
-                              {feeOption.fee === 3000 && 'Best for most pairs'}
-                              {feeOption.fee === 10000 && 'Best for exotic pairs'}
-                            </Text>
-                          </div>
-                          {fee === feeOption.fee && <div className="w-4 h-4 bg-white rounded-full"></div>}
-                        </div>
-                      </div>
-                    ))}
+                      <SelectContent className="w-full min-w-[300px] bg-black text-white border border-gray-700 rounded-md">
+                        {supportedFeeAndTickSpacing.map((feeOption) => (
+                          <SelectItem
+                            key={feeOption.fee}
+                            value={feeOption.fee.toString()}
+                            className="py-3 px-4 w-full cursor-pointer hover:bg-gray-700 rounded-md transition-colors"
+                          >
+                            <div className="w-full flex flex-col sm:flex-row justify-between gap-1 sm:gap-4 items-start sm:items-center">
+                              <Text type="h4" className="font-semibold">
+                                {(feeOption.fee / 10000).toFixed(2)}% fee
+                              </Text>
+                              <Text type="p" className="text-gray-400 text-sm whitespace-nowrap">
+                                {feeOption.fee === 500 && 'Best for stable pairs'}
+                                {feeOption.fee === 3000 && 'Best for most pairs'}
+                                {feeOption.fee === 10000 && 'Best for exotic pairs'}
+                              </Text>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <ConnectOrActionButton
