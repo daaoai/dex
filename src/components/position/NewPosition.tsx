@@ -58,21 +58,23 @@ export default function NewPositionsClient({
           <Text type="h1" className="text-3xl font-bold">
             {newPositionsContent.header.title}
           </Text>
-          <div className="flex gap-2">
-            <Button
-              className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-              onClick={() => {
-                setToken0(null);
-                setToken1(null);
-                setFee(3000);
-              }}
-            >
-              {newPositionsContent.header.reset}
-            </Button>
-            <Button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
-              {newPositionsContent.header.v3}
-            </Button>
-          </div>
+          {step === 1 && (
+            <div className="flex gap-2">
+              <Button
+                className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                onClick={() => {
+                  setToken0(null);
+                  setToken1(null);
+                  setFee(3000);
+                }}
+              >
+                {newPositionsContent.header.reset}
+              </Button>
+              <Button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                {newPositionsContent.header.v3}
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-[1.4fr,1.5fr] gap-6 md:gap-8">
@@ -95,7 +97,7 @@ export default function NewPositionsClient({
               </div>
             </div>
             <div className="h-8 border-l border-gray-700 ml-5" />
-            <div className="flex items-start gap-4 cursor-pointer" onClick={() => setStep(2)}>
+            <div className="flex items-start gap-4 cursor-pointer" onClick={() => {}}>
               <div
                 className={`w-10 h-10 min-w-[40px] rounded-md flex items-center justify-center font-semibold text-sm ${
                   step === 2 ? 'bg-white text-black' : 'bg-[#2A2A2A] text-gray-400'

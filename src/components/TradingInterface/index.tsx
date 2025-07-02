@@ -82,7 +82,7 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
         </div>
         <div className="flex items-center space-x-4">
           <Text type="p" className="bg-zinc-800 px-2 py-1 rounded text-sm">
-            V4
+            V3
           </Text>
           <Text type="p" className="text-gray-400">
             {fee / 10000}%
