@@ -12,22 +12,24 @@ import { formatUnits } from 'viem';
 import { truncateNumber } from '@/utils/truncateNumber';
 
 interface DepositTokensProps {
-  srcTokenDetails: Token;
-  destTokenDetails: Token;
-  srcTokenAmount: string;
-  destTokenAmount: string;
+  token0Details: Token;
+  token1Details: Token;
+  token0Amount: string;
+  token1Amount: string;
   txnState: 'approvingToken0' | 'approvingToken1' | 'waitingForConfirmation' | null;
-  handleSrcTokenAmountChange: (value: string) => void;
+  handleToken0AmountChange: (value: string) => void;
+  handleToken1AmountChange: (value: string) => void;
   isLoading: boolean;
   handleDeposit: () => void;
 }
 
 export default function DepositTokens({
-  srcTokenDetails,
-  destTokenDetails,
-  srcTokenAmount,
-  destTokenAmount,
-  handleSrcTokenAmountChange,
+  token0Details,
+  token1Details,
+  token0Amount,
+  token1Amount,
+  handleToken0AmountChange,
+  handleToken1AmountChange,
   isLoading,
   txnState,
   handleDeposit,
@@ -41,12 +43,8 @@ export default function DepositTokens({
       const init = async () => {
         try {
           const [srcBalance, destBalance] = await Promise.all([
-            fetchTokenBalance({ token: srcTokenDetails.address, account, chainId }),
-            fetchTokenBalance({
-              token: destTokenDetails.address,
-              account,
-              chainId,
-            }),
+            fetchTokenBalance({ token: token0Details.address, account, chainId }),
+            fetchTokenBalance({ token: token1Details.address, account, chainId }),
           ]);
           setSrcBalance(srcBalance);
           setDestBalance(destBalance);
@@ -57,7 +55,7 @@ export default function DepositTokens({
       };
       init();
     }
-  }, [JSON.stringify(srcTokenDetails)]);
+  }, []);
 
   return (
     <div className="bg-zinc-900 rounded-lg p-4 space-y-4">
@@ -72,67 +70,68 @@ export default function DepositTokens({
         <div className="flex justify-between items-center">
           <input
             type="text"
-            value={srcTokenAmount}
-            onChange={(e) => handleSrcTokenAmountChange(e.target.value)}
-            aria-label={srcTokenDetails.symbol + ' Amount'}
+            value={token0Amount}
+            onChange={(e) => handleToken0AmountChange(e.target.value)}
+            aria-label={token0Details.symbol + ' Amount'}
             className="text-3xl font-bold bg-transparent outline-none w-full"
             placeholder="0"
           />
 
           <div className="flex items-center">
             <div className="w-8 h-8 rounded-full flex items-center justify-center">
-              <Image
-                src={srcTokenDetails.logo || '/placeholder.svg'}
-                alt={srcTokenDetails.symbol}
-                width={20}
-                height={20}
-              />
+              <Image src={token0Details.logo || '/placeholder.svg'} alt={token0Details.symbol} width={20} height={20} />
             </div>
-            <Text type="span">{srcTokenDetails.symbol}</Text>
+            <Text type="span">{token0Details.symbol}</Text>
           </div>
         </div>
         <div className="flex justify-between">
           <div className="flex justify-between mt-1 opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-y-2 group-hover:translate-y-0">
             <BalancePercentageButtons
               balance={srcBalance}
-              decimals={srcTokenDetails.decimals}
-              setAmount={handleSrcTokenAmountChange}
+              decimals={token0Details.decimals}
+              setAmount={handleToken0AmountChange}
             />
           </div>
 
           <Text type="p" className="text-sm text-gray-400 mt-2 text-end">
-            {truncateNumber(formatUnits(srcBalance, srcTokenDetails.decimals))}
+            {truncateNumber(formatUnits(srcBalance, token0Details.decimals))}
           </Text>
         </div>
       </div>
 
-      <div className="bg-zinc-800 p-4 rounded-md">
+      <div className="bg-zinc-800 p-4 rounded-md group">
         <div className="flex justify-between items-center">
           <input
             type="text"
-            value={destTokenAmount || ''}
-            readOnly
-            onChange={() => {}}
-            aria-label={destTokenDetails.symbol + ' Amount'}
+            placeholder="0"
+            value={token1Amount || ''}
+            onChange={(e) => {
+              handleToken1AmountChange(e.target.value);
+            }}
+            aria-label={token1Details.symbol + ' Amount'}
             className="text-3xl font-bold bg-transparent outline-none w-full"
           />
 
           <div className="flex items-center">
             <div className="w-8 h-8 rounded-full flex items-center justify-center">
-              <Image
-                src={destTokenDetails.logo || '/placeholder.svg'}
-                alt={destTokenDetails.symbol}
-                width={20}
-                height={20}
-              />
+              <Image src={token1Details.logo || '/placeholder.svg'} alt={token1Details.symbol} width={20} height={20} />
             </div>
-            <Text type="span">{destTokenDetails.symbol}</Text>
+            <Text type="span">{token1Details.symbol}</Text>
           </div>
         </div>
+        <div className="flex justify-between">
+          <div className="flex justify-between mt-1 opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-y-2 group-hover:translate-y-0">
+            <BalancePercentageButtons
+              balance={destBalance}
+              decimals={token1Details.decimals}
+              setAmount={handleToken1AmountChange}
+            />
+          </div>
 
-        <Text type="p" className="text-sm text-gray-400 mt-2">
-          {truncateNumber(formatUnits(destBalance, destTokenDetails.decimals))}
-        </Text>
+          <Text type="p" className="text-sm text-gray-400 mt-2 text-end">
+            {truncateNumber(formatUnits(destBalance, token1Details.decimals))}
+          </Text>
+        </div>
       </div>
 
       <ConnectOrActionButton
@@ -140,9 +139,9 @@ export default function DepositTokens({
         isDisabled={isLoading}
         authenticatedText={
           txnState === 'approvingToken0'
-            ? `Approving ${srcTokenDetails.symbol}`
+            ? `Approving ${token0Details.symbol}`
             : txnState === 'approvingToken1'
-              ? `Approving ${destTokenDetails.symbol}`
+              ? `Approving ${token1Details.symbol}`
               : txnState === 'waitingForConfirmation'
                 ? 'Waiting for confirmation...'
                 : 'Create Position'

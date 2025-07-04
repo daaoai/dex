@@ -10,7 +10,7 @@ import {
 } from '@/types/v3';
 import { getDeadline } from '@/utils/deadline';
 import { getPublicClient } from '@/utils/publicClient';
-import { decodeAbiParameters, encodeFunctionData, Hex, maxUint128, zeroAddress } from 'viem';
+import { decodeAbiParameters, decodeFunctionData, encodeFunctionData, Hex, maxUint128, zeroAddress } from 'viem';
 
 export class UniswapNFTManager {
   public static generateMintCallData = ({
@@ -28,6 +28,7 @@ export class UniswapNFTManager {
     fee,
     poolAddress,
     isInitialized,
+    value,
   }: CreatePositionParams) => {
     const mintCallData = encodeFunctionData({
       abi: uniswapV3NftManagerAbi,
@@ -49,16 +50,37 @@ export class UniswapNFTManager {
       ],
     });
 
+    let refundEthCallData: Hex | null = null;
+
+    if (value > 0n) {
+      refundEthCallData = encodeFunctionData({
+        abi: uniswapV3NftManagerAbi,
+        functionName: 'refundETH',
+      });
+    }
+
     if (poolAddress === zeroAddress || !isInitialized) {
       const createPoolCallData = encodeFunctionData({
         abi: uniswapV3NftManagerAbi,
         functionName: 'createAndInitializePoolIfNecessary',
         args: [token0, token1, fee, sqrtPriceX96],
       });
+      const multicallAgrs = [createPoolCallData, mintCallData];
+      if (refundEthCallData) {
+        multicallAgrs.push(refundEthCallData);
+      }
       return encodeFunctionData({
         abi: uniswapV3NftManagerAbi,
         functionName: 'multicall',
-        args: [[createPoolCallData, mintCallData]],
+        args: [multicallAgrs],
+      });
+    }
+
+    if (refundEthCallData) {
+      return encodeFunctionData({
+        abi: uniswapV3NftManagerAbi,
+        functionName: 'multicall',
+        args: [[mintCallData, refundEthCallData]],
       });
     }
     return mintCallData;
@@ -420,3 +442,13 @@ export class UniswapNFTManager {
     });
   };
 }
+
+console.dir(
+  {
+    data: decodeFunctionData({
+      abi: uniswapV3NftManagerAbi,
+      data: '0x8831645600000000000000000000000055d398326f99059ff775485246999027b3197955000000000000000000000000bb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c0000000000000000000000000000000000000000000000000000000000000064ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0138ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff039c00000000000000000000000000000000000000000000000001d15010fb1eff130000000000000000000000000000000000000000000000000000be427ec760b6000000000000000000000000000000000000000000000000004f612cd20ba03d0000000000000000000000000000000000000000000000000000248f465c2553000000000000000000000000a9d45904b4c671e360f56c6be10eb2196e0aa55c0000000000000000000000000000000000000000000000000000000068677d95',
+    }),
+  },
+  { depth: null },
+);

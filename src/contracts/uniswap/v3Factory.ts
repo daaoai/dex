@@ -18,8 +18,8 @@ export class UniswapV3Factory {
     chainId: number;
   }): Promise<Hex> {
     const publicClient = getPublicClient(chainId);
-    const token0 = tokenA < tokenB ? tokenA : tokenB;
-    const token1 = tokenA < tokenB ? tokenB : tokenA;
+    const token0 = tokenA.toLowerCase() < tokenB.toLowerCase() ? tokenA : tokenB;
+    const token1 = tokenA.toLowerCase() < tokenB.toLowerCase() ? tokenB : tokenA;
     const poolAddress = await publicClient.readContract({
       address: factoryAddress,
       abi: uniswapV3FactoryAbi,

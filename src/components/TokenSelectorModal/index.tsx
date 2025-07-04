@@ -13,6 +13,7 @@ import { tokenSelectorContent } from '@/content/tokenSelector';
 import clsx from 'clsx';
 import { getEllipsisTxt } from '@/utils/getEllipsisText';
 import ClickToCopy from '@/utils/copyToClipboard';
+import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
 
 interface TokenSelectionModalProps {
   onClose: () => void;
@@ -94,43 +95,54 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
                 {tokenSelectorContent.loading}
               </Text>
             ) : (
-              <div className="space-y-2 mt-3 overflow-y-auto overflow-x-hidden max-h-[45vh] md:max-h-[55vh]">
-                {filteredTokens.map((token) => (
-                  <Button
-                    key={token.address}
-                    className="w-full group bg-transparent rounded-lg p-2 flex  hover:bg-background-13 justify-start items-center gap-3 h-15"
-                    onClick={() => onSelect(token)}
-                  >
-                    <div className="w-8 h-8 rounded-full  flex items-center justify-center">
-                      <DynamicLogo
-                        logoUrl={token.logo}
-                        alt={token.symbol}
-                        width={36}
-                        height={36}
-                        fallbackText={token.symbol}
-                      />
-                    </div>
-                    <div className="text-left">
-                      <Text type="p" className="font-medium">
-                        {token.name}
-                      </Text>
-                      <div className="flex items-center gap-2">
-                        <Text type="p" className="text-sm text-gray-400">
-                          {token.symbol}
-                        </Text>
-
-                        <div className="flex items-center gap-1">
-                          <Text type="p" className={clsx('text-xs text-gray-20')}>
-                            {' '}
-                            {getEllipsisTxt(token.address)}
-                          </Text>
-
-                          <ClickToCopy copyText={token.address} className="cursor-pointer" />
-                        </div>
+              <div className="mt-3 overflow-y-auto overflow-x-hidden max-h-[45vh] md:max-h-[55vh]">
+                <List
+                  height={320}
+                  itemCount={filteredTokens.length}
+                  itemSize={64}
+                  width={'100%'}
+                  itemData={{ tokens: filteredTokens, onSelect }}
+                  className="w-full"
+                >
+                  {({ index, style, data }: ListChildComponentProps) => {
+                    const token = data.tokens[index];
+                    return (
+                      <div style={style} key={token.address}>
+                        <Button
+                          className="w-full group bg-transparent rounded-lg p-2 flex hover:bg-background-13 justify-start items-center gap-3 h-15"
+                          onClick={() => data.onSelect(token)}
+                        >
+                          <div className="w-8 h-8 rounded-full flex items-center justify-center">
+                            <DynamicLogo
+                              logoUrl={token.logo}
+                              alt={token.symbol}
+                              width={36}
+                              height={36}
+                              fallbackText={token.symbol}
+                            />
+                          </div>
+                          <div className="text-left">
+                            <Text type="p" className="font-medium">
+                              {token.name}
+                            </Text>
+                            <div className="flex items-center gap-2">
+                              <Text type="p" className="text-sm text-gray-400">
+                                {token.symbol}
+                              </Text>
+                              <div className="flex items-center gap-1">
+                                <Text type="p" className={clsx('text-xs text-gray-20')}>
+                                  {' '}
+                                  {getEllipsisTxt(token.address)}
+                                </Text>
+                                <ClickToCopy copyText={token.address} className="cursor-pointer" />
+                              </div>
+                            </div>
+                          </div>
+                        </Button>
                       </div>
-                    </div>
-                  </Button>
-                ))}
+                    );
+                  }}
+                </List>
               </div>
             )}
           </div>

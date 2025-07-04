@@ -1,12 +1,12 @@
 export const bscTokens = {
-  // '0x0000000000000000000000000000000000000000': {
-  //   address: '0x0000000000000000000000000000000000000000',
-  //   decimals: 18,
-  //   name: 'BNB',
-  //   symbol: 'BNB',
-  //   coingeckoId: 'bnb',
-  //   logo: 'https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png?1547034615',
-  // },
+  '0x0000000000000000000000000000000000000000': {
+    address: '0x0000000000000000000000000000000000000000',
+    decimals: 18,
+    name: 'BNB',
+    symbol: 'BNB',
+    coingeckoId: 'bnb',
+    logo: 'https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png?1547034615',
+  },
   '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c': {
     address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
     decimals: 18,

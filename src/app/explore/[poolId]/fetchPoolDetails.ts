@@ -49,7 +49,7 @@ export const fetchPoolDetails = async (poolId: string): Promise<PoolDetails | nu
           open
         }
         swaps(
-          first: 20
+          first: 10
           orderBy: timestamp
           orderDirection: desc
         ) {

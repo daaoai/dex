@@ -1,24 +1,28 @@
 'use client';
 
 import { Button } from '@/shadcn/components/ui/button';
+import { ChartAPI, TokenState, ZoomableChart } from '@/types/linegraph';
 import { Token } from '@/types/tokens';
 import { truncateNumber } from '@/utils/truncateNumber';
 import { LayoutGroup, motion } from 'framer-motion';
 import { RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
-import Text from '../ui/Text';
-import { LineGraphView } from '../line-graph';
-import { useEffect, useState, useRef } from 'react';
-import { ChartAPI, TokenState, ZoomableChart } from '@/types/linegraph';
+import { useEffect, useRef, useState } from 'react';
 import { Line } from 'react-chartjs-2';
+import { LineGraphView } from '../line-graph';
+import DynamicLogo from '../ui/logo/DynamicLogo';
+import Text from '../ui/Text';
 
 interface RangeSelectorProps {
   selectedRange: 'full' | 'custom';
   srcTokenDetails: Token;
   destTokenDetails: Token;
+  token0: Token;
+  token1: Token;
   currentPrice: number;
   minPrice: number;
   maxPrice: number;
   handleRangeSelection: (range: 'full' | 'custom') => void;
+  handleSwitchToken: () => void;
   increaseMinPrice: () => void;
   increaseMaxPrice: () => void;
   decreaseMinPrice: () => void;
@@ -28,7 +32,10 @@ interface RangeSelectorProps {
 }
 
 export default function RangeSelector({
+  token0,
+  token1,
   srcTokenDetails,
+  handleSwitchToken,
   destTokenDetails,
   selectedRange,
   minPrice,
@@ -110,12 +117,52 @@ export default function RangeSelector({
           <div>
             Market price:
             <Text type="p" className="font-medium">
-              {currentPrice} {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
+              {truncateNumber(currentPrice)} {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
             </Text>
           </div>
           <div className="flex space-x-2">
-            <Text type="p">{srcTokenDetails.symbol}</Text>
-            <Text type="p">{destTokenDetails.symbol}</Text>
+            <button
+              className={`flex items-center gap-2 px-3 py-1 rounded-2xl border transition-shadow duration-300 ${
+                token0.address === srcTokenDetails.address
+                  ? 'bg-black border-stroke-7 text-white'
+                  : 'bg-background-4 border-stroke-7 text-gray-400 hover:text-white'
+              }`}
+              onClick={() => {
+                if (token0.address === srcTokenDetails.address) return;
+                handleSwitchToken();
+              }}
+              type="button"
+            >
+              <DynamicLogo
+                logoUrl={token0.logo}
+                altText={token0.symbol}
+                fallbackText={token0.symbol}
+                width={10}
+                height={10}
+              />
+              <span className="font-semibold text-xs">{token0.symbol}</span>
+            </button>
+            <button
+              className={`flex items-center gap-2 px-3 py-1 rounded-2xl border transition-shadow duration-300 ${
+                token1.address === srcTokenDetails.address
+                  ? 'bg-black border-stroke-7 text-white'
+                  : 'bg-background-4 border-stroke-7 text-gray-400 hover:text-white'
+              }`}
+              onClick={() => {
+                if (token1.address === srcTokenDetails.address) return;
+                handleSwitchToken();
+              }}
+              type="button"
+            >
+              <DynamicLogo
+                logoUrl={token1.logo}
+                altText={token1.symbol}
+                fallbackText={token1.symbol}
+                width={10}
+                height={10}
+              />
+              <span className="font-semibold text-xs">{token1.symbol}</span>
+            </button>
           </div>
         </div>
         <div className="relative h-[150px] overflow-hidden bg-zinc-800">

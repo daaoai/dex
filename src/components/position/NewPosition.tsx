@@ -1,6 +1,6 @@
 'use client';
 import TokenSelectionModal from '@/components/TokenSelectorModal';
-import CryptoTradingInterface from '@/components/TradingInterface';
+import CreatePositionInterface from '@/components/CreatePosition';
 import { Token } from '@/types/tokens';
 import { ChevronDown } from 'lucide-react';
 
@@ -210,7 +210,7 @@ export default function NewPositionsClient({
             </>
           ) : (
             token0 &&
-            token1 && <CryptoTradingInterface token0={token0} token1={token1} fee={fee} chainId={appChainId} />
+            token1 && <CreatePositionInterface token0={token0} token1={token1} fee={fee} chainId={appChainId} />
           )}
         </div>
       </div>

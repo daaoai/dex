@@ -55,7 +55,7 @@ export const chainsData: {
     networkType: 'mainnet',
     logo: 'https://icons.llamao.fi/icons/chains/rsz_binance.jpg',
     wnativeToken: {
-      address: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
+      address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
       decimals: 18,
       symbol: 'WBNB',
       name: 'Wrapped BNB',
