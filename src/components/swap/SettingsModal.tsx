@@ -4,7 +4,8 @@ import React, { useRef } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shadcn/components/ui/popover';
 import clsx from 'clsx';
 import Text from '../ui/Text';
-
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 interface SettingsModalProps {
   trigger: React.ReactNode;
   slippage: number;
@@ -26,6 +27,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   className = '',
 }) => {
   const hasSaved = useRef(false);
+  const [focused, setFocused] = useState<'auto' | 'input'>('auto');
 
   return (
     <Popover
@@ -52,19 +54,35 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         {/* Slippage */}
         <div className="flex items-center justify-between w-full">
           <div className="text-grey text-sm font-medium">Max Slippage</div>
-          <div className="flex items-center bg-black rounded-full px-1 py-1 gap-1 w-[140px] p-2 border border-stroke-3">
-            <button className="text-sm px-4 py-1.5 rounded-full font-medium text-white bg-background-20 mr-2" disabled>
+          <div className="relative flex items-center bg-black rounded-full px-2 py-0 gap-2 w-[150px] border border-stroke-3 overflow-hidden">
+            <motion.div
+              layout
+              layoutId="slippageHighlight"
+              className="absolute top-0 left-0 h-full rounded-full bg-background-20 z-0"
+              animate={{
+                width: focused === 'auto' ? '48%' : 'calc(100% - 8px)',
+                x: focused === 'auto' ? 0 : '52%',
+              }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            />
+            <button
+              onClick={() => setFocused('auto')}
+              className={clsx('text-sm text-white px-4 py-1.5 rounded-full font-medium z-10')}
+            >
               Auto
             </button>
-            <input
-              type="number"
-              min="0"
-              step="0.1"
-              value={slippage}
-              onChange={(e) => setSlippage(parseFloat(e.target.value))}
-              className="no-spinner bg-transparent text-white text-sm outline-none w-10"
-            />
-            <div className="-ml-3 text-white text-sm">%</div>
+            <div className="flex items-center justify-center gap-1 z-10 w-full">
+              <input
+                type="number"
+                min="0"
+                step="0.1"
+                onFocus={() => setFocused('input')}
+                value={Number.isNaN(slippage) ? '' : slippage}
+                onChange={(e) => setSlippage(parseFloat(e.target.value))}
+                className="no-spinner bg-transparent text-white text-sm outline-none w-10"
+              />
+              <div className="text-white text-sm">%</div>
+            </div>
           </div>
         </div>
 

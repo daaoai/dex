@@ -90,9 +90,14 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
             </div>
 
             {loading ? (
-              <Text type="p" className="text-gray-400 text-sm">
-                {tokenSelectorContent.loading}
-              </Text>
+              <div className="space-y-2 mt-3 overflow-y-auto overflow-x-hidden max-h-[45vh] md:max-h-[55vh]">
+                {Array.from({ length: 7 }).map((_, idx) => (
+                  <div
+                    key={idx}
+                    className="relative shimmer w-full  rounded-lg p-2 flex items-center gap-3 h-12 overflow-hidden"
+                  ></div>
+                ))}
+              </div>
             ) : (
               <div className="space-y-2 mt-3 overflow-y-auto overflow-x-hidden max-h-[45vh] md:max-h-[55vh]">
                 {filteredTokens.map((token) => (
