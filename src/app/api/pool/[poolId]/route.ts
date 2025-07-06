@@ -1,15 +1,16 @@
-import { supportedChainIds } from '@/constants/chains';
+import { NextRequest, NextResponse } from 'next/server';
 import { getLocalTokenDetails } from '@/helper/token';
 import { GraphPoolDetails, PoolDetails, Transaction } from '@/types/pools';
 import { formatToken } from '@/utils/address';
+import { chainsData, supportedChainIds } from '@/constants/chains';
 
 /**
  * Fetches detailed pool data from The Graph subgraph
  * @param poolId - The pool ID to fetch details for
  * @returns Promise<PoolDetails | null> - Detailed pool data or null if not found
  */
-export const fetchPoolDetails = async (poolId: string): Promise<PoolDetails | null> => {
-  const SUBGRAPH_ENDPOINT = 'https://api.studio.thegraph.com/query/113461/bnb-v-3-subgraph/version/latest';
+const fetchPoolDetailsFromGraph = async (poolId: string): Promise<PoolDetails | null> => {
+  const SUBGRAPH_ENDPOINT = chainsData[supportedChainIds.bsc].subgraphURL;
 
   const POOL_DETAILS_QUERY = `
     query GetPoolDetails($poolId: ID!) {
@@ -81,14 +82,18 @@ export const fetchPoolDetails = async (poolId: string): Promise<PoolDetails | nu
   `;
 
   try {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    // Add Authorization header if API key is available
+    if (process.env.GRAPH_API_KEY) {
+      headers.Authorization = `Bearer ${process.env.GRAPH_API_KEY}`;
+    }
+
     const response = await fetch(SUBGRAPH_ENDPOINT, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(process.env.NEXT_PUBLIC_GRAPH_API_KEY && {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_GRAPH_API_KEY}`,
-        }),
-      },
+      headers,
       body: JSON.stringify({
         query: POOL_DETAILS_QUERY,
         variables: { poolId: poolId.toLowerCase() }, // Ensure poolId is in lowercase
@@ -256,3 +261,24 @@ const transformGraphPoolToPoolDetails = (graphPool: GraphPoolDetails): PoolDetai
     },
   };
 };
+
+export async function GET(request: NextRequest, { params }: { params: { poolId: string } }) {
+  try {
+    const poolId = params.poolId;
+
+    if (!poolId) {
+      return NextResponse.json({ error: 'Pool ID is required' }, { status: 400 });
+    }
+
+    const poolDetails = await fetchPoolDetailsFromGraph(poolId);
+
+    if (!poolDetails) {
+      return NextResponse.json({ error: 'Pool not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(poolDetails);
+  } catch (error) {
+    console.error('Error in pool details API:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

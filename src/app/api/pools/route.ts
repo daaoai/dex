@@ -1,15 +1,16 @@
-import { supportedChainIds } from '@/constants/chains';
+import { chainsData, supportedChainIds } from '@/constants/chains';
 import { getLocalTokenDetails } from '@/helper/token';
 import { GraphTopPool, TopPool } from '@/types/pools';
 import { formatToken } from '@/utils/address';
 import { calculate7DayAverageAPR } from '@/utils/apr';
+import { NextResponse } from 'next/server';
 
 /**
  * Fetches top pools data from The Graph subgraph
  * @returns Promise<TopPool[]> - Array of top pools ordered by volume
  */
-export const fetchTopPoolsFromGraph = async (): Promise<TopPool[]> => {
-  const SUBGRAPH_ENDPOINT = 'https://api.studio.thegraph.com/query/113471/synthari-bnb-v-3/version/latest';
+const fetchTopPoolsFromGraph = async (): Promise<TopPool[]> => {
+  const SUBGRAPH_ENDPOINT = chainsData[supportedChainIds.bsc].subgraphURL;
 
   const POOLS_QUERY = `
     query GetTopPools {
@@ -49,14 +50,18 @@ export const fetchTopPoolsFromGraph = async (): Promise<TopPool[]> => {
   `;
 
   try {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    // Add Authorization header if API key is available
+    if (process.env.GRAPH_API_KEY) {
+      headers.Authorization = `Bearer ${process.env.GRAPH_API_KEY}`;
+    }
+
     const response = await fetch(SUBGRAPH_ENDPOINT, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(process.env.NEXT_PUBLIC_GRAPH_API_KEY && {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_GRAPH_API_KEY}`,
-        }),
-      },
+      headers,
       body: JSON.stringify({
         query: POOLS_QUERY,
       }),
@@ -121,3 +126,14 @@ const transformGraphPoolsToTopPools = (graphPools: GraphTopPool[]): TopPool[] =>
     };
   });
 };
+
+export async function GET() {
+  try {
+    const pools = await fetchTopPoolsFromGraph();
+
+    return NextResponse.json(pools);
+  } catch (error) {
+    console.error('Error in pools API:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

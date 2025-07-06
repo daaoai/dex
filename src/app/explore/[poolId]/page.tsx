@@ -7,7 +7,7 @@ import { Transaction } from '@/types/pools';
 import { truncateNumber } from '@/utils/truncateNumber';
 import { LineChart, LinkIcon, Plus, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
-import { fetchPoolDetails } from './fetchPoolDetails';
+import { fetchPoolDetails } from '../../../services/subgraph/fetchPoolDetails';
 import DynamicLogo from '@/components/ui/logo/DynamicLogo';
 import ClickToCopy from '@/utils/copyToClipboard';
 import clsx from 'clsx';
