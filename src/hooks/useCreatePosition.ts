@@ -305,20 +305,36 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
 
   const increaseUpperTick = async () => {
     if (!poolDetails) return;
-    setUpperTick((prev) => prev + poolDetails.tickSpacing);
+    if (srcToken === 'token0') {
+      setUpperTick((prev) => prev + poolDetails.tickSpacing);
+    } else {
+      setLowerTick((prev) => prev - poolDetails.tickSpacing);
+    }
   };
 
   const decreaseUpperTick = async () => {
     if (!poolDetails) return;
-    setUpperTick((prev) => prev - poolDetails.tickSpacing);
+    if (srcToken === 'token0') {
+      setUpperTick((prev) => prev - poolDetails.tickSpacing);
+    } else {
+      setLowerTick((prev) => prev + poolDetails.tickSpacing);
+    }
   };
   const increaseLowerTick = async () => {
     if (!poolDetails) return;
-    setLowerTick((prev) => prev + poolDetails.tickSpacing);
+    if (srcToken === 'token0') {
+      setLowerTick((prev) => prev + poolDetails.tickSpacing);
+    } else {
+      setUpperTick((prev) => prev - poolDetails.tickSpacing);
+    }
   };
   const decreaseLowerTick = async () => {
     if (!poolDetails) return;
-    setLowerTick((prev) => prev - poolDetails.tickSpacing);
+    if (srcToken === 'token0') {
+      setLowerTick((prev) => prev - poolDetails.tickSpacing);
+    } else {
+      setUpperTick((prev) => prev + poolDetails.tickSpacing);
+    }
   };
 
   const createPosition = async () => {
@@ -453,6 +469,11 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     updateLowerPrice(lowerTick);
     updateUpperPrice(upperTick);
 
+    console.log({
+      lowerTick,
+      upperTick,
+    });
+
     if (inputAmountForToken === 'token0') {
       if (!Number(token0FormattedAmount)) {
         setToken1FormattedAmount('');
@@ -492,7 +513,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
         }),
       );
     }
-  }, [selectedRange, currentPoolData, poolDetails]);
+  }, [selectedRange, poolDetails]);
 
   useEffect(() => {
     const interval = setInterval(() => {
