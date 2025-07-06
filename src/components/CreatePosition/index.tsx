@@ -54,6 +54,7 @@ export default function CreatePositionInterface({ token0, token1, chainId, fee }
     setInputAmountForToken,
     fetchInitialData,
     txnState,
+    balances,
     handleSwitch,
   } = useCreatePosition({ chainId });
 
@@ -152,6 +153,7 @@ export default function CreatePositionInterface({ token0, token1, chainId, fee }
           txnState,
           srcTokenDetails: token0,
           isLoading,
+          balances,
         }}
       />
     </div>

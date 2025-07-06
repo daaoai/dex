@@ -17,12 +17,10 @@ export const bscTokens = {
   },
   '0x55d398326f99059fF775485246999027B3197955': {
     address: '0x55d398326f99059fF775485246999027B3197955',
-
     decimals: 18,
     name: 'USDT',
     symbol: 'USDT',
     logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
-
     coingeckoId: 'usdt',
   },
   '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d': {

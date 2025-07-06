@@ -1,15 +1,13 @@
 'use client';
 
-import { fetchTokenBalance } from '@/helper/token';
 import { Token } from '@/types/tokens';
+import { truncateNumber } from '@/utils/truncateNumber';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+import { formatUnits } from 'viem';
+import { useAccount } from 'wagmi';
 import ConnectOrActionButton from '../position/LiquidityActionButton';
 import BalancePercentageButtons from '../ui/BalancePercentageButtons';
 import Text from '../ui/Text';
-import { formatUnits } from 'viem';
-import { truncateNumber } from '@/utils/truncateNumber';
 
 interface DepositTokensProps {
   token0Details: Token;
@@ -20,6 +18,7 @@ interface DepositTokensProps {
   handleToken0AmountChange: (value: string) => void;
   handleToken1AmountChange: (value: string) => void;
   isLoading: boolean;
+  balances: Record<string, bigint>;
   handleDeposit: () => void;
 }
 
@@ -32,30 +31,22 @@ export default function DepositTokens({
   handleToken1AmountChange,
   isLoading,
   txnState,
+  balances,
   handleDeposit,
 }: DepositTokensProps) {
-  const [srcBalance, setSrcBalance] = useState<bigint>(0n);
-  const [destBalance, setDestBalance] = useState<bigint>(0n);
+  const token0Balance = balances[token0Details.address] || 0n;
+  const token1Balance = balances[token1Details.address] || 0n;
+  const formattedToken0Balance = formatUnits(token0Balance, token0Details.decimals);
+  const formattedToken1Balance = formatUnits(token1Balance, token1Details.decimals);
   const { address: account } = useAccount();
-  const chainId = useChainId();
-  useEffect(() => {
-    if (account) {
-      const init = async () => {
-        try {
-          const [srcBalance, destBalance] = await Promise.all([
-            fetchTokenBalance({ token: token0Details.address, account, chainId }),
-            fetchTokenBalance({ token: token1Details.address, account, chainId }),
-          ]);
-          setSrcBalance(srcBalance);
-          setDestBalance(destBalance);
-        } catch (error) {
-          console.error('Failed to fetch token balance:', error);
-          setSrcBalance(0n);
-        }
-      };
-      init();
-    }
-  }, []);
+
+  const isActionButtonDisabled =
+    !account ||
+    isLoading ||
+    Number(token0Amount) <= 0 ||
+    Number(token1Amount) <= 0 ||
+    Number(token0Amount) > Number(formattedToken0Balance) ||
+    Number(token1Amount) > Number(formattedToken1Balance);
 
   return (
     <div className="bg-zinc-900 rounded-lg p-4 space-y-4">
@@ -73,7 +64,7 @@ export default function DepositTokens({
             value={token0Amount}
             onChange={(e) => handleToken0AmountChange(e.target.value)}
             aria-label={token0Details.symbol + ' Amount'}
-            className="text-3xl font-bold bg-transparent outline-none w-full"
+            className={`text-3xl font-bold bg-transparent outline-none w-full ${Number(token0Amount) > Number(formattedToken0Balance) ? 'text-red-500' : ''}`}
             placeholder="0"
           />
 
@@ -87,14 +78,14 @@ export default function DepositTokens({
         <div className="flex justify-between">
           <div className="flex justify-between mt-1 opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-y-2 group-hover:translate-y-0">
             <BalancePercentageButtons
-              balance={srcBalance}
+              balance={token0Balance}
               decimals={token0Details.decimals}
               setAmount={handleToken0AmountChange}
             />
           </div>
 
           <Text type="p" className="text-sm text-gray-400 mt-2 text-end">
-            {truncateNumber(formatUnits(srcBalance, token0Details.decimals))}
+            {truncateNumber(formatUnits(token0Balance, token0Details.decimals))}
           </Text>
         </div>
       </div>
@@ -109,7 +100,7 @@ export default function DepositTokens({
               handleToken1AmountChange(e.target.value);
             }}
             aria-label={token1Details.symbol + ' Amount'}
-            className="text-3xl font-bold bg-transparent outline-none w-full"
+            className={`text-3xl font-bold bg-transparent outline-none w-full ${Number(token1Amount) > Number(formattedToken1Balance) ? 'text-red-500' : ''}`}
           />
 
           <div className="flex items-center">
@@ -122,21 +113,21 @@ export default function DepositTokens({
         <div className="flex justify-between">
           <div className="flex justify-between mt-1 opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-y-2 group-hover:translate-y-0">
             <BalancePercentageButtons
-              balance={destBalance}
+              balance={token1Balance}
               decimals={token1Details.decimals}
               setAmount={handleToken1AmountChange}
             />
           </div>
 
           <Text type="p" className="text-sm text-gray-400 mt-2 text-end">
-            {truncateNumber(formatUnits(destBalance, token1Details.decimals))}
+            {truncateNumber(formatUnits(token1Balance, token1Details.decimals))}
           </Text>
         </div>
       </div>
 
       <ConnectOrActionButton
         authenticatedOnClick={handleDeposit}
-        isDisabled={isLoading}
+        isDisabled={isActionButtonDisabled}
         authenticatedText={
           txnState === 'approvingToken0'
             ? `Approving ${token0Details.symbol}`

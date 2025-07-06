@@ -537,6 +537,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     setInputAmountForToken,
     token0FormattedAmount,
     setToken0FormattedAmount,
+    balances,
     token1FormattedAmount,
     setToken1FormattedAmount,
     getToken0Amount,
