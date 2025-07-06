@@ -7,6 +7,7 @@ import PoolIcon from '../ui/logo/PoolLogo';
 import Text from '../ui/Text';
 import DepositTokens from './DepositToken';
 import RangeSelector from './RangeSelector';
+import InitialPriceCard from './InitialPriceCard';
 import { chainsData } from '@/constants/chains';
 
 interface CreatePositionInterfaceProps {
@@ -23,6 +24,7 @@ type ChartAPI = {
 
 export default function CreatePositionInterface({ token0, token1, chainId, fee }: CreatePositionInterfaceProps) {
   const [isLoading] = useState<boolean>(false);
+
   const { nativeCurrency, wnativeToken } = chainsData[chainId];
   const formattedToken0Address = (
     token0.address === nativeCurrency.address ? wnativeToken : token0
@@ -52,10 +54,13 @@ export default function CreatePositionInterface({ token0, token1, chainId, fee }
     setSelectedRange,
     upperPrice,
     setInputAmountForToken,
+    handleUninitializedPool,
     fetchInitialData,
     txnState,
     balances,
     handleSwitch,
+    currentPoolData,
+    poolDetails,
   } = useCreatePosition({ chainId });
 
   useEffect(() => {
@@ -69,6 +74,8 @@ export default function CreatePositionInterface({ token0, token1, chainId, fee }
   const chartContainerRef = useRef<HTMLDivElement>(null);
 
   const chartRef = useRef<ChartAPI | null>(null);
+
+  const showInitialPriceModal = !currentPoolData.isInitialized;
 
   const handleToken0AmountChange = (value: string) => {
     if (value && !isNaN(parseFloat(value))) {
@@ -98,6 +105,12 @@ export default function CreatePositionInterface({ token0, token1, chainId, fee }
     }
   };
 
+  const handleSetInitialPrice = (price: number) => {
+    if (poolDetails) {
+      handleUninitializedPool(poolDetails, token0, token1, price);
+    }
+  };
+
   return (
     <div className="max-w-lg mx-auto w-full px-4 pb-8 space-y-4">
       <div className="bg-zinc-900 rounded-lg p-4 flex items-center">
@@ -116,6 +129,17 @@ export default function CreatePositionInterface({ token0, token1, chainId, fee }
           </Text>
         </div>
       </div>
+
+      {/* Initial Price Card - shows above range selector for uninitialized pools */}
+      <InitialPriceCard
+        token0={token0}
+        token1={token1}
+        initialPrice={0.5}
+        onSetPrice={handleSetInitialPrice}
+        srcToken={srcToken}
+        handleSwitchToken={handleSwitch}
+        isVisible={showInitialPriceModal}
+      />
 
       <RangeSelector
         {...{
@@ -138,6 +162,7 @@ export default function CreatePositionInterface({ token0, token1, chainId, fee }
           setMaxPrice: () => {},
           chartRef,
           chartContainerRef,
+          hideTokenSwitchButtons: showInitialPriceModal, // Hide token buttons when initial price is being set
         }}
       />
 

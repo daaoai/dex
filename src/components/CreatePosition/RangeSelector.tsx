@@ -29,6 +29,7 @@ interface RangeSelectorProps {
   decreaseMaxPrice: () => void;
   chartRef: React.MutableRefObject<ChartAPI | null>;
   chartContainerRef: React.RefObject<HTMLDivElement | null>;
+  hideTokenSwitchButtons?: boolean;
 }
 
 export default function RangeSelector({
@@ -46,6 +47,7 @@ export default function RangeSelector({
   increaseMaxPrice,
   decreaseMinPrice,
   decreaseMaxPrice,
+  hideTokenSwitchButtons = false,
 }: RangeSelectorProps) {
   const tabs = [
     { id: '1d', duration: 1 },
@@ -120,50 +122,52 @@ export default function RangeSelector({
               {truncateNumber(currentPrice)} {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
             </Text>
           </div>
-          <div className="flex space-x-2">
-            <button
-              className={`flex items-center gap-2 px-3 py-1 rounded-2xl border transition-shadow duration-300 ${
-                token0.address === srcTokenDetails.address
-                  ? 'bg-black border-stroke-7 text-white'
-                  : 'bg-background-4 border-stroke-7 text-gray-400 hover:text-white'
-              }`}
-              onClick={() => {
-                if (token0.address === srcTokenDetails.address) return;
-                handleSwitchToken();
-              }}
-              type="button"
-            >
-              <DynamicLogo
-                logoUrl={token0.logo}
-                altText={token0.symbol}
-                fallbackText={token0.symbol}
-                width={10}
-                height={10}
-              />
-              <span className="font-semibold text-xs">{token0.symbol}</span>
-            </button>
-            <button
-              className={`flex items-center gap-2 px-3 py-1 rounded-2xl border transition-shadow duration-300 ${
-                token1.address === srcTokenDetails.address
-                  ? 'bg-black border-stroke-7 text-white'
-                  : 'bg-background-4 border-stroke-7 text-gray-400 hover:text-white'
-              }`}
-              onClick={() => {
-                if (token1.address === srcTokenDetails.address) return;
-                handleSwitchToken();
-              }}
-              type="button"
-            >
-              <DynamicLogo
-                logoUrl={token1.logo}
-                altText={token1.symbol}
-                fallbackText={token1.symbol}
-                width={10}
-                height={10}
-              />
-              <span className="font-semibold text-xs">{token1.symbol}</span>
-            </button>
-          </div>
+          {!hideTokenSwitchButtons && (
+            <div className="flex space-x-2">
+              <button
+                className={`flex items-center gap-2 px-3 py-1 rounded-2xl border transition-shadow duration-300 ${
+                  token0.address === srcTokenDetails.address
+                    ? 'bg-black border-stroke-7 text-white'
+                    : 'bg-background-4 border-stroke-7 text-gray-400 hover:text-white'
+                }`}
+                onClick={() => {
+                  if (token0.address === srcTokenDetails.address) return;
+                  handleSwitchToken();
+                }}
+                type="button"
+              >
+                <DynamicLogo
+                  logoUrl={token0.logo}
+                  altText={token0.symbol}
+                  fallbackText={token0.symbol}
+                  width={10}
+                  height={10}
+                />
+                <span className="font-semibold text-xs">{token0.symbol}</span>
+              </button>
+              <button
+                className={`flex items-center gap-2 px-3 py-1 rounded-2xl border transition-shadow duration-300 ${
+                  token1.address === srcTokenDetails.address
+                    ? 'bg-black border-stroke-7 text-white'
+                    : 'bg-background-4 border-stroke-7 text-gray-400 hover:text-white'
+                }`}
+                onClick={() => {
+                  if (token1.address === srcTokenDetails.address) return;
+                  handleSwitchToken();
+                }}
+                type="button"
+              >
+                <DynamicLogo
+                  logoUrl={token1.logo}
+                  altText={token1.symbol}
+                  fallbackText={token1.symbol}
+                  width={10}
+                  height={10}
+                />
+                <span className="font-semibold text-xs">{token1.symbol}</span>
+              </button>
+            </div>
+          )}
         </div>
         <div className="relative h-[150px] overflow-hidden bg-zinc-800">
           <motion.div

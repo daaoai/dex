@@ -39,7 +39,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
   const [currentPoolData, setCurrentPoolData] = useState<CurrentPoolData>({
     tick: 0,
     sqrtPriceX96: 0n,
-    isInitialized: false,
+    isInitialized: true,
   });
 
   const [txnInProgress, setTxnInProgress] = useState(false);
@@ -79,7 +79,6 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
         sqrtPriceX96,
         liquidity,
         isInitialized: sqrtPriceX96 > 0n,
-        hasLiquidity: liquidity > 0n,
       };
     } catch (error) {
       console.error('Error fetching pool data:', error);
@@ -133,10 +132,6 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
           setUpperTick(
             V3PoolUtils.nearestUsableTick({ tick: currentPoolData.tick + poolDetails.tickSpacing, tickSpacing }),
           );
-
-          if (!currentPoolData.hasLiquidity) {
-            console.warn('Pool exists and is initialized but has no liquidity');
-          }
         } else {
           // Pool exists but not initialized - treat as new pool
           handleUninitializedPool(poolDetails, token0Details, token1Details);
@@ -154,9 +149,9 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     poolDetails: { address: `0x${string}`; token0: Token; token1: Token; fee: number; tickSpacing: number },
     token0Details: Token,
     token1Details: Token,
+    price: number = 0.5, // Default price if not provided
   ) => {
     // Set default values for uninitialized pool
-    const price = 0.5; // or get from external price feed
     const currentTick = V3PoolUtils.getTickFromPrice({
       decimal0: token0Details.decimals,
       decimal1: token1Details.decimals,
@@ -170,7 +165,8 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
       sqrtPriceX96,
       isInitialized: false,
     });
-
+    setToken0FormattedAmount('');
+    setToken1FormattedAmount('');
     setLowerTick(
       V3PoolUtils.nearestUsableTick({
         tick: currentTick - poolDetails.tickSpacing,
@@ -562,6 +558,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     increaseLowerTick,
     decreaseLowerTick,
     upperPrice,
+    handleUninitializedPool,
     fetchInitialData,
     selectedRange,
     setSelectedRange,
