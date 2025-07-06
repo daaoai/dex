@@ -1,19 +1,20 @@
 'use client';
-import TokenSelectionModal from '@/components/TokenSelectorModal';
 import CreatePositionInterface from '@/components/CreatePosition';
+import ConnectOrActionButton from '@/components/position/LiquidityActionButton';
+import TokenSelectionModal from '@/components/TokenSelectorModal';
+import Text from '@/components/ui/Text';
+import { chainsData } from '@/constants/chains';
+import { supportedFeeAndTickSpacing } from '@/constants/fee';
+import { newPositionsContent } from '@/content/positionContent';
+import { getLocalTokenDetails } from '@/helper/token';
+import { Button } from '@/shadcn/components/ui/button';
 import { Token } from '@/types/tokens';
 import { ChevronDown } from 'lucide-react';
-
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { RootState } from '../../../store';
-import ConnectOrActionButton from '@/components/position/LiquidityActionButton';
-import Text from '@/components/ui/Text';
-import { Button } from '@/shadcn/components/ui/button';
-import { newPositionsContent } from '@/content/positionContent';
-import { supportedFeeAndTickSpacing } from '@/constants/fee';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shadcn/components/ui/select';
 
@@ -40,6 +41,35 @@ export default function NewPositionsClient({
 
   // redux
   const { appChainId } = useSelector((state: RootState) => state.common, shallowEqual);
+
+  // Get native and wnative tokens for the current chain
+  const { nativeCurrency, wnativeToken: wNative } = chainsData[appChainId];
+  const nativeToken = getLocalTokenDetails({ address: nativeCurrency.address, chainId: appChainId });
+  const wnativeToken = getLocalTokenDetails({ address: wNative.address, chainId: appChainId });
+
+  // Track if user wants to use native token instead of wnative
+  const [useNative, setUseNative] = useState(false);
+
+  // Handle toggle switch for native token
+  useEffect(() => {
+    if (!wnativeToken || !nativeToken) return;
+    // If toggled ON, replace wnative with native in token0 or token1
+    if (useNative) {
+      if (token0 && token0.address === wnativeToken.address) {
+        setToken0({ ...nativeToken });
+      } else if (token1 && token1.address === wnativeToken.address) {
+        setToken1({ ...nativeToken });
+      }
+    } else {
+      // If toggled OFF, revert native to wnative
+      if (token0 && token0.address === nativeToken.address) {
+        setToken0({ ...wnativeToken });
+      } else if (token1 && token1.address === nativeToken.address) {
+        setToken1({ ...wnativeToken });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useNative]);
 
   return (
     <div className="min-h-screen bg-black text-white px-4 sm:px-6 md:px-10 lg:px-20">
@@ -126,39 +156,42 @@ export default function NewPositionsClient({
                 </Text>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <button
-                    className="bg-background-23 rounded-lg p-4 flex items-center justify-between h-full"
-                    onClick={() => setShowTokenModal({ show: true, tokenType: 'token0' })}
-                  >
-                    {token0 ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full  flex items-center justify-center">
-                          <Image src={token0.logo || '/placeholder.svg'} alt={token0.symbol} width={16} height={16} />
+                  <div>
+                    <button
+                      className="bg-background-23 rounded-lg p-4 flex items-center justify-between h-full w-full"
+                      onClick={() => setShowTokenModal({ show: true, tokenType: 'token0' })}
+                    >
+                      {token0 ? (
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full  flex items-center justify-center">
+                            <Image src={token0.logo || '/placeholder.svg'} alt={token0.symbol} width={16} height={16} />
+                          </div>
+                          <span>{token0.symbol}</span>
                         </div>
-                        <span>{token0.symbol}</span>
-                      </div>
-                    ) : (
-                      <Text type="p">{newPositionsContent.selectPair.chooseToken}</Text>
-                    )}
-                    <ChevronDown className="h-5 w-5 text-gray-400" />
-                  </button>
-
-                  <button
-                    className="bg-background-23 h-full rounded-lg p-4 flex items-center justify-between"
-                    onClick={() => setShowTokenModal({ show: true, tokenType: 'token1' })}
-                  >
-                    {token1 ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full  flex items-center justify-center">
-                          <Image src={token1.logo || '/placeholder.svg'} alt={token1.symbol} width={16} height={16} />
+                      ) : (
+                        <Text type="p">{newPositionsContent.selectPair.chooseToken}</Text>
+                      )}
+                      <ChevronDown className="h-5 w-5 text-gray-400" />
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      className="bg-background-23 h-full rounded-lg p-4 flex items-center justify-between w-full"
+                      onClick={() => setShowTokenModal({ show: true, tokenType: 'token1' })}
+                    >
+                      {token1 ? (
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full  flex items-center justify-center">
+                            <Image src={token1.logo || '/placeholder.svg'} alt={token1.symbol} width={16} height={16} />
+                          </div>
+                          <Text type="p">{token1.symbol}</Text>
                         </div>
-                        <Text type="p">{token1.symbol}</Text>
-                      </div>
-                    ) : (
-                      <Text type="p">{newPositionsContent.selectPair.chooseToken}</Text>
-                    )}
-                    <ChevronDown className="h-5 w-5 text-gray-600" />
-                  </button>
+                      ) : (
+                        <Text type="p">{newPositionsContent.selectPair.chooseToken}</Text>
+                      )}
+                      <ChevronDown className="h-5 w-5 text-gray-600" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="mb-6 flex flex-col md:flex-row justify-between items-start">
@@ -197,6 +230,24 @@ export default function NewPositionsClient({
                         ))}
                       </SelectContent>
                     </Select>
+                    {/* Native token toggle below fee dropdown */}
+                    {(token0 &&
+                      (token0.address === wnativeToken?.address || token0.address === nativeToken?.address)) ||
+                    (token1 &&
+                      (token1.address === wnativeToken?.address || token1.address === nativeToken?.address)) ? (
+                      <div className="flex items-center gap-2 mt-4">
+                        <button
+                          type="button"
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${useNative ? 'bg-green-500' : 'bg-gray-400'}`}
+                          onClick={() => setUseNative((v) => !v)}
+                        >
+                          <span
+                            className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${useNative ? 'translate-x-5' : 'translate-x-1'}`}
+                          />
+                        </button>
+                        <span className="text-xs select-none">Use native token ({nativeToken?.symbol}) instead</span>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
                 <ConnectOrActionButton

@@ -1,4 +1,4 @@
-import { SimpleLineChart } from '@/components/SimpleLineChart';
+import { PoolVolumeChart } from '@/components/PoolVolumeChart';
 import PoolIcon from '@/components/ui/logo/PoolLogo';
 import Text from '@/components/ui/Text';
 import { positionContent } from '@/content/positionContent';
@@ -139,7 +139,7 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
                       </div>
                     </div>
                   </div>
-                  <SimpleLineChart data={poolDetails.chartData} height={300} showGrid={true} strokeColor="#ec4899" />
+                  <PoolVolumeChart data={poolDetails.chartData} height={300} showGrid={true} strokeColor="#ec4899" />
                 </>
               ) : (
                 <div className="mt-4 rounded-lg h-[300px] flex items-center justify-center bg-background flex-1">

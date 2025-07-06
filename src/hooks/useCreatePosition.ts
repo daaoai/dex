@@ -465,11 +465,6 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     updateLowerPrice(lowerTick);
     updateUpperPrice(upperTick);
 
-    console.log({
-      lowerTick,
-      upperTick,
-    });
-
     if (inputAmountForToken === 'token0') {
       if (!Number(token0FormattedAmount)) {
         setToken1FormattedAmount('');

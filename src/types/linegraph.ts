@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Line } from 'react-chartjs-2';
+import { Chart } from 'chart.js';
 
 export interface Tab {
   id: string | number;
@@ -12,7 +13,7 @@ export interface LineGraphViewProps {
   tokenState: TokenState;
   tabs: Tab[];
   activeTabId: string | number;
-  chartRef?: React.RefObject<Line>;
+  chartRef: React.RefObject<Line>;
 }
 
 export interface LineGraphProps {
@@ -40,6 +41,39 @@ export interface TokenState {
 export interface CachedPrices {
   newPrices: PriceData[];
   updatedAt: string;
+}
+
+// Liquidity and tick data types
+export interface LiquidityDataPoint {
+  price0: number;
+  activeLiquidity: number;
+}
+
+export interface TickData {
+  liquidityNet: string;
+  price0: string;
+}
+
+// Chart.js related types
+export interface ChartScale {
+  getPixelForValue: (value: number) => number;
+}
+
+export interface ChartArea {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+}
+
+export interface ChartInstance extends Chart {
+  zoom?: (factor: number) => void;
+  resetZoom?: () => void;
+  scales: {
+    'y-axis-0'?: ChartScale;
+    y?: ChartScale;
+  };
+  chartArea: ChartArea;
 }
 
 // chart options
@@ -91,4 +125,5 @@ export type ChartAPI = {
 
 export interface ZoomableChart extends Chart {
   resetZoom: () => void;
+  zoom: (factor: number) => void;
 }
