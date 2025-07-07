@@ -1,16 +1,20 @@
 'use client';
-import {
-  metaMaskWallet,
-  trustWallet,
-  frontierWallet,
-  safepalWallet,
-  phantomWallet,
-  walletConnectWallet,
-  okxWallet,
-} from '@rainbow-me/rainbowkit/wallets';
 import { POLLING_INTERVAL } from '@/constants/app/wagmi';
 import { supportedChainIds, viemChainsById } from '@/constants/chains';
 import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+import {
+  argentWallet,
+  coinbaseWallet,
+  ledgerWallet,
+  backpackWallet,
+  rabbyWallet,
+  metaMaskWallet,
+  okxWallet,
+  phantomWallet,
+  safepalWallet,
+  trustWallet,
+  walletConnectWallet,
+} from '@rainbow-me/rainbowkit/wallets';
 import { Transport } from 'viem';
 import { cookieStorage, createConfig, createStorage, http } from 'wagmi';
 
@@ -21,9 +25,13 @@ const connectors = connectorsForWallets(
       wallets: [
         metaMaskWallet,
         trustWallet,
-        frontierWallet,
+        coinbaseWallet,
+        argentWallet,
+        ledgerWallet,
         safepalWallet,
         phantomWallet,
+        backpackWallet,
+        rabbyWallet,
         okxWallet,
         walletConnectWallet,
       ],
