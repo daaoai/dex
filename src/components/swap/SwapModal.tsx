@@ -121,6 +121,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
   };
 
   const handleToggle = () => {
+    if (!srcToken && !destToken) return;
     const temp = srcToken;
     setSrcToken(destToken);
     setDestToken(temp);
@@ -185,6 +186,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
         }}
         onSelect={handleTokenSelect}
         isOpen={showSelector}
+        selectedTokens={[srcToken, destToken]}
       />
 
       <SelectTokenCard
@@ -199,10 +201,26 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
       <div className="flex justify-center -mt-8 -mb-6">
         <button
           onClick={handleToggle}
-          className="bg-background hover:bg-background-2 p-3 rounded-full border-black border-4 transition-all duration-300 hover:border-stroke-6 group"
+          className={`bg-background hover:bg-background-2 p-3 rounded-full border-4 transition-all duration-300 hover:border-stroke-6 group ${
+            srcToken && !destToken
+              ? 'border-stroke-6' // Highlight border when only src is selected
+              : !srcToken && destToken
+                ? 'border-stroke-6' // Highlight border when only dest is selected
+                : 'border-black' // Default border when both or neither are selected
+          }`}
           aria-label="Switch tokens"
         >
-          <ArrowDown className="w-4 h-4 text-grey transition-transform duration-300 group-hover:rotate-180 group-hover:text-stroke-6 font-extrabold" />
+          <ArrowDown
+            className={`w-4 h-4 transition-all duration-300 group-hover:text-stroke-6 font-extrabold ${
+              srcToken && !destToken
+                ? 'text-stroke-6 rotate-0 group-hover:rotate-180' // Highlight down when only src is selected, rotate on hover
+                : !srcToken && destToken
+                  ? 'text-stroke-6 rotate-180 group-hover:rotate-0' // Highlight up when only dest is selected, rotate on hover
+                  : srcToken && destToken
+                    ? 'text-grey rotate-0 group-hover:rotate-180' // Gray down when both are selected, rotate on hover
+                    : 'text-grey rotate-0' // Gray down when neither are selected, no rotation on hover
+            }`}
+          />
         </button>
       </div>
 

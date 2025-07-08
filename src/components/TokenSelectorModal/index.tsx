@@ -19,9 +19,15 @@ interface TokenSelectionModalProps {
   onClose: () => void;
   onSelect: (token: Token) => void;
   isOpen: boolean;
+  selectedTokens?: (Token | null)[];
 }
 
-export default function TokenSelectionModal({ onClose, onSelect, isOpen }: TokenSelectionModalProps) {
+export default function TokenSelectionModal({
+  onClose,
+  onSelect,
+  isOpen,
+  selectedTokens = [],
+}: TokenSelectionModalProps) {
   const [tokens, setTokens] = useState<Token[]>([]);
   const [filteredTokens, setFilteredTokens] = useState<Token[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -106,11 +112,17 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
                 >
                   {({ index, style, data }: ListChildComponentProps) => {
                     const token = data.tokens[index];
+                    const isSelected = selectedTokens.some((selectedToken) => selectedToken?.address === token.address);
                     return (
                       <div style={style} key={token.address}>
                         <Button
-                          className="w-full group bg-transparent rounded-lg p-2 flex hover:bg-background-13 justify-start items-center gap-3 h-15"
-                          onClick={() => data.onSelect(token)}
+                          className={`w-full group rounded-lg p-2 flex justify-start items-center gap-3 h-15 ${
+                            isSelected
+                              ? 'bg-background-13 opacity-50 cursor-not-allowed'
+                              : 'bg-transparent hover:bg-background-13'
+                          }`}
+                          onClick={() => !isSelected && data.onSelect(token)}
+                          disabled={isSelected}
                         >
                           <div className="w-8 h-8 rounded-full flex items-center justify-center">
                             <DynamicLogo
@@ -122,15 +134,18 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
                             />
                           </div>
                           <div className="text-left">
-                            <Text type="p" className="font-medium">
+                            <Text type="p" className={`font-medium ${isSelected ? 'text-gray-500' : ''}`}>
                               {token.name}
                             </Text>
                             <div className="flex items-center gap-2">
-                              <Text type="p" className="text-sm text-gray-400">
+                              <Text type="p" className={`text-sm ${isSelected ? 'text-gray-600' : 'text-gray-400'}`}>
                                 {token.symbol}
                               </Text>
                               <div className="flex items-center gap-1">
-                                <Text type="p" className={clsx('text-xs text-gray-20')}>
+                                <Text
+                                  type="p"
+                                  className={clsx('text-xs', isSelected ? 'text-gray-600' : 'text-gray-20')}
+                                >
                                   {' '}
                                   {getEllipsisTxt(token.address)}
                                 </Text>
@@ -138,6 +153,13 @@ export default function TokenSelectionModal({ onClose, onSelect, isOpen }: Token
                               </div>
                             </div>
                           </div>
+                          {isSelected && (
+                            <div className="ml-auto">
+                              <Text type="p" className="text-xs text-gray-500">
+                                Selected
+                              </Text>
+                            </div>
+                          )}
                         </Button>
                       </div>
                     );
