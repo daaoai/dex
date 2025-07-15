@@ -246,7 +246,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
             text-base 
             leading-none
             px-6 py-6 
-            rounded-xl 
+            rounded-md
             disabled:opacity-50 disabled:cursor-not-allowed 
             transition-all duration-300
             shadow-[0_2px_10px_rgba(98,58,255,0.35)] 
