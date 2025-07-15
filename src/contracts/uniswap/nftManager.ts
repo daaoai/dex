@@ -28,6 +28,7 @@ export class UniswapNFTManager {
     fee,
     poolAddress,
     isInitialized,
+    value,
   }: CreatePositionParams) => {
     const mintCallData = encodeFunctionData({
       abi: uniswapV3NftManagerAbi,
@@ -49,16 +50,37 @@ export class UniswapNFTManager {
       ],
     });
 
+    let refundEthCallData: Hex | null = null;
+
+    if (value > 0n) {
+      refundEthCallData = encodeFunctionData({
+        abi: uniswapV3NftManagerAbi,
+        functionName: 'refundETH',
+      });
+    }
+
     if (poolAddress === zeroAddress || !isInitialized) {
       const createPoolCallData = encodeFunctionData({
         abi: uniswapV3NftManagerAbi,
         functionName: 'createAndInitializePoolIfNecessary',
         args: [token0, token1, fee, sqrtPriceX96],
       });
+      const multicallAgrs = [createPoolCallData, mintCallData];
+      if (refundEthCallData) {
+        multicallAgrs.push(refundEthCallData);
+      }
       return encodeFunctionData({
         abi: uniswapV3NftManagerAbi,
         functionName: 'multicall',
-        args: [[createPoolCallData, mintCallData]],
+        args: [multicallAgrs],
+      });
+    }
+
+    if (refundEthCallData) {
+      return encodeFunctionData({
+        abi: uniswapV3NftManagerAbi,
+        functionName: 'multicall',
+        args: [[mintCallData, refundEthCallData]],
       });
     }
     return mintCallData;
@@ -126,8 +148,8 @@ export class UniswapNFTManager {
     );
 
     return {
-      feesEarnedToken0,
-      feesEarnedToken1,
+      feeEarned0: feesEarnedToken0,
+      feeEarned1: feesEarnedToken1,
     };
   };
 
@@ -142,56 +164,16 @@ export class UniswapNFTManager {
     chainId: number;
     nftManagerAddress: Hex;
   }) => {
-    const multicallData = nftIds.map((nftId) =>
-      encodeFunctionData({
-        abi: uniswapV3NftManagerAbi,
-        functionName: 'collect',
-        args: [
-          {
-            tokenId: nftId,
-            recipient: account,
-            amount0Max: maxUint128,
-            amount1Max: maxUint128,
-          },
-        ],
-      }),
+    return await Promise.all(
+      nftIds.map((id) =>
+        UniswapNFTManager.getFeeToCollect({
+          tokenId: id,
+          account,
+          chainId,
+          nftManagerAddress,
+        }),
+      ),
     );
-    const callData = encodeFunctionData({
-      abi: uniswapV3NftManagerAbi,
-      functionName: 'multicall',
-      args: [multicallData],
-    });
-
-    const publicClient = getPublicClient(chainId);
-    const res = await publicClient.call({
-      data: callData,
-      account,
-      to: nftManagerAddress,
-    });
-
-    const multicallReturnType = [{ type: 'bytes[]', name: 'results' }];
-    const [multicallResults] = decodeAbiParameters(multicallReturnType, res.data as Hex) as [Hex[]];
-
-    // Define the collect function return type
-    const collectReturnType = [
-      { type: 'uint256', name: 'amount0' },
-      { type: 'uint256', name: 'amount1' },
-    ];
-
-    const feesEarned = nftIds.map((nftId, index) => {
-      const [feeEarned0, feeEarned1] = decodeAbiParameters(collectReturnType, multicallResults[index]) as [
-        bigint,
-        bigint,
-      ];
-
-      return {
-        id: nftId,
-        feeEarned0,
-        feeEarned1,
-      };
-    });
-
-    return feesEarned;
   };
 
   public static getUserNFTsForPool = async ({
@@ -307,8 +289,8 @@ export class UniswapNFTManager {
       // feeGrowthInside1LastX128: res[9],
       // tokensOwed0: res[10],
       // tokensOwed1: res[11],
-      feeEarned0: feeEarned.feesEarnedToken0,
-      feeEarned1: feeEarned.feesEarnedToken1,
+      feeEarned0: feeEarned.feeEarned0,
+      feeEarned1: feeEarned.feeEarned1,
     };
   };
 

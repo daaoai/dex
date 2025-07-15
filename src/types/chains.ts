@@ -9,6 +9,7 @@ export type ChainsConfig = {
   nativeCurrency: Token;
   wnativeToken: Token;
   logo: string;
+  subgraphURL: string;
   geckoId?: string;
   dexScreenerId?: string;
 };

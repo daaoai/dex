@@ -23,6 +23,7 @@ export const LineGraphView: React.FC<LineGraphViewProps> = ({
     const active = tabs.find((tab) => String(tab.id) === String(activeTabId));
     setDuration(active?.duration ?? tabs[0].duration);
   }, [activeTabId, tabs]);
+
   return (
     <div className="w-full h-full">
       {!loading && !tokenState?.diff && (
@@ -39,7 +40,7 @@ export const LineGraphView: React.FC<LineGraphViewProps> = ({
           loading={loading}
           setLoading={setLoading}
           vsCurrency={fiatCurrency}
-          chartRef={chartRef ?? React.createRef<Line | null>()}
+          chartRef={chartRef ?? React.createRef<Line>()}
         />
       </div>
     </div>

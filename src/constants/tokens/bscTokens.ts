@@ -1,12 +1,12 @@
 export const bscTokens = {
-  // '0x0000000000000000000000000000000000000000': {
-  //   address: '0x0000000000000000000000000000000000000000',
-  //   decimals: 18,
-  //   name: 'BNB',
-  //   symbol: 'BNB',
-  //   coingeckoId: 'bnb',
-  //   logo: 'https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png?1547034615',
-  // },
+  '0x0000000000000000000000000000000000000000': {
+    address: '0x0000000000000000000000000000000000000000',
+    decimals: 18,
+    name: 'BNB',
+    symbol: 'BNB',
+    coingeckoId: 'wbnb',
+    logo: 'https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png?1547034615',
+  },
   '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c': {
     address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
     decimals: 18,
@@ -17,12 +17,10 @@ export const bscTokens = {
   },
   '0x55d398326f99059fF775485246999027B3197955': {
     address: '0x55d398326f99059fF775485246999027B3197955',
-
     decimals: 18,
     name: 'USDT',
     symbol: 'USDT',
     logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
-
     coingeckoId: 'usdt',
   },
   '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d': {

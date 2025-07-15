@@ -2,7 +2,7 @@ import PoolsTable from '@/components/pools/PoolsTable';
 import Text from '@/components/ui/Text';
 import { exploreContent } from '@/content/explore';
 import React from 'react';
-import { fetchTopPoolsFromGraph } from './fetchPools';
+import { fetchTopPoolsFromGraph } from '../../services/subgraph/fetchPools';
 
 const ExplorePage = async () => {
   const pools = await fetchTopPoolsFromGraph();

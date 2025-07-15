@@ -3,14 +3,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ChartDataPoint } from '@/types/pools';
 
-interface SimpleLineChartProps {
+interface PoolVolumeChartProps {
   data: ChartDataPoint[];
   height?: number;
   showGrid?: boolean;
   strokeColor?: string;
 }
 
-export const SimpleLineChart: React.FC<SimpleLineChartProps> = ({
+export const PoolVolumeChart: React.FC<PoolVolumeChartProps> = ({
   data,
   height = 300,
   showGrid = true,

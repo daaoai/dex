@@ -4,11 +4,13 @@ import { useCreatePosition } from '@/hooks/useCreatePosition';
 import { Token } from '@/types/tokens';
 import { useEffect, useRef, useState } from 'react';
 import PoolIcon from '../ui/logo/PoolLogo';
+import Text from '../ui/Text';
 import DepositTokens from './DepositToken';
 import RangeSelector from './RangeSelector';
-import Text from '../ui/Text';
+import InitialPriceCard from './InitialPriceCard';
+import { chainsData } from '@/constants/chains';
 
-interface CryptoTradingInterfaceProps {
+interface CreatePositionInterfaceProps {
   token0: Token;
   token1: Token;
   chainId: number;
@@ -20,13 +22,27 @@ type ChartAPI = {
   updateData: (newData: ChartDataPoint[]) => void;
 };
 
-export default function CryptoTradingInterface({ token0, token1, chainId, fee }: CryptoTradingInterfaceProps) {
+export default function CreatePositionInterface({ token0, token1, chainId, fee }: CreatePositionInterfaceProps) {
   const [isLoading] = useState<boolean>(false);
+
+  const { nativeCurrency, wnativeToken } = chainsData[chainId];
+  const formattedToken0Address = (
+    token0.address === nativeCurrency.address ? wnativeToken : token0
+  ).address.toLowerCase();
+  const formattedToken1Address = (
+    token1.address === nativeCurrency.address ? wnativeToken : token1
+  ).address.toLowerCase();
+
+  [token0, token1] = formattedToken0Address < formattedToken1Address ? [token0, token1] : [token1, token0];
 
   const {
     currentPrice,
-    dstTokenFormattedAmount,
-    srcTokenFormattedAmount,
+    token0FormattedAmount,
+    token1FormattedAmount,
+    setToken0FormattedAmount,
+    setToken1FormattedAmount,
+    getToken0Amount,
+    getToken1Amount,
     lowerPrice,
     srcToken,
     increaseLowerTick,
@@ -37,10 +53,14 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
     selectedRange,
     setSelectedRange,
     upperPrice,
-    setSrcTokenFormattedAmount,
-    setDstTokenFormattedAmount,
+    setInputAmountForToken,
+    handleUninitializedPool,
     fetchInitialData,
     txnState,
+    balances,
+    handleSwitch,
+    currentPoolData,
+    poolDetails,
   } = useCreatePosition({ chainId });
 
   useEffect(() => {
@@ -55,19 +75,39 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
 
   const chartRef = useRef<ChartAPI | null>(null);
 
-  const handleDestAmountChange = (value: string) => {
+  const showInitialPriceModal = !currentPoolData.isInitialized;
+
+  const handleToken0AmountChange = (value: string) => {
     if (value && !isNaN(parseFloat(value))) {
-      setDstTokenFormattedAmount(value);
+      setToken0FormattedAmount(value);
+      setInputAmountForToken('token0');
+      if (!Number(value)) {
+        setToken1FormattedAmount('');
+        return;
+      }
+      setToken1FormattedAmount(getToken1Amount(value));
     } else {
-      setDstTokenFormattedAmount('');
+      setToken0FormattedAmount('');
     }
   };
 
-  const handleSrcAmountChange = (value: string) => {
+  const handleToken1AmountChange = (value: string) => {
     if (value && !isNaN(parseFloat(value))) {
-      setSrcTokenFormattedAmount(value);
+      setToken1FormattedAmount(value);
+      setInputAmountForToken('token1');
+      if (!Number(value)) {
+        setToken0FormattedAmount('');
+        return;
+      }
+      setToken0FormattedAmount(getToken0Amount(value));
     } else {
-      setSrcTokenFormattedAmount('');
+      setToken1FormattedAmount('');
+    }
+  };
+
+  const handleSetInitialPrice = (price: number) => {
+    if (poolDetails) {
+      handleUninitializedPool(poolDetails, token0, token1, price);
     }
   };
 
@@ -90,10 +130,23 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
         </div>
       </div>
 
+      {/* Initial Price Card - shows above range selector for uninitialized pools */}
+      <InitialPriceCard
+        token0={token0}
+        token1={token1}
+        initialPrice={0.5}
+        onSetPrice={handleSetInitialPrice}
+        srcToken={srcToken}
+        handleSwitchToken={handleSwitch}
+        isVisible={showInitialPriceModal}
+      />
+
       <RangeSelector
         {...{
           srcTokenDetails: srcToken === 'token0' ? token0 : token1,
           destTokenDetails: srcToken === 'token0' ? token1 : token0,
+          token0,
+          token1,
           increaseMaxPrice: increaseUpperTick,
           increaseMinPrice: increaseLowerTick,
           decreaseMaxPrice: decreaseUpperTick,
@@ -103,25 +156,29 @@ export default function CryptoTradingInterface({ token0, token1, chainId, fee }:
           maxPrice: upperPrice,
           currentPrice,
           priceInUsd: 0,
+          handleSwitchToken: handleSwitch,
           handleRangeSelection: setSelectedRange,
           setMinPrice: () => {},
           setMaxPrice: () => {},
           chartRef,
           chartContainerRef,
+          hideTokenSwitchButtons: showInitialPriceModal, // Hide token buttons when initial price is being set
         }}
       />
 
       <DepositTokens
         {...{
-          destTokenAmount: dstTokenFormattedAmount,
-          destTokenDetails: token1,
-          handleDestTokenAmountChange: handleDestAmountChange,
-          handleSrcTokenAmountChange: handleSrcAmountChange,
-          srcTokenAmount: srcTokenFormattedAmount,
+          token0Details: token0,
+          token1Details: token1,
+          token0Amount: token0FormattedAmount,
+          token1Amount: token1FormattedAmount,
+          handleToken0AmountChange,
+          handleToken1AmountChange,
           handleDeposit: createPosition,
           txnState,
           srcTokenDetails: token0,
           isLoading,
+          balances,
         }}
       />
     </div>

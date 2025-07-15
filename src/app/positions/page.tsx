@@ -11,7 +11,7 @@ import { setPositions } from '../../../store/reducers/position';
 import NoPositions from '@/components/position/NoPositionFound';
 import RewardsSummary from '@/components/position/RewardSummary';
 import { TopPool } from '@/types/pools';
-import { fetchTopPoolsFromGraph } from '../explore/fetchPools';
+import { fetchTopPoolsFromGraph } from '../../services/subgraph/fetchPools';
 
 export default function PositionsPage() {
   const chainId = useChainId();
