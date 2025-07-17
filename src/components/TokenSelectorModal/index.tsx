@@ -74,8 +74,8 @@ export default function TokenSelectionModal({
       onClose={onClose}
       className="text-white w-full !max-w-md max-h-[75vh] md:max-h-[90vh] p-4"
     >
-      <div className="w-full my-12">
-        <div className="bg-black border border-stroke-2 rounded-lg w-full max-w-md max-h-[75vh] md:max-h-[90vh]my-12">
+      <div className="w-full h-[90vh]">
+        <div className="bg-background-10 h-[90%] border border-stroke-2 rounded-lg w-full max-w-md my-16">
           <div className="p-4 flex justify-between items-center">
             <Text type="h2" className="text-xl font-semibold">
               {tokenSelectorContent.selectToken}
@@ -101,9 +101,9 @@ export default function TokenSelectionModal({
                 {tokenSelectorContent.loading}
               </Text>
             ) : (
-              <div className="mt-3 overflow-y-auto overflow-x-hidden max-h-[45vh] md:max-h-[55vh]">
+              <div className="mt-3 overflow-y-auto overflow-x-hidden h-[380px] sm:h-[500px]">
                 <List
-                  height={320}
+                  height={500}
                   itemCount={filteredTokens.length}
                   itemSize={64}
                   width={'100%'}

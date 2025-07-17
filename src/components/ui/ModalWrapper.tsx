@@ -48,7 +48,7 @@ const ModalWrapper: React.FC<ModalProps> = ({ isOpen, onClose, children, classNa
   return (
     <div
       className={clsx('fixed inset-0 flex items-center w-full justify-center py-4 pt-8 px-6 z-10', {
-        'bg-black/50 backdrop-blur-md': withBlur,
+        ' backdrop-blur-xs': withBlur,
         'bg-transparent': !withBlur,
       })}
     >

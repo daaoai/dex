@@ -31,7 +31,9 @@ const config: Config = {
         'background-19': 'var(--color-background-19)',
         'background-20': 'var(--color-background-20)',
         'background-21': 'var(--color-background-21)',
+
         'background-23': 'var(--color-background-23)',
+        'background-24': 'var(--color-background-24)',
 
         grey: 'var(--color-grey)',
         'grey-2': 'var(--color-grey-2)',
