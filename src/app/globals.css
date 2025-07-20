@@ -92,6 +92,11 @@ input[type='number'].no-spinner {
   --color-gradient-2: #f49167;
 }
 
+body {
+  background-color: var(--color-background);
+  color: var(--color-grey);
+}
+
 .light {
   --color-black: #000000;
   --color-background: #ffffff;
@@ -145,5 +150,14 @@ input[type='number'].no-spinner {
 
   100% {
     transform: translateX(100%);
+  }
+}
+
+@keyframes shimmer-bg {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }

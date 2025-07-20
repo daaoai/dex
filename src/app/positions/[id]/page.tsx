@@ -1,25 +1,30 @@
 'use client';
+import IncreaseLiquidityModal from '@/components/position/addLiquidity/AddLiquidityModal';
+import CollectRewardsModal from '@/components/position/collectFees/CollectFeesModal';
+import { PositionPriceChart } from '@/components/position/PositionPriceChart';
+import PriceRange from '@/components/position/PriceRanges';
+import RemoveLiquidityModal from '@/components/position/removeLiquidity/RemoveLiquidityModal';
+import { PositionDetailsSkeleton } from '@/components/position/shimmers/PositionDetails';
+import DynamicLogo from '@/components/ui/logo/DynamicLogo';
+import PoolIcon from '@/components/ui/logo/PoolLogo';
+import { ModalWrapper } from '@/components/ui/ModalWrapper';
+import Text from '@/components/ui/Text';
+import { chainsData, supportedChainIds } from '@/constants/chains';
+import { positionContent } from '@/content/positionContent';
+import { usePositionPriceData } from '@/hooks/usePositionPriceData';
+import { usePositions } from '@/hooks/usePositions';
+import { Button } from '@/shadcn/components/ui/button';
+import { HistoryDuration } from '@/types/positions';
+import { V3Position } from '@/types/v3';
+import { truncateNumber } from '@/utils/truncateNumber';
+import clsx from 'clsx';
+import { ArrowLeft, Circle, LineChart } from 'lucide-react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
-import { RootState } from '../../../../store';
-import { ModalWrapper } from '@/components/ui/ModalWrapper';
-import Text from '@/components/ui/Text';
-import { chainsData } from '@/constants/chains';
-import { Button } from '@/shadcn/components/ui/button';
-import { V3Position } from '@/types/v3';
-import { truncateNumber } from '@/utils/truncateNumber';
-import Link from 'next/link';
 import { formatUnits } from 'viem';
-import PoolIcon from '@/components/ui/logo/PoolLogo';
-import PriceRange from '@/components/position/PriceRanges';
-import { ArrowLeft, Circle, LineChart } from 'lucide-react';
-import clsx from 'clsx';
-import IncreaseLiquidityModal from '@/components/position/addLiquidity/AddLiquidityModal';
-import CollectRewardsModal from '@/components/position/collectFees/CollectFeesModal';
-import RemoveLiquidityModal from '@/components/position/removeLiquidity/RemoveLiquidityModal';
-import DynamicLogo from '@/components/ui/logo/DynamicLogo';
-import { positionContent } from '@/content/positionContent';
+import { RootState } from '../../../../store';
 
 export default function PositionDetails() {
   const params = useParams();
@@ -27,17 +32,55 @@ export default function PositionDetails() {
   const [modalOpen, setModalOpen] = useState(false);
   const [removeModalOpen, setRemoveModalOpen] = useState(false);
   const [collectModalOpen, setCollectModalOpen] = useState(false);
-
+  const [selectedTimeframe, setSelectedTimeframe] = useState<HistoryDuration>('WEEK');
   const { positions } = useSelector((state: RootState) => state.position, shallowEqual);
+  const [isPositionLoading, setIsPositionLoading] = useState(true);
+  const [position, setPosition] = useState<V3Position | undefined>(
+    positions.find((pos: V3Position) => pos.tokenId.toString() === id),
+  );
+
+  const { fetchPositionWithId } = usePositions(supportedChainIds.bsc);
+
+  // Fetch price data for the position's pool
+  const {
+    data: priceData,
+    loading: priceLoading,
+    error: priceError,
+  } = usePositionPriceData({
+    poolAddress: position?.poolAddress,
+    duration: selectedTimeframe,
+    autoRefresh: true,
+    refreshInterval: 60000, // Refresh every minute
+  });
 
   useEffect(() => {
     if (!id) return;
+    if (!position) {
+      fetchPositionWithId(BigInt(id)).then((position) => {
+        setIsPositionLoading(false);
+        if (!position) {
+          setPosition(undefined);
+          return;
+        }
+        setPosition(position);
+      });
+    } else {
+      setIsPositionLoading(false);
+    }
   }, [id]);
 
-  const position = positions.find((pos: V3Position) => pos.tokenId.toString() === id);
+  if (isPositionLoading && !position) {
+    return <PositionDetailsSkeleton />;
+  }
 
   if (!position) {
-    return <div className="text-white p-4 bg-grey-2 rounded-lg">Position not found</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Text type="p" className="text-white">
+          Position not found
+        </Text>
+      </div>
+    );
   }
 
   const {
@@ -140,18 +183,49 @@ export default function PositionDetails() {
       </div>
 
       <div className="flex gap-4 w-full items-start">
-        <div className="mt-4 rounded-lg h-[300px] flex items-center justify-center bg-background flex-1">
-          <div className="flex flex-col items-center text-center text-white space-y-3">
-            <div className="bg-zinc-800 p-3 rounded-full">
-              <LineChart className="w-6 h-6 text-zinc-400" />
+        <div className="mt-4 rounded-lg h-[300px] flex-1">
+          {priceLoading ? (
+            <div className="flex items-center justify-center text-center text-white space-y-3 bg-background rounded-lg h-full">
+              <div className="flex flex-col items-center">
+                <div className="bg-zinc-800 p-3 rounded-full mb-3">
+                  <LineChart className="w-6 h-6 text-zinc-400 animate-pulse" />
+                </div>
+                <Text type="p" className="text-lg font-semibold">
+                  Loading Chart...
+                </Text>
+              </div>
             </div>
-            <Text type="p" className="text-lg font-semibold">
-              {positionContent.noGraphTitle}
-            </Text>
-            <Text type="p" className="text-sm text-zinc-400 max-w-xs">
-              {positionContent.noGraphDesc}
-            </Text>
-          </div>
+          ) : priceError ? (
+            <div className="flex items-center justify-center text-center text-white space-y-3 bg-background rounded-lg h-full">
+              <div className="flex flex-col items-center">
+                <div className="bg-zinc-800 p-3 rounded-full mb-3">
+                  <LineChart className="w-6 h-6 text-red-400" />
+                </div>
+                <Text type="p" className="text-lg font-semibold">
+                  Failed to Load Chart
+                </Text>
+                <Text type="p" className="text-sm text-zinc-400 max-w-xs">
+                  {priceError}
+                </Text>
+              </div>
+            </div>
+          ) : (
+            <div className="h-full">
+              {/* Price chart - always render, let component handle empty states */}
+              <PositionPriceChart
+                data={priceData?.chartData || []}
+                height={250}
+                token0Symbol={token0Details.symbol}
+                token1Symbol={token1Details.symbol}
+                currentPrice={token0ToToken1.currentPrice}
+                strokeColor="#22c55e"
+                showGrid={true}
+                duration={selectedTimeframe}
+                onDurationChange={setSelectedTimeframe}
+                loading={priceLoading}
+              />
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-6 mt-4 w-2/5">
           {!isInFullRange && (
