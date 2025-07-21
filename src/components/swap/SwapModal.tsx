@@ -10,12 +10,12 @@ import { useSwap } from '@/hooks/useSwap';
 import { Button } from '@/shadcn/components/ui/button';
 import { Token } from '@/types/tokens';
 import { ArrowDown } from 'lucide-react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
-import { motion } from 'framer-motion';
 import Image from 'next/image';
 import LiveTokenFeed from '../LiveTokenFeed';
+import Text from '../ui/Text';
 
 interface SwapModalProps {
   initialSrcToken?: Token | null;
@@ -162,46 +162,14 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
     BigInt(parseUnits(srcAmount || '0', srcToken.decimals)) <= 0n ||
     BigInt(parseUnits(destAmount || '0', destToken.decimals)) <= 0n;
 
-  const [activeTab, setActiveTab] = useState('Swap');
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const [highlightStyle, setHighlightStyle] = useState({ left: 0, width: 0 });
-  const tabs = ['Swap', 'Limit', 'Buy', 'Sell'];
-  useLayoutEffect(() => {
-    const current = tabRefs.current[tabs.indexOf(activeTab)];
-    if (current) {
-      const { offsetLeft, offsetWidth } = current;
-      setHighlightStyle({ left: offsetLeft, width: offsetWidth });
-    }
-  }, [activeTab]);
   return (
     <div className="w-full max-w-md mx-auto shadow-2xl">
       <LiveTokenFeed />
       <div className=" text-white flex justify-between items-center mb-2">
         <div className="relative flex justify-start w-full max-w-sm  py-4">
-          <motion.div
-            layout
-            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-            className="absolute h-10 bg-[#1E1652] rounded-full z-0"
-            style={{
-              left: highlightStyle.left,
-              width: highlightStyle.width,
-            }}
-          />
-
-          {tabs.map((tab, idx) => (
-            <button
-              key={tab}
-              ref={(el) => {
-                tabRefs.current[idx] = el;
-              }}
-              onClick={() => setActiveTab(tab)}
-              className={`relative z-10 px-6 py-2 text-white font-medium transition-all rounded-full ${
-                activeTab === tab ? 'text-white' : 'text-zinc-400'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+          <Text type="h2" className="text-md bg-background-16 px-4 py-2 rounded-3xl">
+            Swap
+          </Text>
         </div>
         <SettingsModal
           slippage={slippage}

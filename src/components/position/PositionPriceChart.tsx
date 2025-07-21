@@ -74,11 +74,7 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
 
   if (validData.length === 0) {
     return (
-      <div
-        ref={containerRef}
-        className={`relative w-full rounded-lg bg-background p-3 ${className}`}
-        style={{ height }}
-      >
+      <div ref={containerRef} className={`relative w-full rounded-lg bg-black p-3 ${className}`} style={{ height }}>
         {/* Header with duration controls - always show when onDurationChange is available */}
         {onDurationChange && (
           <div className="flex justify-between items-start mb-4">
@@ -96,7 +92,9 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
                     key={d}
                     onClick={() => onDurationChange(d)}
                     className={`px-2 py-1 text-xs rounded transition-colors ${
-                      duration === d ? 'bg-green-500 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-700'
+                      duration === d
+                        ? 'bg-background-11 text-white'
+                        : 'text-zinc-400 hover:text-white hover:bg-zinc-700'
                     }`}
                   >
                     {d === 'HOUR' ? '1H' : d === 'DAY' ? '1D' : d === 'WEEK' ? '1W' : d === 'MONTH' ? '1M' : '1Y'}
@@ -148,7 +146,7 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
 
   // Determine color based on price change
   const isPositive = priceChange >= 0;
-  const dynamicColor = isPositive ? '#22c55e' : '#ef4444';
+  const dynamicColor = isPositive ? '#9c4cfc' : '#ef4444';
   const displayColor = strokeColor === '#22c55e' ? dynamicColor : strokeColor;
 
   const points = validData.map((point, index) => {
@@ -232,7 +230,7 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
   };
 
   return (
-    <div ref={containerRef} className={`relative w-full rounded-lg bg-background p-3 ${className}`} style={{ height }}>
+    <div ref={containerRef} className={`relative w-full rounded-lg bg-black p-3 ${className}`} style={{ height }}>
       {/* Header with price info and duration controls */}
       <div className="flex justify-between items-start mb-4">
         <div>
@@ -259,7 +257,7 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
                   key={d}
                   onClick={() => onDurationChange(d)}
                   className={`px-2 py-1 text-xs rounded transition-colors ${
-                    duration === d ? 'bg-green-500 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-700'
+                    duration === d ? 'bg-background-11 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-700'
                   }`}
                 >
                   {d === 'HOUR' ? '1H' : d === 'DAY' ? '1D' : d === 'WEEK' ? '1W' : d === 'MONTH' ? '1M' : '1Y'}
