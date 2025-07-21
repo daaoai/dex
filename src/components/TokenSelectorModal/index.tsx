@@ -14,6 +14,7 @@ import clsx from 'clsx';
 import { getEllipsisTxt } from '@/utils/getEllipsisText';
 import ClickToCopy from '@/utils/copyToClipboard';
 import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
+import { zeroAddress } from 'viem';
 
 interface TokenSelectionModalProps {
   onClose: () => void;
@@ -37,7 +38,9 @@ export default function TokenSelectionModal({
     const fetchTokens = async () => {
       setLoading(true);
       try {
-        const fetchedTokens = Object.values(tokensByChainId[supportedChainIds.bsc]);
+        const fetchedTokens = Object.values(tokensByChainId[supportedChainIds.bsc]).filter(
+          (token) => token.address !== zeroAddress,
+        );
         setTokens(fetchedTokens);
         setFilteredTokens(fetchedTokens);
       } catch (error) {
