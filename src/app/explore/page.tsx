@@ -1,4 +1,3 @@
-'use client';
 import PoolsTable from '@/components/pools/PoolsTable';
 import Text from '@/components/ui/Text';
 import { exploreContent } from '@/content/explore';

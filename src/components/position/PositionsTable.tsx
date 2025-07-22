@@ -97,7 +97,7 @@ function PositionRow({ position, onClick }: PositionRowProps) {
 
       <div className="flex flex-col lg:flex-row bg-black p-4 gap-6">
         {/* Position Details Section */}
-        <div className="lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 text-white gap-6">
+        <div className="lg:w-[60%] grid grid-cols-1 sm:grid-cols-2 text-white gap-6">
           <div>
             <Text type="p" className="text-sm text-gray-400">
               {positionsTableContent.position}
@@ -177,25 +177,24 @@ function PositionRow({ position, onClick }: PositionRowProps) {
           </div>
         </div>
 
-        {/* Chart Section */}
-        <div className="lg:w-1/4 h-[100px]">
+        <div className="lg:w-[35%] w-full h-full mx-auto flex items-center justify-center">
           {priceLoading ? (
-            <div className="flex items-center justify-center h-full bg-background rounded-lg">
-              <Text type="p" className="text-zinc-400">
-                Loading chart...
+            <div className="w-full h-[70px] bg-black rounded-lg flex items-center justify-center">
+              <Text type="p" className="text-zinc-400 text-[10px] text-center">
+                Loading
               </Text>
             </div>
           ) : priceError ? (
-            <div className="flex items-center justify-center h-full bg-background rounded-lg">
-              <Text type="p" className="text-red-400 text-sm">
+            <div className="w-full h-full bg-black rounded-lg flex items-center justify-center">
+              <Text type="p" className="text-red-400 text-[10px] text-center">
                 {priceError}
               </Text>
             </div>
           ) : (
-            <div className="h-full">
+            <div className="w-full h-full">
               <MiniPriceChart
                 data={priceData?.chartData || []}
-                height={100}
+                height={60}
                 strokeColor="#22c55e"
                 loading={priceLoading}
               />

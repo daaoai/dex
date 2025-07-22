@@ -51,7 +51,7 @@ export const MiniPriceChart: React.FC<MiniPriceChartProps> = ({
     return (
       <div
         ref={containerRef}
-        className={`relative w-full rounded-lg bg-background p-2 flex items-center justify-center ${className}`}
+        className={`relative w-full rounded-lg bg-black p-2 flex items-center justify-center ${className}`}
         style={{ height }}
       >
         <div className="text-zinc-400 text-xs">Loading...</div>
@@ -63,7 +63,7 @@ export const MiniPriceChart: React.FC<MiniPriceChartProps> = ({
     return (
       <div
         ref={containerRef}
-        className={`relative w-full rounded-lg bg-background p-2 flex items-center justify-center ${className}`}
+        className={`relative w-full rounded-lg bg-black p-2 flex items-center justify-center ${className}`}
         style={{ height }}
       >
         <div className="text-zinc-400 text-xs">No data</div>
@@ -114,7 +114,7 @@ export const MiniPriceChart: React.FC<MiniPriceChartProps> = ({
   const trendColor = isPositive ? '#22c55e' : '#ef4444';
 
   return (
-    <div ref={containerRef} className={`relative w-full rounded-lg bg-background p-2 ${className}`} style={{ height }}>
+    <div ref={containerRef} className={`relative w-full rounded-lg bg-black p-2 ${className}`} style={{ height }}>
       <svg width={width} height={height} className="overflow-visible" style={{ width: '100%', height: '100%' }}>
         <defs>
           <linearGradient id={`gradient-${Math.random()}`} x1="0%" y1="0%" x2="0%" y2="100%">
