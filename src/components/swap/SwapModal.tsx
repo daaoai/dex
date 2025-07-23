@@ -181,7 +181,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
 
   return (
     <div className="w-full max-w-md mx-auto shadow-2xl">
-      <LiveTokenFeed />
+      <LiveTokenFeed chainId={chainId} />
       <div className=" text-white flex justify-between items-center mb-2">
         <div className="relative flex justify-start w-full max-w-sm  py-4">
           <Text type="h2" className="text-md bg-background-16 px-4 py-2 rounded-3xl">

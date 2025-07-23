@@ -13,7 +13,6 @@ const TradeClient = () => {
   const [destToken, setDestToken] = useState<Token | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Watch for URL parameter changes
   useEffect(() => {
     const updateTokensFromParams = async () => {
       setLoading(true);
@@ -83,7 +82,7 @@ const TradeClient = () => {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)]  bg-black bg-cover bg-center">
+    <main className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 bg-black bg-cover bg-center">
       <SwapModal initialSrcToken={srcToken} initialDestToken={destToken} />
     </main>
   );

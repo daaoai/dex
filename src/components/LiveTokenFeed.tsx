@@ -1,73 +1,95 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { CoinGeckoService } from '@/services/coinGeckoService';
+import type { LiveFeedToken } from '@/types/coinGecko';
 
-export const tickerData = [
-  {
-    rank: 1,
-    name: 'TRUMP',
-    image: '/liveTokenFeed/trump.svg',
-    percent: '+4.08%',
-  },
-  {
-    rank: 2,
-    name: 'Fartcoin',
-    image: '/liveTokenFeed/fartcoin.svg',
-    percent: '+6.08%',
-  },
-  {
-    rank: 3,
-    name: 'Plesky',
-    image: '/liveTokenFeed/plesky.svg',
-    percent: '',
-  },
-  {
-    rank: 4,
-    name: 'Cooking',
-    image: '/liveTokenFeed/cooking.svg',
-    percent: '+2.33%',
-  },
-  {
-    rank: 5,
-    name: 'ElonX',
-    image: '/liveTokenFeed/trump.svg',
-    percent: '+7.12%',
-  },
-  {
-    rank: 6,
-    name: 'MoonShot',
-    image: '/liveTokenFeed/fartcoin.svg',
-    percent: '+1.88%',
-  },
-];
+type LiveTokenFeedProps = {
+  chainId?: number;
+};
 
-export default function LiveTokenFeed() {
+export default function LiveTokenFeed({ chainId }: LiveTokenFeedProps) {
+  const [memeTokens, setMemeTokens] = useState<LiveFeedToken[]>([]);
+  const isLoadingRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    const fetchMemeTokens = async () => {
+      if (isLoadingRef.current) return; // Prevent multiple fetches
+      try {
+        isLoadingRef.current = true;
+        const tokens = await CoinGeckoService.getMemeTokens(10);
+        setMemeTokens(tokens);
+      } catch (err) {
+        console.error('Failed to fetch meme tokens:', err);
+        setMemeTokens([]);
+      } finally {
+        isLoadingRef.current = false;
+      }
+    };
+
+    fetchMemeTokens();
+
+    // Refresh data every 60 seconds to avoid rate limits
+    const interval = setInterval(fetchMemeTokens, 60000);
+
+    return () => clearInterval(interval);
+  }, [chainId]);
+
+  // Don't render anything if no tokens and not loading
+  if (!isLoadingRef.current && memeTokens.length === 0) {
+    return null;
+  }
+
   // 💡 Dynamic speed logic
   const baseSpeed = 20; // min duration
   const itemSpeed = 4; // add 4s per item
-  const totalItems = tickerData.length;
+  const totalItems = memeTokens.length;
   const scrollDuration = baseSpeed + totalItems * itemSpeed;
 
   return (
-    <div className="relative w-full overflow-hidden bg-black py-3 ">
-      <motion.div
-        className="flex gap-8 whitespace-nowrap"
-        animate={{ x: ['0%', '-100%'] }}
-        transition={{
-          repeat: Infinity,
-          duration: scrollDuration,
-          ease: 'linear',
-        }}
-      >
-        {[...tickerData, ...tickerData].map((item, index) => (
-          <div key={index} className="flex items-center gap-2 min-w-fit text-white text-sm">
-            <span className="text-zinc-500">#{item.rank}</span>
-            <img src={item.image} alt={item.name} className="w-6 h-6 rounded-full object-cover" />
-            <span className="font-medium">{item.name}</span>
-            {item.percent && <span className="text-green-400 font-semibold">{item.percent}</span>}
-          </div>
-        ))}
-      </motion.div>
+    <div className="relative w-full overflow-hidden bg-black py-3">
+      {!isLoadingRef.current && memeTokens.length > 0 && (
+        <motion.div
+          className="flex gap-8 whitespace-nowrap"
+          animate={{ x: ['0%', '-100%'] }}
+          transition={{
+            repeat: Infinity,
+            duration: scrollDuration,
+            ease: 'linear',
+          }}
+        >
+          {[...memeTokens, ...memeTokens].map((item, index) => (
+            <div key={`${item.address}-${index}`} className="flex items-center gap-2 min-w-fit text-white text-sm">
+              <span className="text-zinc-500">#{item.rank}</span>
+              <img
+                src={item.image || '/liveTokenFeed/trump.svg'}
+                alt={item.name}
+                className="w-6 h-6 rounded-full object-cover"
+                onError={(e) => {
+                  // Fallback to default image if token image fails to load
+                  (e.target as HTMLImageElement).src = '/liveTokenFeed/trump.svg';
+                }}
+              />
+              <span className="font-medium">{item.name}</span>
+              <span className="text-gray-400 text-xs">({item.symbol})</span>
+              {item.percent && (
+                <span
+                  className={`font-semibold ${
+                    item.percent.startsWith('+')
+                      ? 'text-green-400'
+                      : item.percent.startsWith('-')
+                        ? 'text-red-400'
+                        : 'text-gray-400'
+                  }`}
+                >
+                  {item.percent}
+                </span>
+              )}
+            </div>
+          ))}
+        </motion.div>
+      )}
     </div>
   );
 }
