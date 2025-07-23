@@ -135,6 +135,23 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
 
   // useEffects
 
+  // Update tokens when initial props change
+  useEffect(() => {
+    if (initialSrcToken && initialSrcToken.address !== srcToken?.address) {
+      setSrcToken(initialSrcToken);
+      setSrcAmount('');
+      setSrcBalance(0n);
+    }
+  }, [initialSrcToken]);
+
+  useEffect(() => {
+    if (initialDestToken && initialDestToken.address !== destToken?.address) {
+      setDestToken(initialDestToken);
+      setDestAmount('');
+      setDestBalance(0n);
+    }
+  }, [initialDestToken]);
+
   const debouncedFetchQuote = useDebouncedCallback(fetchQuote, 400);
   useEffect(() => {
     debouncedFetchQuote();

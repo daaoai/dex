@@ -7,6 +7,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { navLinks } from '@/constants/navbar';
+import HeaderSearch from './HeaderSearch';
 
 export default function Header() {
   const pathname = usePathname();
@@ -34,6 +35,11 @@ export default function Header() {
           </nav>
         </div>
 
+        {/* Search Component - Desktop */}
+        <div className="hidden md:block flex-1 max-w-md mx-8">
+          <HeaderSearch />
+        </div>
+
         <button onClick={() => setMenuOpen(true)} className="md:hidden text-white" aria-label="Open menu">
           <Menu size={24} />
         </button>
@@ -41,6 +47,11 @@ export default function Header() {
         <div className="hidden md:block">
           <ConnectButton />
         </div>
+      </div>
+
+      {/* Search Component - Mobile */}
+      <div className="md:hidden mt-4">
+        <HeaderSearch />
       </div>
 
       <div
