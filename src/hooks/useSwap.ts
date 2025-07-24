@@ -9,6 +9,7 @@ import { getPublicClient } from '@/utils/publicClient';
 import { contractAddresses } from '@/constants/addresses';
 import { RouteParams } from '@/types/route';
 import { useRouteService } from './useRouteService';
+import { chainsData } from '@/constants/chains';
 
 export const useSwap = ({ chainId }: { chainId: number }) => {
   const { address: account, chainId: walletChainId } = useAccount();
@@ -18,7 +19,7 @@ export const useSwap = ({ chainId }: { chainId: number }) => {
   const { getBestRoute } = useRouteService();
 
   const approveIfNeeded = async ({ amount, token, spender }: { amount: bigint; token: Hex; spender: Hex }) => {
-    if (!account) return;
+    if (!account || token === chainsData[chainId].nativeCurrency.address) return;
     const publicClient = getPublicClient(chainId);
     const allowance = await publicClient.readContract({
       address: token,
@@ -61,7 +62,7 @@ export const useSwap = ({ chainId }: { chainId: number }) => {
   }: {
     tokenIn: Token;
     tokenOut: Token;
-    amountIn: number;
+    amountIn: string;
     slippage: number;
     recipient: Hex;
     deadline: number;

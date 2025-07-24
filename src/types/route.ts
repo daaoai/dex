@@ -45,7 +45,7 @@ export interface RouteApiResponse {
 export interface RouteParams {
   tokenIn: Token;
   tokenOut: Token;
-  amount: number;
+  amount: string;
   recipient: Hex;
   slippage: number;
   deadline: number;

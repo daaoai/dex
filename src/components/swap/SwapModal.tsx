@@ -83,7 +83,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
         const quoted = await getQuote({
           tokenIn: srcToken,
           tokenOut: destToken,
-          amount: Number(srcAmount),
+          amount: srcAmount,
           deadline: deadline * 60,
           recipient: account,
           slippage,
@@ -110,7 +110,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
       await swap({
         tokenIn: srcToken,
         tokenOut: destToken,
-        amountIn: Number(srcAmount),
+        amountIn: srcAmount,
         recipient: account,
         slippage,
         deadline: deadline * 60,

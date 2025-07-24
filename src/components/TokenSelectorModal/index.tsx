@@ -2,19 +2,18 @@
 
 import { supportedChainIds } from '@/constants/chains';
 import { tokensByChainId } from '@/constants/tokens';
+import { tokenSelectorContent } from '@/content/tokenSelector';
+import { Button } from '@/shadcn/components/ui/button';
 import { Token } from '@/types/tokens';
+import ClickToCopy from '@/utils/copyToClipboard';
+import { getEllipsisTxt } from '@/utils/getEllipsisText';
+import clsx from 'clsx';
 import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
+import DynamicLogo from '../ui/logo/DynamicLogo';
 import { ModalWrapper } from '../ui/ModalWrapper';
 import Text from '../ui/Text';
-import { Button } from '@/shadcn/components/ui/button';
-import DynamicLogo from '../ui/logo/DynamicLogo';
-import { tokenSelectorContent } from '@/content/tokenSelector';
-import clsx from 'clsx';
-import { getEllipsisTxt } from '@/utils/getEllipsisText';
-import ClickToCopy from '@/utils/copyToClipboard';
-import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
-import { zeroAddress } from 'viem';
 
 interface TokenSelectionModalProps {
   onClose: () => void;
@@ -38,9 +37,7 @@ export default function TokenSelectionModal({
     const fetchTokens = async () => {
       setLoading(true);
       try {
-        const fetchedTokens = Object.values(tokensByChainId[supportedChainIds.bsc]).filter(
-          (token) => token.address !== zeroAddress,
-        );
+        const fetchedTokens = Object.values(tokensByChainId[supportedChainIds.bsc]);
         setTokens(fetchedTokens);
         setFilteredTokens(fetchedTokens);
       } catch (error) {

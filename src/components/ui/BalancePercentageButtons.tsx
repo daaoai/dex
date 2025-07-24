@@ -1,9 +1,8 @@
 'use client';
 
+import { BalancePercentageButtonsProps } from '@/types/balancePercentage';
 import React, { useState } from 'react';
 import { formatUnits } from 'viem';
-import { toast } from 'react-toastify';
-import { BalancePercentageButtonsProps } from '@/types/balancePercentage';
 
 const BalancePercentageButtons: React.FC<BalancePercentageButtonsProps> = ({ balance, decimals, setAmount }) => {
   const [selected, setSelected] = useState<number | null>(null);
@@ -11,15 +10,6 @@ const BalancePercentageButtons: React.FC<BalancePercentageButtonsProps> = ({ bal
   const handleClick = (percent: number) => {
     const value = (balance * BigInt(percent)) / BigInt(100);
     const formatted = formatUnits(value, decimals);
-
-    const [, decimal] = formatted.split('.');
-    if (decimal) {
-      const firstNonZero = decimal.search(/[1-9]/);
-      if (firstNonZero > 5) {
-        toast.error('First non-zero digit must be within the first 6 decimal places.');
-        return;
-      }
-    }
 
     setAmount(formatted);
     setSelected(percent);

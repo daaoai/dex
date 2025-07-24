@@ -4,9 +4,8 @@ import { truncateNumber } from '@/utils/truncateNumber';
 import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import { formatUnits } from 'viem';
-import Text from '../ui/Text';
 import BalancePercentageButtons from '../ui/BalancePercentageButtons';
-import { toast } from 'react-toastify';
+import Text from '../ui/Text';
 
 type SelectTokenCardProps = {
   title: string;
@@ -62,23 +61,6 @@ export default function SelectTokenCard({
               // Allow empty string for clearing
               if (value === '') {
                 setAmount('');
-                return;
-              }
-
-              // Split into whole and decimal
-              const [, decimal] = value.split('.');
-
-              if (!decimal) {
-                setAmount(value);
-                return;
-              }
-
-              // Find the index of the first non-zero digit in the decimal part
-              const firstNonZero = decimal.search(/[1-9]/);
-
-              // If there is a non-zero digit and it is after the 5th index (6th decimal place), block it and show toast
-              if (firstNonZero > 5) {
-                toast.error('First non-zero digit must be within the first 6 decimal places.');
                 return;
               }
 
