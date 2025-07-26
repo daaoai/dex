@@ -14,6 +14,7 @@ import { zeroAddress } from 'viem';
 
 interface HeaderSearchProps {
   className?: string;
+  onClose?: () => void;
 }
 
 interface SearchResult {
@@ -23,7 +24,7 @@ interface SearchResult {
 
 type TabType = 'all' | 'tokens' | 'pools';
 
-export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
+export default function HeaderSearch({ className = '', onClose }: HeaderSearchProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -38,26 +39,19 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  // Load tokens and pools on mount
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Load tokens
         const tokenList = Object.values(tokensByChainId[supportedChainIds.bsc]).filter(
           (token) => token.address !== zeroAddress,
         );
         setTokens(tokenList);
-
-        // Set popular tokens (first 3 as examples)
         setPopularTokens(tokenList.slice(0, 3));
 
-        // Load pools
         const poolsResponse = await fetch('/api/pools');
         if (poolsResponse.ok) {
           const poolsList = await poolsResponse.json();
           setPools(poolsList);
-
-          // Set top pools (first 3)
           setTopPools(poolsList.slice(0, 3));
         }
       } catch (error) {
@@ -68,7 +62,6 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
     loadData();
   }, []);
 
-  // Handle search
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (!searchQuery.trim()) {
@@ -80,7 +73,6 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
       setLoading(true);
       const lowerQuery = searchQuery.toLowerCase();
 
-      // Search tokens
       const tokenResults: SearchResult[] = tokens
         .filter(
           (token) =>
@@ -91,7 +83,6 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
         .slice(0, 5)
         .map((token) => ({ type: 'token' as const, data: token }));
 
-      // Search pools
       const poolResults: SearchResult[] = pools
         .filter(
           (pool) =>
@@ -103,7 +94,6 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
         .slice(0, 5)
         .map((pool) => ({ type: 'pool' as const, data: pool }));
 
-      // Filter results based on active tab
       let filteredResults: SearchResult[] = [];
       if (activeTab === 'all') {
         filteredResults = [...tokenResults, ...poolResults].slice(0, 8);
@@ -117,7 +107,6 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
       setLoading(false);
     }, 300);
 
-    // Set loading immediately when user starts typing
     if (searchQuery.trim()) {
       setLoading(true);
     }
@@ -125,7 +114,6 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
     return () => clearTimeout(timeout);
   }, [searchQuery, tokens, pools, activeTab]);
 
-  // Handle click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -140,16 +128,19 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
   const handleResultClick = (result: SearchResult) => {
     if (result.type === 'token') {
       const token = result.data as Token;
-      // Navigate to swap page with token as destination
       router.push(`/trade?destToken=${token.address}`);
     } else {
       const pool = result.data as TopPool;
-      // Navigate to pool details page
       router.push(`/explore/${pool.address}`);
     }
 
     setIsOpen(false);
     setSearchQuery('');
+
+    // 👇 Close the dialog if provided
+    if (typeof onClose === 'function') {
+      onClose();
+    }
   };
 
   const handleInputFocus = () => {
@@ -174,62 +165,58 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
   };
 
   return (
-    <div ref={searchRef} className={`relative ${className}`}>
+    <div
+      ref={searchRef}
+      className={`relative w-full bg-[#0a0a0a] border border-[#262626] rounded-2xl shadow-xl overflow-hidden z-50 ${className}`}
+    >
       {/* Search Input */}
-      <div className="relative">
+      <div className="relative border-b border-[#262626]">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Search className="h-4 w-4 text-gray-400" />
+          <Search className="h-4 w-4 text-neutral-500" />
         </div>
         <input
           ref={inputRef}
           type="text"
-          placeholder="Search tokens or pools..."
+          placeholder="Search tokens and pools"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={handleInputFocus}
-          className="w-full bg-gray-800 text-white rounded-lg py-2.5 pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-gray-700 focus:bg-gray-750 transition-colors"
+          className="w-full bg-transparent text-white placeholder:text-neutral-500 py-3 pl-10 pr-10 focus:outline-none"
         />
         {searchQuery && (
           <button
             onClick={clearSearch}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white"
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-500 hover:text-white"
           >
             <X className="h-4 w-4" />
           </button>
         )}
       </div>
 
-      {/* Search Results Dropdown */}
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-2xl max-h-80 overflow-y-auto z-50">
-          {/* Tabs */}
-          <div className="flex border-b border-gray-700">
-            {(['all', 'tokens', 'pools'] as TabType[]).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`flex-1 px-4 py-3 text-sm font-medium capitalize transition-colors ${
-                  activeTab === tab
-                    ? 'text-white bg-gray-700 border-b-2 border-blue-500'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-750'
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+      {/* Tabs */}
+      <div className="flex border-b border-[#262626]">
+        {(['all', 'tokens', 'pools'] as TabType[]).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`flex-1 px-4 py-3 text-sm font-medium capitalize transition-colors ${
+              activeTab === tab ? 'text-white border-b-2 border-pink-500' : 'text-neutral-400 hover:text-white'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
 
+      {/* Dropdown Content */}
+      {isOpen && (
+        <div className="w-full max-h-80 overflow-y-auto">
           {searchQuery ? (
-            // Show search results when typing
             loading && results.length === 0 ? (
-              // Show only loading spinner
-              <div className="p-4 text-center text-gray-400">
-                <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                <span className="ml-2">Searching...</span>
-              </div>
+              <div className="p-4 text-center text-neutral-500">Searching...</div>
             ) : results.length === 0 ? (
-              <div className="p-4 text-center text-gray-400">
-                No {activeTab === 'all' ? 'tokens or pools' : activeTab} found for &quot;{searchQuery}&quot;
+              <div className="p-4 text-center text-neutral-500">
+                No {activeTab === 'all' ? 'tokens or pools' : activeTab} found for “{searchQuery}”
               </div>
             ) : (
               <div className="py-2">
@@ -237,10 +224,9 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
                   <button
                     key={`${result.type}-${index}`}
                     onClick={() => handleResultClick(result)}
-                    className="w-full px-4 py-3 flex items-center gap-3 hover:bg-gray-700 transition-colors text-left"
+                    className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[#1a1a1a] transition-colors text-left"
                   >
                     {result.type === 'token' ? (
-                      // Token Result
                       <>
                         <div className="w-8 h-8 rounded-full flex items-center justify-center">
                           <DynamicLogo
@@ -252,18 +238,11 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded">Token</span>
-                            <p className="font-medium text-white truncate">{(result.data as Token).name}</p>
-                          </div>
-                          <div className="flex items-center gap-2 mt-1">
-                            <p className="text-sm text-gray-400">{(result.data as Token).symbol}</p>
-                            <p className="text-xs text-gray-500">{getEllipsisTxt((result.data as Token).address)}</p>
-                          </div>
+                          <p className="text-white font-medium truncate">{(result.data as Token).name}</p>
+                          <p className="text-sm text-neutral-500">{(result.data as Token).symbol}</p>
                         </div>
                       </>
                     ) : (
-                      // Pool Result
                       <>
                         <div className="w-8 h-8">
                           <PoolIcon
@@ -279,16 +258,10 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs bg-purple-600 text-white px-2 py-0.5 rounded">Pool</span>
-                            <p className="font-medium text-white truncate">
-                              {(result.data as TopPool).token0.symbol}/{(result.data as TopPool).token1.symbol}
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-2 mt-1">
-                            <p className="text-sm text-gray-400">{(result.data as TopPool).feeTier}% fee</p>
-                            <p className="text-xs text-gray-500">{getEllipsisTxt((result.data as TopPool).address)}</p>
-                          </div>
+                          <p className="text-white font-medium truncate">
+                            {(result.data as TopPool).token0.symbol}/{(result.data as TopPool).token1.symbol}
+                          </p>
+                          <p className="text-sm text-neutral-500">{(result.data as TopPool).feeTier}% fee</p>
                         </div>
                       </>
                     )}
@@ -297,24 +270,22 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
               </div>
             )
           ) : (
-            // Show preview when no search query
             <div className="py-2">
               {(() => {
                 const { tokens: previewTokens, pools: previewPools } = getFilteredPreviewContent();
 
                 return (
                   <>
-                    {/* Popular Tokens Section */}
                     {previewTokens.length > 0 && (
-                      <div className="mb-2">
-                        <div className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-700">
-                          Popular Tokens
+                      <div>
+                        <div className="px-4 py-2 text-xs text-neutral-500 uppercase font-semibold">
+                          Tokens by 24H volume
                         </div>
                         {previewTokens.map((token, index) => (
                           <button
                             key={`popular-token-${index}`}
                             onClick={() => handleResultClick({ type: 'token', data: token })}
-                            className="w-full px-4 py-3 flex items-center gap-3 hover:bg-gray-700 transition-colors text-left"
+                            className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[#1a1a1a] transition-colors text-left"
                           >
                             <div className="w-8 h-8 rounded-full flex items-center justify-center">
                               <DynamicLogo
@@ -326,31 +297,24 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
                               />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs bg-blue-600 text-white px-2 py-0.5 rounded">Token</span>
-                                <p className="font-medium text-white truncate">{token.name}</p>
-                              </div>
-                              <div className="flex items-center gap-2 mt-1">
-                                <p className="text-sm text-gray-400">{token.symbol}</p>
-                                <p className="text-xs text-gray-500">{getEllipsisTxt(token.address)}</p>
-                              </div>
+                              <p className="text-white font-medium truncate">{token.name}</p>
+                              <p className="text-sm text-neutral-500">
+                                {token.symbol} <span className="ml-1">{getEllipsisTxt(token.address)}</span>
+                              </p>
                             </div>
                           </button>
                         ))}
                       </div>
                     )}
 
-                    {/* Top Pools Section */}
                     {previewPools.length > 0 && (
                       <div>
-                        <div className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-700">
-                          Top Pools
-                        </div>
+                        <div className="px-4 py-2 text-xs text-neutral-500 uppercase font-semibold">Top Pools</div>
                         {previewPools.map((pool, index) => (
                           <button
                             key={`top-pool-${index}`}
                             onClick={() => handleResultClick({ type: 'pool', data: pool })}
-                            className="w-full px-4 py-3 flex items-center gap-3 hover:bg-gray-700 transition-colors text-left"
+                            className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[#1a1a1a] transition-colors text-left"
                           >
                             <div className="w-8 h-8">
                               <PoolIcon
@@ -366,22 +330,17 @@ export default function HeaderSearch({ className = '' }: HeaderSearchProps) {
                               />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs bg-purple-600 text-white px-2 py-0.5 rounded">Pool</span>
-                                <p className="font-medium text-white truncate">
-                                  {pool.token0.symbol}/{pool.token1.symbol}
-                                </p>
-                              </div>
-                              <div className="flex items-center gap-2 mt-1">
-                                <p className="text-sm text-gray-400">{pool.feeTier}% fee</p>
-                                <p className="text-xs text-gray-500">{getEllipsisTxt(pool.address)}</p>
-                              </div>
+                              <p className="text-white font-medium truncate">
+                                {pool.token0.symbol}/{pool.token1.symbol}
+                              </p>
+                              <p className="text-sm text-neutral-500">
+                                {pool.feeTier}% fee <span className="ml-1">{getEllipsisTxt(pool.address)}</span>
+                              </p>
                             </div>
                           </button>
                         ))}
                       </div>
                     )}
-
                     {/* No data message */}
                     {previewTokens.length === 0 && previewPools.length === 0 && (
                       <div className="p-4 text-center text-gray-400">

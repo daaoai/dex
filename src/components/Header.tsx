@@ -8,10 +8,12 @@ import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { navLinks } from '@/constants/navbar';
 import HeaderSearch from './HeaderSearch';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/shadcn/components/ui/dialog';
 
 export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
     <header className="bg-black p-4 border-b border-stroke-4 z-50 relative">
@@ -33,11 +35,27 @@ export default function Header() {
               </Link>
             ))}
           </nav>
-        </div>
 
-        {/* Search Component - Desktop */}
-        <div className="hidden md:block flex-1 max-w-md mx-8">
-          <HeaderSearch />
+          <div className="hidden md:flex ml-4">
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <button className="flex w-48 items-left gap-3 px-2 py-2 rounded-md border border-stroke-2 text-gray-400 hover:text-white hover:border-white transition-colors">
+                  <span className="bg-stroke-2 px-2.5 py-1 rounded-md text-sm font-mono text-gray-400">/</span>
+                  <span className="text-base font-medium">Search Token</span>
+                </button>
+              </DialogTrigger>
+
+              <DialogContent
+                className="!fixed !z-[9999] !left-1/2 !top-1/2 !translate-x-[-50%] !translate-y-[-50%] !opacity-100 !visible p-0 border-none bg-transparent
+             before:content-[''] before:fixed before:inset-0 before:bg-black before:bg-opacity-60 before:z-[-1]"
+              >
+                <DialogHeader className="sr-only">
+                  <DialogTitle>Search</DialogTitle>
+                </DialogHeader>
+                <HeaderSearch onClose={() => setOpen(false)} />
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         <button onClick={() => setMenuOpen(true)} className="md:hidden text-white" aria-label="Open menu">
@@ -47,11 +65,6 @@ export default function Header() {
         <div className="hidden md:block">
           <ConnectButton />
         </div>
-      </div>
-
-      {/* Search Component - Mobile */}
-      <div className="md:hidden mt-4">
-        <HeaderSearch />
       </div>
 
       <div
@@ -87,7 +100,9 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="mt-8">
+          {/* Add search modal trigger in mobile */}
+
+          <div className="mt-4">
             <ConnectButton />
           </div>
         </div>

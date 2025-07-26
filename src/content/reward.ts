@@ -5,8 +5,8 @@ export const REWARD_CONTENT = {
   },
   actions: {
     collect: 'Collect rewards',
-    explore: 'Find pools with UNI rewards →',
+    explore: 'Earn rewards by providing liquidity to eligible pools.',
   },
-  description: 'Eligible pools have token rewards so you can earn more.',
+  description: 'Boost your returns effortlessly with participating positions.',
   backgroundImage: '/rewardSummaryFrame.svg',
 };
