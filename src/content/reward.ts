@@ -1,6 +1,6 @@
 export const REWARD_CONTENT = {
   rewards: {
-    amount: '0 UNI',
+    amount: '0',
     label: 'Rewards earned',
   },
   actions: {

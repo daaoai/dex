@@ -6,7 +6,6 @@ import React, { useEffect, useRef, useState } from 'react';
 interface MiniPriceChartProps {
   data: ChartDataPoint[];
   height?: number;
-  strokeColor?: string;
   className?: string;
   loading?: boolean;
 }
@@ -51,7 +50,7 @@ export const MiniPriceChart: React.FC<MiniPriceChartProps> = ({
     return (
       <div
         ref={containerRef}
-        className={`relative w-full rounded-lg bg-black p-2 flex items-center justify-center ${className}`}
+        className={`relative w-full rounded-lg p-2 flex items-center justify-center ${className}`}
         style={{ height }}
       >
         <div className="text-zinc-400 text-xs">Loading...</div>
@@ -63,7 +62,7 @@ export const MiniPriceChart: React.FC<MiniPriceChartProps> = ({
     return (
       <div
         ref={containerRef}
-        className={`relative w-full rounded-lg bg-black p-2 flex items-center justify-center ${className}`}
+        className={`relative w-full rounded-lg p-2 flex items-center justify-center ${className}`}
         style={{ height }}
       >
         <div className="text-zinc-400 text-xs">No data</div>
@@ -83,7 +82,6 @@ export const MiniPriceChart: React.FC<MiniPriceChartProps> = ({
   const minY = Math.min(...yValues);
   const maxY = Math.max(...yValues);
 
-  // Add small padding to y-axis to prevent touching edges
   const yPadding = (maxY - minY) * 0.1;
   const adjustedMinY = minY - yPadding;
   const adjustedMaxY = maxY + yPadding;
@@ -92,7 +90,6 @@ export const MiniPriceChart: React.FC<MiniPriceChartProps> = ({
   const scaleY = (y: number) =>
     chartHeight - ((y - adjustedMinY) / (adjustedMaxY - adjustedMinY)) * chartHeight + padding;
 
-  // Create path string
   const pathData = validData
     .map((point, index) => {
       const x = scaleX(point.x);
@@ -101,32 +98,35 @@ export const MiniPriceChart: React.FC<MiniPriceChartProps> = ({
     })
     .join(' ');
 
-  // Create gradient fill path
   const fillPathData =
     pathData +
     ` L ${scaleX(validData[validData.length - 1].x)} ${chartHeight + padding} L ${scaleX(validData[0].x)} ${chartHeight + padding} Z`;
 
-  // Determine trend
-  const firstPrice = validData[0]?.y || 0;
-  const lastPrice = validData[validData.length - 1]?.y || 0;
-  const isPositive = lastPrice >= firstPrice;
-
-  const trendColor = isPositive ? '#22c55e' : '#ef4444';
+  const trendColor = '#a855f7';
 
   return (
-    <div ref={containerRef} className={`relative w-full rounded-lg bg-black p-2 ${className}`} style={{ height }}>
+    <div
+      ref={containerRef}
+      className={`relative w-full rounded-xl p-2 ${className}`}
+      style={{ height, background: 'transparent' }}
+    >
       <svg width={width} height={height} className="overflow-visible" style={{ width: '100%', height: '100%' }}>
         <defs>
-          <linearGradient id={`gradient-${Math.random()}`} x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor={trendColor} stopOpacity={0.3} />
-            <stop offset="100%" stopColor={trendColor} stopOpacity={0.05} />
+          <linearGradient id="mini-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor={trendColor} stopOpacity={0.4} />
+            <stop offset="100%" stopColor={trendColor} stopOpacity={0} />
           </linearGradient>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
 
-        {/* Fill area */}
-        <path d={fillPathData} fill={`url(#gradient-${Math.random()})`} stroke="none" />
+        <path d={fillPathData} fill="url(#mini-gradient)" stroke="none" />
 
-        {/* Line */}
         <path
           d={pathData}
           fill="none"
@@ -134,9 +134,9 @@ export const MiniPriceChart: React.FC<MiniPriceChartProps> = ({
           strokeWidth={1.5}
           strokeLinecap="round"
           strokeLinejoin="round"
+          filter="url(#glow)"
         />
 
-        {/* Last point indicator */}
         {validData.length > 0 && (
           <circle
             cx={scaleX(validData[validData.length - 1].x)}
@@ -147,14 +147,6 @@ export const MiniPriceChart: React.FC<MiniPriceChartProps> = ({
           />
         )}
       </svg>
-
-      {/* Price change indicator */}
-      <div className="absolute top-2 right-2">
-        <div className={`text-xs font-medium ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-          {isPositive ? '+' : ''}
-          {(((lastPrice - firstPrice) / firstPrice) * 100).toFixed(1)}%
-        </div>
-      </div>
     </div>
   );
 };

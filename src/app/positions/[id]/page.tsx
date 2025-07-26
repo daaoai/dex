@@ -112,7 +112,7 @@ export default function PositionDetails() {
   );
 
   return (
-    <div className="p-6 text-white min-h-screen bg-grey-5">
+    <div className="p-6 text-white min-h-screen bg-black">
       <div>
         <Link href="/positions" className="text-md cursor-pointer flex items-center gap-2">
           <ArrowLeft className="h-4 w-4" />
@@ -120,7 +120,7 @@ export default function PositionDetails() {
         </Link>
       </div>
 
-      <div className="flex justify-between border-b border-stroke-2 pb-4 mt-4">
+      <div className="flex justify-between border-b border-stroke-2 pb-4 mt-4 flex-wrap gap-y-4">
         <div className="flex items-center mt-4">
           <div className="flex gap-6 items-center">
             <PoolIcon token0={token0Details} token1={token1Details} />
@@ -145,21 +145,22 @@ export default function PositionDetails() {
                 <Text type="p" className="flex items-center gap-1 text-sm">
                   <Circle
                     className={clsx('w-2 h-2', isInRange ? 'text-green-500' : 'text-red-500')}
-                    fill={isInRange ? 'currentColor' : 'currentColor'}
+                    fill="currentColor"
                   />
                   <span className={isInRange ? 'text-green-500' : 'text-red-500'}>
                     {isInRange ? 'In Range' : 'Out of Range'}
                   </span>
                 </Text>
 
-                <Text type="p" className="ml-2   text-xs px-2 py-1 rounded">
+                <Text type="p" className="ml-2 text-xs px-2 py-1 rounded">
                   {chainsData[chainId].name}
                 </Text>
               </div>
             </div>
           </div>
         </div>
-        <div className="flex mt-6 gap-2">
+
+        <div className="flex mt-6 gap-2 flex-wrap">
           <Button className="px-4 py-2 rounded font-bold bg-background text-white" onClick={() => setModalOpen(true)}>
             {positionContent.addLiquidity}
           </Button>
@@ -175,15 +176,12 @@ export default function PositionDetails() {
         </div>
       </div>
 
-      <div className="mt-6">
-        <div className="text-2xl font-bold">
-          {`${truncateNumber(token0ToToken1.currentPrice, 4)} ${token1Details.symbol}`} = 1{' '}
-          {position.token0Details.symbol}
-        </div>
+      <div className="mt-6 text-2xl font-bold">
+        {`${truncateNumber(token0ToToken1.currentPrice, 4)} ${token1Details.symbol}`} = 1{' '}
+        {position.token0Details.symbol}
       </div>
-
-      <div className="flex gap-4 w-full items-start">
-        <div className="mt-4 rounded-lg h-[300px] flex-1">
+      <div className="flex flex-col lg:flex-row gap-6 w-full items-start">
+        <div className="mt-4 rounded-lg h-[300px] w-full lg:w-3/5">
           {priceLoading ? (
             <div className="flex items-center justify-center text-center text-white space-y-3 bg-background rounded-lg h-full">
               <div className="flex flex-col items-center">
@@ -211,7 +209,6 @@ export default function PositionDetails() {
             </div>
           ) : (
             <div className="h-full">
-              {/* Price chart - always render, let component handle empty states */}
               <PositionPriceChart
                 data={priceData?.chartData || []}
                 height={250}
@@ -219,7 +216,7 @@ export default function PositionDetails() {
                 token1Symbol={token1Details.symbol}
                 currentPrice={token0ToToken1.currentPrice}
                 strokeColor="#22c55e"
-                showGrid={true}
+                showGrid
                 duration={selectedTimeframe}
                 onDurationChange={setSelectedTimeframe}
                 loading={priceLoading}
@@ -227,7 +224,7 @@ export default function PositionDetails() {
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-6 mt-4 w-2/5">
+        <div className="flex flex-col gap-6 mt-4 w-full lg:w-2/5">
           {!isInFullRange && (
             <PriceRange
               minPrice={truncateNumber(token0ToToken1.minPrice, 4)}
@@ -237,11 +234,9 @@ export default function PositionDetails() {
               token1Symbol={token1Details.symbol}
             />
           )}
-          <div className="p-4 rounded-lg bg-background">
-            <Text type="p" className="">
-              {positionContent.position}
-            </Text>
 
+          <div className="p-4 rounded-lg bg-background-8">
+            <Text type="p">{positionContent.position}</Text>
             <div className="flex gap-2 text-sm mt-4">
               <DynamicLogo
                 logoUrl={token0Details.logo}
@@ -250,7 +245,7 @@ export default function PositionDetails() {
                 height={20}
                 className="rounded-full"
               />
-              <Text type="p" className="mt-2 text-sm ">
+              <Text type="p" className="mt-2 text-sm">
                 {truncateNumber(formatUnits(BigInt(amount0), token0Details.decimals), 4)} {token0Details.symbol}
               </Text>
             </div>
@@ -262,17 +257,14 @@ export default function PositionDetails() {
                 height={20}
                 className="rounded-full"
               />
-              <Text type="p" className="text-sm ">
+              <Text type="p" className="text-sm">
                 {truncateNumber(formatUnits(BigInt(amount1), token1Details.decimals), 4)} {token1Details.symbol}
               </Text>
             </div>
           </div>
 
-          <div className="p-4 rounded-lg bg-background">
-            <Text type="p" className="">
-              {positionContent.feesEarned}
-            </Text>
-
+          <div className="p-4 rounded-lg bg-background-8">
+            <Text type="p">{positionContent.feesEarned}</Text>
             <div className="flex gap-2 text-sm mt-4">
               <DynamicLogo
                 logoUrl={token0Details.logo}
@@ -281,7 +273,7 @@ export default function PositionDetails() {
                 height={20}
                 className="rounded-full"
               />
-              <Text type="p" className="mt-2 text-sm ">
+              <Text type="p" className="mt-2 text-sm">
                 {truncateNumber(formatUnits(BigInt(feeEarned0), token0Details.decimals), 4)} {token0Details.symbol}
               </Text>
             </div>
@@ -293,7 +285,7 @@ export default function PositionDetails() {
                 height={20}
                 className="rounded-full"
               />
-              <Text type="p" className="text-sm ">
+              <Text type="p" className="text-sm">
                 {truncateNumber(formatUnits(BigInt(feeEarned1), token1Details.decimals), 4)} {token1Details.symbol}
               </Text>
             </div>

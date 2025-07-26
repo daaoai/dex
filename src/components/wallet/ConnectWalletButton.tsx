@@ -11,7 +11,7 @@ type ConnectWalletButtonProps = {
   switchToChainId?: number;
 };
 const ConnectWalletButton = ({
-  connectButtonTailwindClasses,
+  connectButtonTailwindClasses = '!bg-green-500 text-white',
   wrongNetworkButtonTailwindClasses,
   wrongNetworkButtonText = 'Wrong Network',
   connectButtonText = 'Connect Wallet',
@@ -38,7 +38,12 @@ const ConnectWalletButton = ({
             {(() => {
               if (!connected) {
                 return (
-                  <button onClick={openConnectModal} type="button" className={connectButtonTailwindClasses}>
+                  <button
+                    onClick={openConnectModal}
+                    type="button"
+                    className={connectButtonTailwindClasses}
+                    style={{ backgroundColor: '#22c55e', color: 'white' }} // Tailwind green-500
+                  >
                     {connectButtonText}
                   </button>
                 );

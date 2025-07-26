@@ -26,7 +26,7 @@ const TokenInput = ({
         disabled={disabled}
         value={value}
         onChange={onChange}
-        className="w-full py-12 bg-black border border-gray-700 rounded-xl pl-4 pr-36 text-white text-5xl placeholder:text-muted-foreground"
+        className="w-full py-12 bg-black focus:bg-black autofill:bg-black border border-gray-700 rounded-xl pl-4 pr-36 text-white text-5xl placeholder:text-muted-foreground"
         placeholder="0.0"
       />
       <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-right text-xs text-muted-foreground flex flex-col items-end gap-6">

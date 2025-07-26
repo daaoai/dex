@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Menu, X } from 'lucide-react';
+import { ChevronDown, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { navLinks } from '@/constants/navbar';
 import HeaderSearch from './HeaderSearch';
@@ -63,7 +63,67 @@ export default function Header() {
         </button>
 
         <div className="hidden md:block">
-          <ConnectButton />
+          <ConnectButton.Custom>
+            {({ account, chain, openChainModal, openConnectModal, openAccountModal, mounted }) => {
+              const ready = mounted;
+              const connected = ready && account && chain;
+
+              return (
+                <div
+                  {...(!ready && {
+                    'aria-hidden': true,
+                    style: {
+                      opacity: 0,
+                      pointerEvents: 'none',
+                      userSelect: 'none',
+                    },
+                  })}
+                >
+                  {(() => {
+                    if (!connected) {
+                      return (
+                        <button
+                          onClick={openConnectModal}
+                          className="bg-[#623AFF] hover:bg-stroke-2 text-white px-4 py-2 rounded-xl font-medium transition flex items-center gap-2"
+                        >
+                          Connect Wallet
+                        </button>
+                      );
+                    }
+
+                    return (
+                      <div className="flex items-center gap-2">
+                        {/* Chain Info */}
+                        <button
+                          onClick={openChainModal}
+                          className="flex items-center gap-2 bg-stroke-2 text-white px-3 py-2 rounded-xl text-sm hover:bg-[#374151] transition"
+                        >
+                          {chain.hasIcon && chain.iconUrl && (
+                            <img
+                              alt={chain.name ?? 'Chain icon'}
+                              src={chain.iconUrl}
+                              className="w-5 h-5 rounded-full"
+                            />
+                          )}
+                          <span>{chain.name}</span>
+                          <ChevronDown className="w-4 h-4 text-gray-400" />
+                        </button>
+
+                        <button
+                          onClick={openAccountModal}
+                          className="flex items-center gap-2 bg-stroke-2 text-white px-3 py-2 rounded-xl text-sm hover:bg-[#374151] transition"
+                        >
+                          {account.displayBalance && <span className="text-white">{account.displayBalance}</span>}
+                          <span className="text-gray-400">{account.displayName}</span>
+                          <ChevronDown className="w-4 h-4 text-gray-400" />
+                        </button>
+                      </div>
+                    );
+                  })()}
+                </div>
+              );
+            }}
+          </ConnectButton.Custom>
         </div>
       </div>
 

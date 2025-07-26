@@ -62,6 +62,8 @@ export default function RangeSelector({
   const chartRef = useRef<Line>({} as Line);
   const [isZoomed, setIsZoomed] = useState(false);
   const [tokenState, setTokenState] = useState<TokenState>({});
+  const tabContainerRef = useRef<HTMLDivElement | null>(null);
+  const [pillProps, setPillProps] = useState({ left: 0, width: 0 });
 
   useEffect(() => {
     if (selectedTab !== activeTab.id) {
@@ -69,6 +71,15 @@ export default function RangeSelector({
       if (newActiveTab) setActiveTab(newActiveTab);
     }
   }, [selectedTab, activeTab]);
+
+  useEffect(() => {
+    if (!tabContainerRef.current) return;
+    const activeBtn = tabContainerRef.current.querySelector(`[data-tab="${activeTab.id}"]`);
+    if (activeBtn instanceof HTMLElement) {
+      const { offsetLeft, offsetWidth } = activeBtn;
+      setPillProps({ left: offsetLeft, width: offsetWidth });
+    }
+  }, [activeTab]);
 
   const handleTabClick = (tabId: string) => setSelectedTab(tabId);
   const rangeOptions = ['full', 'custom'] as const;
@@ -82,11 +93,11 @@ export default function RangeSelector({
   };
 
   return (
-    <div className="bg-background-4 rounded-lg p-4 space-y-4">
+    <div className="">
       <Text type="p" className="text-lg font-medium">
         Set price range
       </Text>
-      <div className="relative bg-background-3 p-1 rounded-md overflow-hidden">
+      <div className="relative bg-background-3 p-1 rounded-md overflow-hidden my-4">
         <LayoutGroup>
           <div className="grid grid-cols-2">
             {rangeOptions.map((option) => (
@@ -111,120 +122,140 @@ export default function RangeSelector({
         </LayoutGroup>
       </div>
 
-      <Text type="p" className="text-sm text-gray-400">
+      <Text type="p" className="text-sm text-gray-400 pb-2">
         Providing full range liquidity ensures continuous market participation across all possible prices...
       </Text>
       <div className="space-y-2">
-        <div className="flex justify-between items-center text-sm">
-          <div>
-            Market price:
-            <Text type="p" className="font-medium">
-              {truncateNumber(currentPrice)} {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
-            </Text>
-          </div>
-          {!hideTokenSwitchButtons && (
-            <div className="flex space-x-2">
-              <button
-                className={`flex items-center gap-2 px-3 py-1 rounded-2xl border transition-shadow duration-300 ${
-                  token0.address === srcTokenDetails.address
-                    ? 'bg-black border-stroke-7 text-white'
-                    : 'bg-background-4 border-stroke-7 text-gray-400 hover:text-white'
-                }`}
-                onClick={() => {
-                  if (token0.address === srcTokenDetails.address) return;
-                  handleSwitchToken();
-                }}
-                type="button"
-              >
-                <DynamicLogo
-                  logoUrl={token0.logo}
-                  altText={token0.symbol}
-                  fallbackText={token0.symbol}
-                  width={10}
-                  height={10}
-                />
-                <span className="font-semibold text-xs">{token0.symbol}</span>
-              </button>
-              <button
-                className={`flex items-center gap-2 px-3 py-1 rounded-2xl border transition-shadow duration-300 ${
-                  token1.address === srcTokenDetails.address
-                    ? 'bg-black border-stroke-7 text-white'
-                    : 'bg-background-4 border-stroke-7 text-gray-400 hover:text-white'
-                }`}
-                onClick={() => {
-                  if (token1.address === srcTokenDetails.address) return;
-                  handleSwitchToken();
-                }}
-                type="button"
-              >
-                <DynamicLogo
-                  logoUrl={token1.logo}
-                  altText={token1.symbol}
-                  fallbackText={token1.symbol}
-                  width={10}
-                  height={10}
-                />
-                <span className="font-semibold text-xs">{token1.symbol}</span>
-              </button>
-            </div>
-          )}
-        </div>
-        <div className="relative h-[150px] overflow-hidden bg-zinc-800">
-          <motion.div
-            className="absolute inset-0 origin-center"
-            animate={{ scale: isZoomed ? 1.5 : 1 }}
-            transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-          >
-            <LineGraphView
-              tokenName={destTokenDetails.coingeckoId}
-              tokenState={tokenState}
-              setTokenState={setTokenState}
-              tabs={tabs}
-              activeTabId={activeTab.id.toString()}
-              chartRef={chartRef}
-            />
-          </motion.div>
-        </div>
-        <div className="flex justify-between items-center mt-2">
-          <div className="flex space-x-1">
-            {tabs.map((tab) => (
-              <Button
-                key={tab.id}
-                className={`px-3 py-1 rounded-md text-xs ${
-                  activeTab.id === tab.id ? 'bg-zinc-700' : 'bg-zinc-800 hover:bg-zinc-700'
-                }`}
-                onClick={() => handleTabClick(tab.id)}
-              >
-                {tab.id}
-              </Button>
-            ))}
-          </div>
-          <div className="flex space-x-1">
-            <Button className="bg-zinc-800 p-1 rounded-md" title="search" onClick={() => handleZoomOut()}>
-              <ZoomOut size={16} />
-            </Button>
-            <Button
-              className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700"
-              title="zoom"
-              onClick={() => setIsZoomed(true)}
-            >
-              <ZoomIn size={16} />
-            </Button>
-            <Button
-              className="bg-zinc-800 p-1 rounded-md hover:bg-zinc-700 flex items-center"
-              onClick={() => {
-                setIsZoomed(false);
-                handleZoomOut();
-                setSelectedTab('1d');
-              }}
-            >
-              <RotateCcw size={16} />
-              <Text type="span" className="ml-1 text-xs">
-                Reset
+        <div className="bg-black border border-stroke-11 p-2 rounded-md">
+          <div className="flex justify-between items-center text-sm pb-4">
+            <div>
+              <p className="text-xs">Market price:</p>
+              <Text type="p" className="font-medium text-xs">
+                {truncateNumber(currentPrice)} {destTokenDetails.symbol} = 1 {srcTokenDetails.symbol}
               </Text>
-            </Button>
+            </div>
+            {!hideTokenSwitchButtons && (
+              <div className="flex space-x-2">
+                <button
+                  className={`flex items-center gap-2 px-3 py-1 rounded-2xl border transition-shadow duration-300 ${
+                    token0.address === srcTokenDetails.address
+                      ? 'bg-black border-stroke-7 text-white'
+                      : 'bg-background-4 border-stroke-7 text-gray-400 hover:text-white'
+                  }`}
+                  onClick={() => {
+                    if (token0.address === srcTokenDetails.address) return;
+                    handleSwitchToken();
+                  }}
+                  type="button"
+                >
+                  <DynamicLogo
+                    logoUrl={token0.logo}
+                    altText={token0.symbol}
+                    fallbackText={token0.symbol}
+                    width={10}
+                    height={10}
+                  />
+                  <span className="font-semibold text-xs">{token0.symbol}</span>
+                </button>
+                <button
+                  className={`flex items-center gap-2 px-3 py-1 rounded-2xl border transition-shadow duration-300 ${
+                    token1.address === srcTokenDetails.address
+                      ? 'bg-black border-stroke-7 text-white'
+                      : 'bg-background-4 border-stroke-7 text-gray-400 hover:text-white'
+                  }`}
+                  onClick={() => {
+                    if (token1.address === srcTokenDetails.address) return;
+                    handleSwitchToken();
+                  }}
+                  type="button"
+                >
+                  <DynamicLogo
+                    logoUrl={token1.logo}
+                    altText={token1.symbol}
+                    fallbackText={token1.symbol}
+                    width={10}
+                    height={10}
+                  />
+                  <span className="font-semibold text-xs">{token1.symbol}</span>
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="relative h-[150px] overflow-hidden bg-zinc-800">
+            <motion.div
+              className="absolute inset-0 origin-center"
+              animate={{ scale: isZoomed ? 1.5 : 1 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+            >
+              <LineGraphView
+                tokenName={destTokenDetails.coingeckoId}
+                tokenState={tokenState}
+                setTokenState={setTokenState}
+                tabs={tabs}
+                activeTabId={activeTab.id.toString()}
+                chartRef={chartRef}
+              />
+            </motion.div>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mt-2">
+            {/* Tabs Section (Left - Scrollable) */}
+            <div ref={tabContainerRef} className="relative w-full sm:w-1/2 overflow-x-auto no-scrollbar">
+              <div className="relative flex w-max min-w-full bg-zinc-900 rounded-full px-1 py-1">
+                {/* Animated Pill */}
+                <motion.div
+                  className="absolute top-1 bottom-1 bg-purple-800/40 rounded-full z-0"
+                  animate={{
+                    left: pillProps.left,
+                    width: pillProps.width,
+                  }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+
+                {/* Tab Buttons */}
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    data-tab={tab.id}
+                    onClick={() => handleTabClick(tab.id)}
+                    className={`relative z-10 px-2 py-1 text-xs font-medium whitespace-nowrap rounded-full transition-colors duration-200 ${
+                      activeTab.id === tab.id ? 'text-white' : 'text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    {tab.id}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Controls Section (Right) */}
+            <div className="flex items-center justify-end space-x-2 w-full sm:w-1/2">
+              <div className="flex rounded-md overflow-hidden bg-zinc-800 divide-x divide-zinc-700">
+                <button className="p-2 hover:bg-zinc-700 transition-colors" onClick={handleZoomOut} title="Zoom Out">
+                  <ZoomOut size={16} />
+                </button>
+                <button
+                  className="p-2 hover:bg-zinc-700 transition-colors"
+                  onClick={() => setIsZoomed(true)}
+                  title="Zoom In"
+                >
+                  <ZoomIn size={16} />
+                </button>
+              </div>
+              <Button
+                className="flex items-center px-3 py-1 text-sm rounded-md bg-zinc-800 text-white hover:bg-zinc-700"
+                onClick={() => {
+                  setIsZoomed(false);
+                  handleZoomOut();
+                  setSelectedTab('1d');
+                }}
+              >
+                <RotateCcw size={16} className="mr-1" />
+                Reset
+              </Button>
+            </div>
           </div>
         </div>
+
         <div className="grid grid-cols-2 gap-2 mt-4">
           <div className="relative bg-zinc-800 p-3 rounded-md">
             <label className="text-sm text-gray-400">Min price</label>

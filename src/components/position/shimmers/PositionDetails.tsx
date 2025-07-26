@@ -63,7 +63,7 @@ export const PositionDetailsSkeleton = () => {
         {/* Right sidebar skeleton */}
         <div className="flex flex-col gap-6 mt-4 w-2/5">
           {/* Price range skeleton */}
-          <div className="p-4 rounded-lg bg-background">
+          <div className="p-4 rounded-lg bg-background-8">
             <Shimmer width="w-24" height="h-5" className="mb-4" />
             <div className="grid grid-cols-3 gap-4">
               <div>
@@ -85,7 +85,7 @@ export const PositionDetailsSkeleton = () => {
           </div>
 
           {/* Position skeleton */}
-          <div className="p-4 rounded-lg bg-background">
+          <div className="p-4 rounded-lg bg-background-8">
             <Shimmer width="w-16" height="h-5" className="mb-4" />
 
             <div className="flex gap-2 text-sm mt-4">
@@ -99,7 +99,7 @@ export const PositionDetailsSkeleton = () => {
           </div>
 
           {/* Fees earned skeleton */}
-          <div className="p-4 rounded-lg bg-background">
+          <div className="p-4 rounded-lg bg-background-8">
             <Shimmer width="w-24" height="h-5" className="mb-4" />
 
             <div className="flex gap-2 text-sm mt-4">

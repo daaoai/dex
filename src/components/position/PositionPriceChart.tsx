@@ -23,7 +23,6 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
   data,
   height = 400,
   showGrid = true,
-  strokeColor = '#22c55e',
   token0Symbol,
   token1Symbol,
   currentPrice,
@@ -92,9 +91,7 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
                     key={d}
                     onClick={() => onDurationChange(d)}
                     className={`px-2 py-1 text-xs rounded transition-colors ${
-                      duration === d
-                        ? 'bg-background-11 text-white'
-                        : 'text-zinc-400 hover:text-white hover:bg-zinc-700'
+                      duration === d ? 'bg-[#372331] text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-700'
                     }`}
                   >
                     {d === 'HOUR' ? '1H' : d === 'DAY' ? '1D' : d === 'WEEK' ? '1W' : d === 'MONTH' ? '1M' : '1Y'}
@@ -146,8 +143,7 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
 
   // Determine color based on price change
   const isPositive = priceChange >= 0;
-  const dynamicColor = isPositive ? '#9c4cfc' : '#ef4444';
-  const displayColor = strokeColor === '#22c55e' ? dynamicColor : strokeColor;
+  const displayColor = '#822C6A';
 
   const points = validData.map((point, index) => {
     const x = (index / Math.max(1, validData.length - 1)) * width;
@@ -231,41 +227,21 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
 
   return (
     <div ref={containerRef} className={`relative w-full rounded-lg bg-black p-3 ${className}`} style={{ height }}>
-      {/* Header with price info and duration controls */}
+      {/* Top: Price and % change */}
       <div className="flex justify-between items-start mb-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-zinc-400">
-              {formatPrice(currentPrice)} {token1Symbol} = 1 {token0Symbol}
-            </span>
-            {priceChangePercent !== 0 && (
-              <div className={`flex items-center gap-1 text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
-                {isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                <span>
-                  {isPositive ? '+' : ''}
-                  {priceChangePercent.toFixed(2)}%
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
         <div className="flex items-center gap-2">
-          {onDurationChange && validData.length > 0 && (
-            <div className="flex bg-zinc-800 rounded-lg p-1">
-              {(['HOUR', 'DAY', 'WEEK', 'MONTH', 'YEAR'] as HistoryDuration[]).map((d) => (
-                <button
-                  key={d}
-                  onClick={() => onDurationChange(d)}
-                  className={`px-2 py-1 text-xs rounded transition-colors ${
-                    duration === d ? 'bg-background-11 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-700'
-                  }`}
-                >
-                  {d === 'HOUR' ? '1H' : d === 'DAY' ? '1D' : d === 'WEEK' ? '1W' : d === 'MONTH' ? '1M' : '1Y'}
-                </button>
-              ))}
+          <span className="text-sm text-zinc-400">
+            {formatPrice(currentPrice)} {token1Symbol} = 1 {token0Symbol}
+          </span>
+          {priceChangePercent !== 0 && (
+            <div className={`flex items-center gap-1 text-sm ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+              {isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+              <span>
+                {isPositive ? '+' : ''}
+                {priceChangePercent.toFixed(2)}%
+              </span>
             </div>
           )}
-          {validData.length > 0 && <div className="text-xs text-zinc-500">{validData.length} data points</div>}
         </div>
       </div>
 
@@ -292,7 +268,6 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
         <g transform="translate(10, 10)">
           {showGrid && <rect width={width} height={chartHeight} fill="url(#position-grid)" />}
 
-          {/* Area fill */}
           {pathD && (
             <path
               d={`${pathD} L${width},${chartHeight} L0,${chartHeight} Z`}
@@ -301,7 +276,6 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
             />
           )}
 
-          {/* Line */}
           {pathD && (
             <path
               d={pathD}
@@ -313,7 +287,6 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
             />
           )}
 
-          {/* Interactive points */}
           {points.map((point, index) => (
             <circle
               key={index}
@@ -328,6 +301,26 @@ export const PositionPriceChart: React.FC<PositionPriceChartProps> = ({
           ))}
         </g>
       </svg>
+
+      {/* ⬇️ Timeframe controls BELOW the chart */}
+      {onDurationChange && validData.length > 0 && (
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4">
+          <div className="flex bg-zinc-800 rounded-lg p-1">
+            {(['HOUR', 'DAY', 'WEEK', 'MONTH', 'YEAR'] as HistoryDuration[]).map((d) => (
+              <button
+                key={d}
+                onClick={() => onDurationChange(d)}
+                className={`px-2 py-1 text-xs rounded transition-colors ${
+                  duration === d ? 'bg-[#372331] text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-700'
+                }`}
+              >
+                {d === 'HOUR' ? '1H' : d === 'DAY' ? '1D' : d === 'WEEK' ? '1W' : d === 'MONTH' ? '1M' : '1Y'}
+              </button>
+            ))}
+          </div>
+          <div className="text-xs text-zinc-500 mt-2 sm:mt-0">{validData.length} data points</div>
+        </div>
+      )}
 
       {/* Tooltip */}
       {hoveredPoint && (

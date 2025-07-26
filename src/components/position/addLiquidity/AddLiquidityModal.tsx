@@ -74,7 +74,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
   }, [token0FormattedAmount, token1FormattedAmount, isValidAddLiquidityRequest]);
 
   return (
-    <div className="bg-background p-6 rounded-xl w-full max-w-xl">
+    <div className="bg-background-8 p-6 rounded-xl w-full max-w-xl">
       <div className="flex justify-between items-center mb-4">
         <Button onClick={onClose}>
           <X className="w-5 h-5 text-white" />
@@ -175,7 +175,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
           type="submit"
           disabled={loading || !isValidRequest}
           className={`w-full py-2 h-12 rounded-md text-white ${
-            loading || !isValidRequest ? 'bg-blue-500 opacity-50 cursor-not-allowed' : 'bg-blue-600'
+            loading || !isValidRequest ? 'bg-background-19 opacity-50 cursor-not-allowed' : 'bg-background-19'
           }`}
         >
           {loading ? 'Processing...' : 'Enter an Amount'}
