@@ -49,7 +49,7 @@ export default function DepositTokens({
     Number(token1Amount) > Number(formattedToken1Balance);
 
   return (
-    <div className="bg-zinc-900 rounded-lg p-4 space-y-4">
+    <div className="space-y-4">
       <Text type="h3" className="text-lg font-medium">
         Deposit tokens
       </Text>
@@ -57,7 +57,7 @@ export default function DepositTokens({
         Specify the token amounts for your liquidity contribution.
       </Text>
 
-      <div className="bg-zinc-800 p-4 rounded-md group">
+      <div className="bg-black p-4 rounded-md group">
         <div className="flex justify-between items-center">
           <input
             type="text"
@@ -90,7 +90,7 @@ export default function DepositTokens({
         </div>
       </div>
 
-      <div className="bg-zinc-800 p-4 rounded-md group">
+      <div className="bg-black p-4 rounded-md group">
         <div className="flex justify-between items-center">
           <input
             type="text"

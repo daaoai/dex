@@ -113,18 +113,24 @@ export default function CreatePositionInterface({ token0, token1, chainId, fee }
 
   return (
     <div className="max-w-lg mx-auto w-full px-4 pb-8 space-y-4">
-      <div className="bg-zinc-900 rounded-lg p-4 flex items-center">
+      <div className="bg-background-25 border-stroke-10 border rounded-lg p-4 flex gap-3 items-center">
         <PoolIcon token0={token0} token1={token1} />
-        <div className="flex-1">
-          <Text type="h2" className="text-xl font-bold ml-4">
+        <div className="">
+          <Text type="h2" className="text-md ml-4">
             {token0.symbol} / {token1.symbol}
           </Text>
         </div>
-        <div className="flex items-center space-x-4">
-          <Text type="p" className="bg-zinc-800 px-2 py-1 rounded text-sm">
-            V3
+        <div className="flex items-center text-xs text-gray-300 gap-1 py-2 pl-2">
+          <Text
+            type="p"
+            className="bg-background-26 px-2 py-0.5 rounded-l-md rounded-tr-none rounded-br-none border border-r-0 border-background-26"
+          >
+            v3
           </Text>
-          <Text type="p" className="text-gray-400">
+          <Text
+            type="p"
+            className="bg-background-26 px-2 py-0.5 rounded-r-md rounded-tl-none rounded-bl-none border border-background-26"
+          >
             {fee / 10000}%
           </Text>
         </div>
@@ -141,46 +147,48 @@ export default function CreatePositionInterface({ token0, token1, chainId, fee }
         isVisible={showInitialPriceModal}
       />
 
-      <RangeSelector
-        {...{
-          srcTokenDetails: srcToken === 'token0' ? token0 : token1,
-          destTokenDetails: srcToken === 'token0' ? token1 : token0,
-          token0,
-          token1,
-          increaseMaxPrice: increaseUpperTick,
-          increaseMinPrice: increaseLowerTick,
-          decreaseMaxPrice: decreaseUpperTick,
-          decreaseMinPrice: decreaseLowerTick,
-          selectedRange,
-          minPrice: lowerPrice,
-          maxPrice: upperPrice,
-          currentPrice,
-          priceInUsd: 0,
-          handleSwitchToken: handleSwitch,
-          handleRangeSelection: setSelectedRange,
-          setMinPrice: () => {},
-          setMaxPrice: () => {},
-          chartRef,
-          chartContainerRef,
-          hideTokenSwitchButtons: showInitialPriceModal, // Hide token buttons when initial price is being set
-        }}
-      />
+      <div className="bg-background-8 border-stroke-10 border rounded-lg p-4 space-y-4">
+        <RangeSelector
+          {...{
+            srcTokenDetails: srcToken === 'token0' ? token0 : token1,
+            destTokenDetails: srcToken === 'token0' ? token1 : token0,
+            token0,
+            token1,
+            increaseMaxPrice: increaseUpperTick,
+            increaseMinPrice: increaseLowerTick,
+            decreaseMaxPrice: decreaseUpperTick,
+            decreaseMinPrice: decreaseLowerTick,
+            selectedRange,
+            minPrice: lowerPrice,
+            maxPrice: upperPrice,
+            currentPrice,
+            priceInUsd: 0,
+            handleSwitchToken: handleSwitch,
+            handleRangeSelection: setSelectedRange,
+            setMinPrice: () => {},
+            setMaxPrice: () => {},
+            chartRef,
+            chartContainerRef,
+            hideTokenSwitchButtons: showInitialPriceModal, // Hide token buttons when initial price is being set
+          }}
+        />
 
-      <DepositTokens
-        {...{
-          token0Details: token0,
-          token1Details: token1,
-          token0Amount: token0FormattedAmount,
-          token1Amount: token1FormattedAmount,
-          handleToken0AmountChange,
-          handleToken1AmountChange,
-          handleDeposit: createPosition,
-          txnState,
-          srcTokenDetails: token0,
-          isLoading,
-          balances,
-        }}
-      />
+        <DepositTokens
+          {...{
+            token0Details: token0,
+            token1Details: token1,
+            token0Amount: token0FormattedAmount,
+            token1Amount: token1FormattedAmount,
+            handleToken0AmountChange,
+            handleToken1AmountChange,
+            handleDeposit: createPosition,
+            txnState,
+            srcTokenDetails: token0,
+            isLoading,
+            balances,
+          }}
+        />
+      </div>
     </div>
   );
 }

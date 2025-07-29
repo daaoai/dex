@@ -18,7 +18,7 @@ export default function PoolsTable({ pools }: PoolsTableProps) {
     <div className="overflow-auto rounded-xl border border-gray-800 shadow-inner shadow-black/20">
       <table className="min-w-full text-sm text-left text-white">
         <thead>
-          <tr className="bg-gray-900 text-gray-400 text-xs uppercase tracking-wider">
+          <tr className="bg-background-8 text-gray-400 text-xs uppercase tracking-wider">
             {headers.map((header) => (
               <th key={header} className="px-4 py-3 border-b border-gray-800 whitespace-nowrap">
                 {header}
@@ -53,11 +53,12 @@ export default function PoolsTable({ pools }: PoolsTableProps) {
                   {pool.token0.symbol}/{pool.token1.symbol}
                 </span>
               </td>
-              <td className="px-4 py-4 text-gray-300">v3</td>
-              <td className="px-4 py-4 text-pink-400">{pool.feeTier}</td>
-              <td className="px-4 py-4 text-white">{pool.volumeUSD}</td>
-              <td className="px-4 py-4 text-green-400">{0}</td>
-              <td className="px-4 py-4 text-blue-400">{0}</td>
+              {/* Vertical line before this column */}
+              <td className="px-4 py-4 text-gray-300 border-l border-gray-800">v3</td>
+              <td className="px-4 py-4 text-gray-300">{pool.feeTier}</td>
+              <td className="px-4 py-4 text-gray-300">{pool.volumeUSD}</td>
+              <td className="px-4 py-4 text-gray-300">{0}</td>
+              <td className="px-4 py-4 text-[#FF6961]">{0}</td>
               <td className="px-4 py-4 text-white">{0}</td>
               <td className="px-4 py-4 text-white">{0}</td>
             </motion.tr>

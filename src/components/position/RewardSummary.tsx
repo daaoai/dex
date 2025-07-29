@@ -14,10 +14,10 @@ export default function RewardsSummary() {
         <div>
           {/* <Text type="h2" className="bg-gradient-purple bg-clip-text text-gradient-purple font-semibold md:text-4xl">
             {REWARD_CONTENT.rewards.amount}
-          </Text>
-          <Text type="p" className="text-gray-400">
-            {REWARD_CONTENT.rewards.label}
           </Text> */}
+          <Text type="p" className="text-gray-400">
+            Coming Soon
+          </Text>
         </div>
         <Button type="button" className="px-4 py-2 rounded bg-black text-primary-7">
           {REWARD_CONTENT.actions.collect}

@@ -4,14 +4,16 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Menu, X } from 'lucide-react';
+import { ChevronDown, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { navLinks } from '@/constants/navbar';
 import HeaderSearch from './HeaderSearch';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/shadcn/components/ui/dialog';
 
 export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
     <header className="bg-black p-4 border-b border-stroke-4 z-50 relative">
@@ -33,11 +35,27 @@ export default function Header() {
               </Link>
             ))}
           </nav>
-        </div>
 
-        {/* Search Component - Desktop */}
-        <div className="hidden md:block flex-1 max-w-md mx-8">
-          <HeaderSearch />
+          <div className="hidden md:flex ml-4">
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <button className="flex w-48 items-left gap-3 px-2 py-2 rounded-md border border-stroke-2 text-gray-400 hover:text-white hover:border-white transition-colors">
+                  <span className="bg-stroke-2 px-2.5 py-1 rounded-md text-sm font-mono text-gray-400">/</span>
+                  <span className="text-base font-medium">Search Token</span>
+                </button>
+              </DialogTrigger>
+
+              <DialogContent
+                className="!fixed !z-[9999] !left-1/2 !top-1/2 !translate-x-[-50%] !translate-y-[-50%] !opacity-100 !visible p-0 border-none bg-transparent
+             before:content-[''] before:fixed before:inset-0 before:bg-black before:bg-opacity-60 before:z-[-1]"
+              >
+                <DialogHeader className="sr-only">
+                  <DialogTitle>Search</DialogTitle>
+                </DialogHeader>
+                <HeaderSearch onClose={() => setOpen(false)} />
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         <button onClick={() => setMenuOpen(true)} className="md:hidden text-white" aria-label="Open menu">
@@ -45,13 +63,68 @@ export default function Header() {
         </button>
 
         <div className="hidden md:block">
-          <ConnectButton />
-        </div>
-      </div>
+          <ConnectButton.Custom>
+            {({ account, chain, openChainModal, openConnectModal, openAccountModal, mounted }) => {
+              const ready = mounted;
+              const connected = ready && account && chain;
 
-      {/* Search Component - Mobile */}
-      <div className="md:hidden mt-4">
-        <HeaderSearch />
+              return (
+                <div
+                  {...(!ready && {
+                    'aria-hidden': true,
+                    style: {
+                      opacity: 0,
+                      pointerEvents: 'none',
+                      userSelect: 'none',
+                    },
+                  })}
+                >
+                  {(() => {
+                    if (!connected) {
+                      return (
+                        <button
+                          onClick={openConnectModal}
+                          className="bg-[#623AFF] hover:bg-stroke-2 text-white px-4 py-2 rounded-xl font-medium transition flex items-center gap-2"
+                        >
+                          Connect Wallet
+                        </button>
+                      );
+                    }
+
+                    return (
+                      <div className="flex items-center gap-2">
+                        {/* Chain Info */}
+                        <button
+                          onClick={openChainModal}
+                          className="flex items-center gap-2 bg-stroke-2 text-white px-3 py-2 rounded-xl text-sm hover:bg-[#374151] transition"
+                        >
+                          {chain.hasIcon && chain.iconUrl && (
+                            <img
+                              alt={chain.name ?? 'Chain icon'}
+                              src={chain.iconUrl}
+                              className="w-5 h-5 rounded-full"
+                            />
+                          )}
+                          <span>{chain.name}</span>
+                          <ChevronDown className="w-4 h-4 text-gray-400" />
+                        </button>
+
+                        <button
+                          onClick={openAccountModal}
+                          className="flex items-center gap-2 bg-stroke-2 text-white px-3 py-2 rounded-xl text-sm hover:bg-[#374151] transition"
+                        >
+                          {account.displayBalance && <span className="text-white">{account.displayBalance}</span>}
+                          <span className="text-gray-400">{account.displayName}</span>
+                          <ChevronDown className="w-4 h-4 text-gray-400" />
+                        </button>
+                      </div>
+                    );
+                  })()}
+                </div>
+              );
+            }}
+          </ConnectButton.Custom>
+        </div>
       </div>
 
       <div
@@ -87,7 +160,9 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="mt-8">
+          {/* Add search modal trigger in mobile */}
+
+          <div className="mt-4">
             <ConnectButton />
           </div>
         </div>

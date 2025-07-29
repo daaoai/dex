@@ -48,6 +48,8 @@ input[type='number'].no-spinner {
   --color-background-21: #623aff;
   --color-background-23: #22252b;
   --color-background-24: #3e14cb;
+  --color-background-25: #0e0a1c;
+  --color-background-26: #1a182a;
 
   --color-black: #000000;
 
@@ -66,6 +68,8 @@ input[type='number'].no-spinner {
   --color-stroke-7: #2f343e;
   --color-stroke-8: #7f5ffa;
   --color-stroke-9: #2f343e;
+  --color-stroke-10: #2f343e;
+  --color-stroke-11: #1a1a1a;
 
   --color-primary: #68707d;
 

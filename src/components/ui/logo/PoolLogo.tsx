@@ -12,9 +12,10 @@ interface IconOverlapProps {
     symbol: string;
   };
   className?: string;
+  logoSize?: number;
 }
 
-const PoolIcon: React.FC<IconOverlapProps> = ({ token0, token1, className }) => {
+const PoolIcon: React.FC<IconOverlapProps> = ({ token0, token1, className, logoSize = 20 }) => {
   return (
     <div className={clsx('relative h-6 w-8', className)}>
       <div className="absolute bottom-0 left-0  rounded-full">
@@ -22,7 +23,13 @@ const PoolIcon: React.FC<IconOverlapProps> = ({ token0, token1, className }) => 
       </div>
 
       <div className="absolute bottom-0 left-3  rounded-full">
-        <DynamicLogo logoUrl={token1.logo} alt={token1.symbol[0]} height={20} width={20} className="rounded-full" />
+        <DynamicLogo
+          logoUrl={token1.logo}
+          alt={token1.symbol[0]}
+          height={logoSize}
+          width={logoSize}
+          className="rounded-full"
+        />
       </div>
     </div>
   );

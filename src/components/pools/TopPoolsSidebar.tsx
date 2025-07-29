@@ -44,19 +44,25 @@ export default function TopPoolsSidebar({ topPools, loading }: { topPools: TopPo
           <Link
             href={`/explore/${p.address}`}
             key={p.address}
-            className="bg-grey-3 rounded-2xl px-4 py-3 flex items-center justify-between gap-4"
+            className="bg-background-25 border-stroke-10 border rounded-2xl px-4 py-3 flex items-center justify-between gap-4"
           >
             <div className="flex items-center gap-3">
-              <PoolIcon token0={p.token0} token1={p.token1} />
+              <PoolIcon token0={p.token0} token1={p.token1} logoSize={32} />
               <div>
                 <Text type="p" className="font-semibold text-white">
                   {`${p.token0.symbol} / ${p.token1.symbol}`}
                 </Text>
-                <div className="flex items-center text-xs text-gray-300 gap-2">
-                  <Text type="p" className="bg-[#1f1f1f] px-2 py-0.5 rounded-md">
+                <div className="flex items-center text-xs text-gray-300 gap-1 py-2 pl-2">
+                  <Text
+                    type="p"
+                    className="bg-background-26 px-2 py-0.5 rounded-l-md rounded-tr-none rounded-br-none border border-r-0 border-background-26"
+                  >
                     v3
                   </Text>
-                  <Text type="p" className="bg-[#1f1f1f] px-2 py-0.5 rounded-md">
+                  <Text
+                    type="p"
+                    className="bg-background-26 px-2 py-0.5 rounded-r-md rounded-tl-none rounded-bl-none border border-background-26"
+                  >
                     {p.feeTier}%
                   </Text>
                 </div>

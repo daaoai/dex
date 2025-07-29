@@ -57,7 +57,7 @@ export default function DropdownFilter({ filters, setFilters }: Props) {
       <PopoverTrigger asChild className="h-[2.125rem] py-0">
         <Button
           type="button"
-          className="w-[100px] justify-between bg-white text-black border border-zinc-300 hover:bg-zinc-100 appearance-none focus:outline-none focus:ring-0 focus-visible:ring-0"
+          className="w-[100px] ml-2 justify-between rounded-full bg-[#0a0a0a] text-white border border-[#2c2c32] hover:border-white hover:text-white transition-colors"
         >
           <div className="flex items-center justify-between">
             <Text type="p"> Status</Text>
