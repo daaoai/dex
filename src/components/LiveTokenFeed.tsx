@@ -4,21 +4,23 @@ import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { CoinGeckoService } from '@/services/coinGeckoService';
 import type { LiveFeedToken } from '@/types/coinGecko';
+import { useRouter } from 'next/navigation';
 
 type LiveTokenFeedProps = {
-  chainId?: number;
+  chainId: number;
 };
 
 export default function LiveTokenFeed({ chainId }: LiveTokenFeedProps) {
   const [memeTokens, setMemeTokens] = useState<LiveFeedToken[]>([]);
   const isLoadingRef = useRef<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchMemeTokens = async () => {
       if (isLoadingRef.current) return; // Prevent multiple fetches
       try {
         isLoadingRef.current = true;
-        const tokens = await CoinGeckoService.getMemeTokens(10);
+        const tokens = await CoinGeckoService.getMemeTokens(chainId);
         setMemeTokens(tokens);
       } catch (err) {
         console.error('Failed to fetch meme tokens:', err);
@@ -60,7 +62,13 @@ export default function LiveTokenFeed({ chainId }: LiveTokenFeedProps) {
           }}
         >
           {[...memeTokens, ...memeTokens].map((item, index) => (
-            <div key={`${item.address}-${index}`} className="flex items-center gap-2 min-w-fit text-white text-sm">
+            <div
+              key={`${item.address}-${index}`}
+              className="flex items-center gap-2 min-w-fit text-white text-sm cursor-pointer"
+              onClick={() => {
+                router.push(`/token/${item.address}`);
+              }}
+            >
               <span className="text-zinc-500">#{item.rank}</span>
               <img
                 src={item.image || '/liveTokenFeed/trump.svg'}

@@ -67,6 +67,7 @@ export const chainsData: {
       decimals: 18,
     },
     geckoId: 'binance-smart-chain',
+    dexScreenerId: 'bsc',
     subgraphURL: 'https://gateway.thegraph.com/api/subgraphs/id/45H7CA13E85dPA1kFCYEj6A8h6gV6L48Tar7bfoQ3S5G',
   },
 };

@@ -20,9 +20,10 @@ import Text from '../ui/Text';
 interface SwapModalProps {
   initialSrcToken?: Token | null;
   initialDestToken?: Token | null;
+  showLiveTokenFee?: boolean;
 }
 
-export default function SwapModal({ initialSrcToken, initialDestToken }: SwapModalProps = {}) {
+export default function SwapModal({ initialSrcToken, initialDestToken, showLiveTokenFee = true }: SwapModalProps = {}) {
   const [srcToken, setSrcToken] = useState<Token | null>(initialSrcToken || null);
   const [destToken, setDestToken] = useState<Token | null>(initialDestToken || null);
   const [srcAmount, setSrcAmount] = useState('');
@@ -181,84 +182,85 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
 
   return (
     <div className="w-full max-w-md mx-auto shadow-2xl">
-      <LiveTokenFeed chainId={chainId} />
-      <div className=" text-white flex justify-between items-center mb-2">
-        <div className="relative flex justify-start w-full max-w-sm  py-4">
-          <Text type="h2" className="text-md bg-background-16 px-4 py-2 rounded-3xl">
-            Swap
-          </Text>
-        </div>
-        <SettingsModal
-          slippage={slippage}
-          setSlippage={setSlippage}
-          deadline={deadline}
-          setDeadline={setDeadline}
-          onSave={(value) => setSlippage(value)}
-          trigger={
-            <Button variant="ghost" size="icon">
-              <Image
-                src="/settings.svg"
-                width={20}
-                height={20}
-                alt="settings image"
-                className="transition-transform duration-500 group-hover:rotate-[360deg]"
-              />
-            </Button>
-          }
-        />
-      </div>
-      <TokenSelectionModal
-        onClose={() => {
-          setShowSelector(false);
-          setSelectType(null);
-        }}
-        onSelect={handleTokenSelect}
-        isOpen={showSelector}
-        selectedTokens={[srcToken, destToken]}
-      />
-      <SelectTokenCard
-        title="Selling"
-        token={srcToken}
-        amount={srcAmount}
-        setAmount={(val: string) => setSrcAmount(isNaN(Number(val)) ? '' : val)}
-        onTokenClick={() => openSelector('src')}
-        balance={srcBalance}
-      />
-      <div className="flex justify-center -mt-8 -mb-6">
-        <button
-          onClick={handleToggle}
-          className={`bg-background hover:bg-background-2 p-3 rounded-full border-4 transition-all duration-300 hover:border-stroke-6 group ${
-            srcToken && !destToken ? 'border-stroke-6' : !srcToken && destToken ? 'border-stroke-6' : 'border-black'
-          }`}
-          aria-label="Switch tokens"
-        >
-          <ArrowDown
-            className={`w-4 h-4 transition-all duration-300 group-hover:text-stroke-6 font-extrabold ${
-              srcToken && !destToken
-                ? 'text-stroke-6 rotate-0 group-hover:rotate-180'
-                : !srcToken && destToken
-                  ? 'text-stroke-6 rotate-180 group-hover:rotate-0'
-                  : srcToken && destToken
-                    ? 'text-grey rotate-0 group-hover:rotate-180'
-                    : 'text-grey rotate-0'
-            }`}
+      {showLiveTokenFee ? <LiveTokenFeed chainId={chainId} /> : <></>}
+      <>
+        <div className=" text-white flex justify-between items-center mb-2">
+          <div className="relative flex justify-start w-full max-w-sm  py-4">
+            <Text type="h2" className="text-md bg-background-16 px-4 py-2 rounded-3xl">
+              Swap
+            </Text>
+          </div>
+          <SettingsModal
+            slippage={slippage}
+            setSlippage={setSlippage}
+            deadline={deadline}
+            setDeadline={setDeadline}
+            onSave={(value) => setSlippage(value)}
+            trigger={
+              <Button variant="ghost" size="icon">
+                <Image
+                  src="/settings.svg"
+                  width={20}
+                  height={20}
+                  alt="settings image"
+                  className="transition-transform duration-500 group-hover:rotate-[360deg]"
+                />
+              </Button>
+            }
           />
-        </button>
-      </div>
-      <SelectTokenCard
-        title="Buying"
-        token={destToken}
-        amount={destAmount}
-        setAmount={() => {}}
-        isDisabled
-        onTokenClick={() => openSelector('dest')}
-        balance={destBalance}
-        isLoading={quoteLoading}
-      />
-      <Button
-        onClick={handleSwap}
-        disabled={isButtonDisabled}
-        className={`
+        </div>
+        <TokenSelectionModal
+          onClose={() => {
+            setShowSelector(false);
+            setSelectType(null);
+          }}
+          onSelect={handleTokenSelect}
+          isOpen={showSelector}
+          selectedTokens={[srcToken, destToken]}
+        />
+        <SelectTokenCard
+          title="Selling"
+          token={srcToken}
+          amount={srcAmount}
+          setAmount={(val: string) => setSrcAmount(isNaN(Number(val)) ? '' : val)}
+          onTokenClick={() => openSelector('src')}
+          balance={srcBalance}
+        />
+        <div className="flex justify-center -mt-8 -mb-6">
+          <button
+            onClick={handleToggle}
+            className={`bg-background hover:bg-background-2 p-3 rounded-full border-4 transition-all duration-300 hover:border-stroke-6 group ${
+              srcToken && !destToken ? 'border-stroke-6' : !srcToken && destToken ? 'border-stroke-6' : 'border-black'
+            }`}
+            aria-label="Switch tokens"
+          >
+            <ArrowDown
+              className={`w-4 h-4 transition-all duration-300 group-hover:text-stroke-6 font-extrabold ${
+                srcToken && !destToken
+                  ? 'text-stroke-6 rotate-0 group-hover:rotate-180'
+                  : !srcToken && destToken
+                    ? 'text-stroke-6 rotate-180 group-hover:rotate-0'
+                    : srcToken && destToken
+                      ? 'text-grey rotate-0 group-hover:rotate-180'
+                      : 'text-grey rotate-0'
+              }`}
+            />
+          </button>
+        </div>
+        <SelectTokenCard
+          title="Buying"
+          token={destToken}
+          amount={destAmount}
+          setAmount={() => {}}
+          isDisabled
+          onTokenClick={() => openSelector('dest')}
+          balance={destBalance}
+          isLoading={quoteLoading}
+        />
+        <Button
+          onClick={handleSwap}
+          disabled={isButtonDisabled}
+          className={`
             w-full 
             bg-background-21
             text-white 
@@ -275,9 +277,10 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
             flex items-center justify-center
             border border-stroke-8 -mt-2
         `}
-      >
-        {loading ? 'Processing...' : 'Swap'}
-      </Button>
+        >
+          {loading ? 'Processing...' : 'Swap'}
+        </Button>
+      </>
     </div>
   );
 }

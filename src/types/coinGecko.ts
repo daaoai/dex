@@ -9,6 +9,15 @@ export type CoinGeckoToken = {
   price_change_percentage_24h: number;
 };
 
+export type CoingeckoCoin = {
+  id: string;
+  symbol: string;
+  name: string;
+  platforms: {
+    [key: string]: string | undefined;
+  };
+};
+
 export type LiveFeedToken = {
   rank: number;
   name: string;

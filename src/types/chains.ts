@@ -10,6 +10,6 @@ export type ChainsConfig = {
   wnativeToken: Token;
   logo: string;
   subgraphURL: string;
-  geckoId?: string;
-  dexScreenerId?: string;
+  geckoId: string;
+  dexScreenerId: string;
 };
