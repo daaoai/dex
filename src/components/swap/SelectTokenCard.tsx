@@ -39,10 +39,13 @@ export default function SelectTokenCard({
           {title}
         </Text>
 
-        {Boolean(isSell && balance) && (
-          <div className="opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-y-2 group-hover:translate-y-0">
-            <BalancePercentageButtons balance={balance || 0n} decimals={token?.decimals || 18} setAmount={setAmount} />
-          </div>
+        {isSell && (
+          <BalancePercentageButtons
+            balance={balance || 0n}
+            decimals={token?.decimals || 18}
+            setAmount={setAmount}
+            disabled={!token || !balance || balance === 0n}
+          />
         )}
       </div>
 

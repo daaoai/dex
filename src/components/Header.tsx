@@ -19,8 +19,9 @@ export default function Header() {
     <header className="bg-black p-4 border-b border-stroke-4 z-50 relative">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/">
-            <Image src="/synthari-logo.svg" alt="Logo" width={120} height={120} className="inline-block" />
+          <Link href="/" className="flex items-center gap-2">
+            <Image src="/synthari-logo.svg" alt="Logo" width={35} height={35} className="inline-block" />
+            <p className="text-[#DBDFFF] text-xl font-bold">Synthari</p>
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
             {navLinks.map(({ name, href }) => (
@@ -84,7 +85,7 @@ export default function Header() {
                       return (
                         <button
                           onClick={openConnectModal}
-                          className="bg-[#623AFF] hover:bg-stroke-2 text-white px-4 py-2 rounded-xl font-medium transition flex items-center gap-2"
+                          className="bg-gradient-to-r from-[#4021FC] to-[#926EF5] text-white px-6 py-3 rounded-lg text-base hover:opacity-90 transition-opacity"
                         >
                           Connect Wallet
                         </button>

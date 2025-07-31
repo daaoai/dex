@@ -4,7 +4,12 @@ import { BalancePercentageButtonsProps } from '@/types/balancePercentage';
 import React, { useState } from 'react';
 import { formatUnits } from 'viem';
 
-const BalancePercentageButtons: React.FC<BalancePercentageButtonsProps> = ({ balance, decimals, setAmount }) => {
+const BalancePercentageButtons: React.FC<BalancePercentageButtonsProps> = ({
+  balance,
+  decimals,
+  setAmount,
+  disabled,
+}) => {
   const [selected, setSelected] = useState<number | null>(null);
 
   const handleClick = (percent: number) => {
@@ -24,6 +29,7 @@ const BalancePercentageButtons: React.FC<BalancePercentageButtonsProps> = ({ bal
           key={percent}
           type="button"
           onClick={() => handleClick(percent)}
+          disabled={disabled}
           className={`text-xs px-2 py-0.5 rounded-3xl transition-colors duration-200
             ${selected === percent ? 'bg-background-24 text-white' : 'bg-background-13 text-grey hover:bg-background-16'}
           `}
