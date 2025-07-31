@@ -268,12 +268,14 @@ export default function SwapModal({ initialSrcToken, initialDestToken }: SwapMod
             px-6 py-6 
             rounded-md
             disabled:opacity-50 disabled:cursor-not-allowed 
-            transition-all duration-300
+            duration-300
             shadow-[0_2px_10px_rgba(98,58,255,0.35)] 
             hover:shadow-[0_4px_16px_rgba(98,58,255,0.45)] 
             active:scale-[0.97] 
             flex items-center justify-center
             border border-stroke-8 -mt-2
+            bg-gradient-to-r from-[#4021FC] to-[#926EF5] hover:opacity-90 transition-opacity
+
         `}
       >
         {loading ? 'Processing...' : 'Swap'}
