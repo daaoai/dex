@@ -230,7 +230,7 @@ export default function SwapModal({ initialSrcToken, initialDestToken, showLiveT
           <button
             onClick={handleToggle}
             className={`bg-background hover:bg-background-2 p-3 rounded-full border-4 transition-all duration-300 hover:border-stroke-6 group ${
-              srcToken && !destToken ? 'border-stroke-6' : !srcToken && destToken ? 'border-stroke-6' : 'border-black'
+              srcToken || destToken ? 'border-stroke-6' : 'border-black'
             }`}
             aria-label="Switch tokens"
           >

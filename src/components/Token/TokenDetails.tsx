@@ -9,6 +9,7 @@ import { LineChart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import SwapModal from '../swap/SwapModal';
+import { customTokensByChainId } from '@/helper/token';
 
 const chartDays = [
   { label: '24 Hours', value: 1 },
@@ -30,12 +31,16 @@ type TokenDetailsClientProps = {
   token: Token & { coingeckoId?: string | null };
 };
 
-export const TokenDetailsClient = ({ token }: TokenDetailsClientProps) => {
+export const TokenDetailsClient = ({ token, chainId }: TokenDetailsClientProps) => {
   const [historicData, setHistoricData] = useState<number[][]>([]);
   const [days, setDays] = useState<number | string>(365);
   const [loading, setLoading] = useState(true);
   const [currency] = useState('usd');
 
+  // Ensure token has a logo and coingeckoId
+  if (!token.logo) {
+    token.logo = customTokensByChainId[chainId]?.[token.address]?.logo || '';
+  }
   const coingeckoId = token.coingeckoId;
 
   // Generate cache key

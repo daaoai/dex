@@ -6,6 +6,8 @@ import { isNativeCurrency } from '@/utils/token';
 import { erc20Abi, Hex } from 'viem';
 import { multicallForSameContract, multicallWithSameAbi } from './multicall';
 
+export const customTokensByChainId: Record<number, Record<Hex, Token>> = {};
+
 export const fetchErc20Info = async ({ address, chainId }: { address: Hex; chainId: number }) => {
   const multicallRes = (await multicallForSameContract({
     abi: erc20Abi,
@@ -24,6 +26,21 @@ export const fetchErc20Info = async ({ address, chainId }: { address: Hex; chain
     name: multicallRes[2] || multicallRes[0],
     address,
   };
+};
+
+export const getTokensDecimals = async (tokens: Hex[], chainId: number): Promise<Record<Hex, number>> => {
+  const multicallRes = (await multicallWithSameAbi({
+    abi: erc20Abi,
+    chainId,
+    contracts: tokens,
+    allMethods: tokens.map(() => 'decimals'),
+    allParams: tokens.map(() => []),
+  })) as number[];
+  const decimals: Record<Hex, number> = {};
+  tokens.forEach((token, idx) => {
+    decimals[token] = multicallRes[idx];
+  });
+  return decimals;
 };
 
 export const fetchTokenBalance = async ({ token, account, chainId }: { token: Hex; account: Hex; chainId: number }) => {
@@ -59,10 +76,11 @@ export const getTokenDetails = async ({ address, chainId }: { address: Hex; chai
 
 export const getLocalTokenDetails = ({ address, chainId }: { address: Hex; chainId: number }): Token => {
   const tokenDetails = tokensByChainId[chainId]?.[address];
-  if (!tokenDetails) {
+  const customTokenDetails = customTokensByChainId[chainId]?.[address];
+  if (!tokenDetails && !customTokenDetails) {
     throw new Error('Token not found');
   }
-  return tokenDetails;
+  return tokenDetails || customTokenDetails;
 };
 
 export const getTokensBalance = async (

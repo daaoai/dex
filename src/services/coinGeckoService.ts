@@ -1,5 +1,6 @@
 import { chainsData } from '@/constants/chains';
-import type { CoinGeckoToken, LiveFeedToken, CoinGeckoTokenDetail, CoingeckoCoin } from '@/types/coinGecko';
+import { customTokensByChainId, getTokensDecimals } from '@/helper/token';
+import type { CoinGeckoToken, CoinGeckoTokenDetail, CoingeckoCoin, LiveFeedToken } from '@/types/coinGecko';
 import { formatToken } from '@/utils/address';
 import axios from 'axios';
 import { Hex } from 'viem';
@@ -76,6 +77,25 @@ export class CoinGeckoService {
           address: formatToken(tokensByIdForChain[token.id].platforms[chainCoingeckoId] as Hex),
         };
       });
+
+    const tokenDecimals = await getTokensDecimals(
+      marketData.map((token) => formatToken(token.address)),
+      chainId,
+    );
+    marketData.forEach((token) => {
+      const address = formatToken(token.address);
+      if (!customTokensByChainId[chainId]) {
+        customTokensByChainId[chainId] = {};
+      }
+      customTokensByChainId[chainId][address] = {
+        address,
+        name: token.name,
+        symbol: token.symbol.toUpperCase(),
+        decimals: tokenDecimals[address] || 18,
+        coingeckoId: token.id,
+        logo: token.image,
+      };
+    });
 
     return this.transformTokenData(marketData);
   }

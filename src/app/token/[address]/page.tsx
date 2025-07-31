@@ -5,10 +5,10 @@ import { Hex } from 'viem';
 import { supportedChainIds } from '../../../constants/chains';
 
 type TokenPageParams = {
-  address: string;
+  address: Hex;
 };
-export default async function TokenPage({ params }: { params: TokenPageParams }) {
-  const address = params?.address as Hex;
+export default async function TokenPage({ params }: { params: Promise<TokenPageParams> }) {
+  const { address } = await params;
   const chainId = supportedChainIds.bsc;
 
   const [tokenRes, coingeckoIdRes] = await Promise.allSettled([
