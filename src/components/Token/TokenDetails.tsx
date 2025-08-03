@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import SwapModal from '../swap/SwapModal';
 import { customTokensByChainId } from '@/helper/token';
+import type { Chart } from 'chart.js';
 
 const chartDays = [
   { label: '24 Hours', value: 1 },
@@ -96,10 +97,27 @@ export const TokenDetailsClient = ({ token, chainId }: TokenDetailsClientProps) 
     fetchHistoricData();
   }, [days, coingeckoId, currency, cacheKey]);
 
+  const glowPlugin = {
+    id: 'glow',
+    beforeDatasetsDraw: (chart: Chart) => {
+      const ctx = chart.ctx;
+      if (!ctx) return;
+      ctx.save();
+      ctx.shadowColor = 'rgba(168,85,247,0.7)';
+      ctx.shadowBlur = 18;
+      ctx.shadowOffsetY = 4;
+    },
+    afterDatasetsDraw: (chart: Chart) => {
+      const ctx = chart.ctx;
+      if (!ctx) return;
+      ctx.restore();
+    },
+  };
+
   return (
-    <main className="flex flex-row gap-8 items-start justify-center bg-black p-8">
+    <main className="flex md:flex-row flex-col gap-8 items-start justify-center bg-black p-8">
       <div className="w-full">
-        <div className="bg-background-16 rounded-xl p-4">
+        <div className="bg-black rounded-xl p-4">
           <div className="flex items-center gap-4 mb-2">
             <span className="text-white font-bold text-lg">{token.name} Price Chart</span>
             <select
@@ -138,25 +156,28 @@ export const TokenDetailsClient = ({ token, chainId }: TokenDetailsClientProps) 
             </div>
           ) : (
             <Line
-              data={{
-                labels: historicData.map((point) => {
-                  return formatChartDate(point[0], days);
-                }),
-                datasets: [
-                  {
-                    data: historicData.map((point) => point[1]),
-                    label: `Price (Past ${days} Days) in ${currency.toUpperCase()}`,
-                    borderColor: '#22c55e',
-                    backgroundColor: 'rgba(34,197,94,0.1)',
-                    fill: true,
-                  },
-                ],
+              data={(canvas) => {
+                const ctx = (canvas as HTMLCanvasElement).getContext('2d');
+                if (!ctx) return {};
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(168,85,247,0.4)');
+                gradient.addColorStop(1, 'rgba(168,85,247,0)');
+                return {
+                  labels: historicData.map((point) => formatChartDate(point[0], days)),
+                  datasets: [
+                    {
+                      data: historicData.map((point) => point[1]),
+                      label: `Price (Past ${days} Days) in ${currency.toUpperCase()}`,
+                      borderColor: '#a855f7',
+                      backgroundColor: gradient,
+                      fill: true,
+                    },
+                  ],
+                };
               }}
               options={{
                 responsive: true,
-                legend: {
-                  display: false,
-                },
+                legend: { display: false },
                 tooltips: {
                   callbacks: {
                     label: function (tooltipItem) {
@@ -165,7 +186,17 @@ export const TokenDetailsClient = ({ token, chainId }: TokenDetailsClientProps) 
                     },
                   },
                 },
-                elements: { point: { radius: 1 } },
+                elements: {
+                  point: { radius: 1 },
+                  line: {
+                    borderWidth: 2,
+                    borderColor: '#a855f7',
+                    backgroundColor: 'transparent',
+                    borderJoinStyle: 'round',
+                    borderCapStyle: 'round',
+                    // Remove shadowBlur and shadowColor here!
+                  },
+                },
                 scales: {
                   yAxes: [
                     {
@@ -186,6 +217,7 @@ export const TokenDetailsClient = ({ token, chainId }: TokenDetailsClientProps) 
                   ],
                 },
               }}
+              plugins={[glowPlugin]}
               height={400}
             />
           )}
