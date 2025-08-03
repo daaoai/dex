@@ -44,8 +44,8 @@ export default function LiveTokenFeed({ chainId }: LiveTokenFeedProps) {
   }
 
   // 💡 Dynamic speed logic
-  const baseSpeed = 20; // min duration
-  const itemSpeed = 4; // add 4s per item
+  const baseSpeed = 4; // min duration
+  const itemSpeed = 1; // add 4s per item
   const totalItems = memeTokens.length;
   const scrollDuration = baseSpeed + totalItems * itemSpeed;
 
