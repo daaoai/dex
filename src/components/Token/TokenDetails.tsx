@@ -115,8 +115,8 @@ export const TokenDetailsClient = ({ token, chainId }: TokenDetailsClientProps) 
   };
 
   return (
-    <main className="flex md:flex-row flex-col gap-8 items-start justify-center bg-black p-8">
-      <div className="w-full">
+    <main className="flex md:flex-row flex-col gap-8 items-start justify-center bg-black p-8 min-h-screen">
+      <div className="w-full md:w-[60%]">
         <div className="bg-black rounded-xl p-4">
           <div className="flex items-center gap-4 mb-2">
             <span className="text-white font-bold text-lg">{token.name} Price Chart</span>
@@ -155,75 +155,76 @@ export const TokenDetailsClient = ({ token, chainId }: TokenDetailsClientProps) 
               </div>
             </div>
           ) : (
-            <Line
-              data={(canvas) => {
-                const ctx = (canvas as HTMLCanvasElement).getContext('2d');
-                if (!ctx) return {};
-                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                gradient.addColorStop(0, 'rgba(168,85,247,0.4)');
-                gradient.addColorStop(1, 'rgba(168,85,247,0)');
-                return {
-                  labels: historicData.map((point) => formatChartDate(point[0], days)),
-                  datasets: [
-                    {
-                      data: historicData.map((point) => point[1]),
-                      label: `Price (Past ${days} Days) in ${currency.toUpperCase()}`,
+            <div className="max-h-full w-full overflow-hidden">
+              <Line
+                data={(canvas) => {
+                  const ctx = (canvas as HTMLCanvasElement).getContext('2d');
+                  if (!ctx) return {};
+                  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                  gradient.addColorStop(0, 'rgba(168,85,247,0.4)');
+                  gradient.addColorStop(1, 'rgba(168,85,247,0)');
+                  return {
+                    labels: historicData.map((point) => formatChartDate(point[0], days)),
+                    datasets: [
+                      {
+                        data: historicData.map((point) => point[1]),
+                        label: `Price (Past ${days} Days) in ${currency.toUpperCase()}`,
+                        borderColor: '#a855f7',
+                        backgroundColor: gradient,
+                        fill: true,
+                      },
+                    ],
+                  };
+                }}
+                options={{
+                  responsive: true,
+                  legend: { display: false },
+                  tooltips: {
+                    callbacks: {
+                      label: function (tooltipItem) {
+                        const value = tooltipItem.yLabel;
+                        return truncateNumber(value || '0');
+                      },
+                    },
+                  },
+                  elements: {
+                    point: { radius: 1 },
+                    line: {
+                      borderWidth: 2,
                       borderColor: '#a855f7',
-                      backgroundColor: gradient,
-                      fill: true,
-                    },
-                  ],
-                };
-              }}
-              options={{
-                responsive: true,
-                legend: { display: false },
-                tooltips: {
-                  callbacks: {
-                    label: function (tooltipItem) {
-                      const value = tooltipItem.yLabel;
-                      return truncateNumber(value || '0');
+                      backgroundColor: 'transparent',
+                      borderJoinStyle: 'round',
+                      borderCapStyle: 'round',
+                      // Remove shadowBlur and shadowColor here!
                     },
                   },
-                },
-                elements: {
-                  point: { radius: 1 },
-                  line: {
-                    borderWidth: 2,
-                    borderColor: '#a855f7',
-                    backgroundColor: 'transparent',
-                    borderJoinStyle: 'round',
-                    borderCapStyle: 'round',
-                    // Remove shadowBlur and shadowColor here!
-                  },
-                },
-                scales: {
-                  yAxes: [
-                    {
-                      ticks: {
-                        callback: function (value: number | string) {
-                          return truncateNumber(value);
+                  scales: {
+                    yAxes: [
+                      {
+                        ticks: {
+                          callback: function (value: number | string) {
+                            return truncateNumber(value);
+                          },
                         },
                       },
-                    },
-                  ],
-                  xAxes: [
-                    {
-                      ticks: {
-                        autoSkip: true,
-                        maxTicksLimit: 8,
+                    ],
+                    xAxes: [
+                      {
+                        ticks: {
+                          autoSkip: true,
+                          maxTicksLimit: 8,
+                        },
                       },
-                    },
-                  ],
-                },
-              }}
-              plugins={[glowPlugin]}
-              height={400}
-            />
+                    ],
+                  },
+                }}
+                plugins={[glowPlugin]}
+              />
+            </div>
           )}
         </div>
       </div>
-      <div className="w-full max-w-md">
+      <div className="w-full md:w-[40%] ">
         <SwapModal initialDestToken={token} showLiveTokenFee={false} />
       </div>
     </main>
