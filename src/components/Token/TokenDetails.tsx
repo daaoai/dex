@@ -9,8 +9,6 @@ import { LineChart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import SwapModal from '../swap/SwapModal';
-import { customTokensByChainId } from '@/helper/token';
-import type { Chart } from 'chart.js';
 
 const chartDays = [
   { label: '24 Hours', value: 1 },
@@ -18,7 +16,7 @@ const chartDays = [
   { label: '30 Days', value: 30 },
   { label: '90 Days', value: 90 },
   { label: '1 Year', value: 365 },
-  // { label: 'Max', value: 'max' },
+  // { label: 'Max', value: 'max' }, // enabled only for pro plan
 ];
 
 // Cache for storing fetched data
@@ -40,7 +38,7 @@ export const TokenDetailsClient = ({ token, chainId }: TokenDetailsClientProps) 
 
   // Ensure token has a logo and coingeckoId
   if (!token.logo) {
-    token.logo = customTokensByChainId[chainId]?.[token.address]?.logo || '';
+    token.logo = CoinGeckoService.getCoingeckoLocalTokenDetails(token.address, chainId)?.logo || '';
   }
   const coingeckoId = token.coingeckoId;
 

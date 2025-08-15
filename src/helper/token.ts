@@ -6,8 +6,6 @@ import { isNativeCurrency } from '@/utils/token';
 import { erc20Abi, Hex } from 'viem';
 import { multicallForSameContract, multicallWithSameAbi } from './multicall';
 
-export const customTokensByChainId: Record<number, Record<Hex, Token>> = {};
-
 export const fetchErc20Info = async ({ address, chainId }: { address: Hex; chainId: number }) => {
   const multicallRes = (await multicallForSameContract({
     abi: erc20Abi,
@@ -76,11 +74,10 @@ export const getTokenDetails = async ({ address, chainId }: { address: Hex; chai
 
 export const getLocalTokenDetails = ({ address, chainId }: { address: Hex; chainId: number }): Token => {
   const tokenDetails = tokensByChainId[chainId]?.[address];
-  const customTokenDetails = customTokensByChainId[chainId]?.[address];
-  if (!tokenDetails && !customTokenDetails) {
+  if (!tokenDetails) {
     throw new Error('Token not found');
   }
-  return tokenDetails || customTokenDetails;
+  return tokenDetails;
 };
 
 export const getTokensBalance = async (

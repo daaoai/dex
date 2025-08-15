@@ -1,14 +1,15 @@
 import { chainsData } from '@/constants/chains';
-import { customTokensByChainId, getTokensDecimals } from '@/helper/token';
+import { getTokensDecimals } from '@/helper/token';
 import type { CoinGeckoToken, CoinGeckoTokenDetail, CoingeckoCoin, LiveFeedToken } from '@/types/coinGecko';
+import { Token } from '@/types/tokens';
 import { formatToken } from '@/utils/address';
 import axios from 'axios';
 import { Hex } from 'viem';
 
 export class CoinGeckoService {
   private static readonly BASE_URL = 'https://api.coingecko.com/api/v3';
-
   private static allCoingeckoCoins: CoingeckoCoin[] = [];
+  private static coingeckoCoinsByChainId: Record<number, Record<string, Token>> = {};
 
   static async fetchAllCoinsForChainId(chainId: number): Promise<Record<string, CoingeckoCoin>> {
     const chainCoingeckoId = chainsData[chainId]?.geckoId;
@@ -49,6 +50,18 @@ export class CoinGeckoService {
     return null;
   }
 
+  static getCoingeckoLocalTokenDetails(address: Hex, chainId: number): Token | null {
+    const tokensByIdForChain = CoinGeckoService.coingeckoCoinsByChainId[chainId];
+    if (!tokensByIdForChain) {
+      return null;
+    }
+    const token = tokensByIdForChain[address];
+    if (!token) {
+      return null;
+    }
+    return token;
+  }
+
   /**
    * Fetch trending meme tokens from CoinGecko API
    * @param perPage Number of tokens to fetch (default: 10)
@@ -84,16 +97,16 @@ export class CoinGeckoService {
     );
     marketData.forEach((token) => {
       const address = formatToken(token.address);
-      if (!customTokensByChainId[chainId]) {
-        customTokensByChainId[chainId] = {};
+      if (!CoinGeckoService.coingeckoCoinsByChainId[chainId]) {
+        CoinGeckoService.coingeckoCoinsByChainId[chainId] = {};
       }
-      customTokensByChainId[chainId][address] = {
+      CoinGeckoService.coingeckoCoinsByChainId[chainId][address] = {
+        ...token,
+        logo: token.image,
+        coingeckoId: token.id,
         address,
-        name: token.name,
         symbol: token.symbol.toUpperCase(),
         decimals: tokenDecimals[address] || 18,
-        coingeckoId: token.id,
-        logo: token.image,
       };
     });
 
