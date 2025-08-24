@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { useState, useRef, useEffect } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/shadcn/components/ui/tooltip';
 
-const copyToClipboard = (text: string) => {
+export const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text);
 };
 
