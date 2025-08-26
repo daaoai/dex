@@ -24,17 +24,22 @@ export default function Header() {
             <p className="text-[#DBDFFF] text-xl font-bold">Synthari</p>
           </Link>
           <nav className="hidden md:flex items-center space-x-6">
-            {navLinks.map(({ name, href }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`font-semibold ${
-                  pathname === href ? 'text-primary-6' : 'text-gray-400'
-                } hover:text-white transition-colors`}
-              >
-                {name}
-              </Link>
-            ))}
+            {navLinks.map(({ name, href }) => {
+              const isExternal = href.startsWith('http');
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  target={isExternal ? '_blank' : undefined}
+                  rel={isExternal ? 'noopener noreferrer' : undefined}
+                  className={`font-semibold ${
+                    pathname === href ? 'text-primary-6' : 'text-gray-400'
+                  } hover:text-white transition-colors`}
+                >
+                  {name}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="hidden md:flex ml-4">
@@ -147,18 +152,23 @@ export default function Header() {
           </Link>
 
           <nav className="flex flex-col space-y-4">
-            {navLinks.map(({ name, href }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`text-lg font-semibold ${
-                  pathname === href ? 'text-primary-6' : 'text-gray-300'
-                } hover:text-white transition-colors`}
-                onClick={() => setMenuOpen(false)}
-              >
-                {name}
-              </Link>
-            ))}
+            {navLinks.map(({ name, href }) => {
+              const isExternal = href.startsWith('http');
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  target={isExternal ? '_blank' : undefined}
+                  rel={isExternal ? 'noopener noreferrer' : undefined}
+                  className={`text-lg font-semibold ${
+                    pathname === href ? 'text-primary-6' : 'text-gray-300'
+                  } hover:text-white transition-colors`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {name}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Add search modal trigger in mobile */}
