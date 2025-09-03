@@ -14,7 +14,7 @@ type TokenOverviewProps = {
 
 export const TokenOverview = ({ token, coingeckoTokenDetails }: TokenOverviewProps) => {
   return (
-    <div className="bg-gray-900 rounded-xl p-6">
+    <div className="rounded-xl p-6">
       <div className="flex items-center space-x-4 mb-4">
         <div className="relative w-16 h-16 rounded-full overflow-hidden bg-purple-600 flex items-center justify-center">
           {token.logo || coingeckoTokenDetails?.image ? (

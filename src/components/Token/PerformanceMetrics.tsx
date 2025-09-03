@@ -8,7 +8,7 @@ type PerformanceMetricsProps = {
 
 export const PerformanceMetrics = ({ dexScreenerTokenDetails }: PerformanceMetricsProps) => {
   return (
-    <div className="bg-gray-900 rounded-xl p-6">
+    <div className=" rounded-xl p-6">
       <h3 className="text-lg font-semibold mb-4">Performance</h3>
       <div className="grid grid-cols-4 gap-4">
         <div className="text-center">

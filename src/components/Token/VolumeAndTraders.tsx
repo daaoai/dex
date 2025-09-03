@@ -8,7 +8,7 @@ type VolumeAndTradersProps = {
 
 export const VolumeAndTraders = ({ dexScreenerTokenDetails }: VolumeAndTradersProps) => {
   return (
-    <div className="bg-gray-900 rounded-xl p-6">
+    <div className=" rounded-xl p-6">
       <h3 className="text-lg font-semibold mb-4">Volume & Traders</h3>
       <div className="space-y-4">
         <div>

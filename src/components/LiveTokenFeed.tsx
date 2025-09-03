@@ -15,7 +15,7 @@ type LiveTokenFeedProps = {
 };
 
 // Base speed (px/sec)
-const SPEED_PX_PER_SEC = 16;
+const SPEED_PX_PER_SEC = 50;
 
 export default function LiveTokenFeed({ chainId }: LiveTokenFeedProps) {
   const dispatch = useDispatch();
@@ -174,7 +174,7 @@ function TokenFeed({
     <motion.div
       key={distancePx}
       ref={trackRef}
-      className="absolute inset-0 flex items-center whitespace-nowrap gap-10 px-6 will-change-transform"
+      className="absolute inset-0 flex items-center whitespace-nowrap gap-5 px-6 will-change-transform"
       animate={{ x: [0, -distancePx] }}
       transition={{
         repeat: Infinity,

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 import { Token } from '@/types/tokens';
 import { TopPool } from '@/types/pools';
@@ -38,6 +38,7 @@ export default function HeaderSearch({ className = '', onClose }: HeaderSearchPr
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const loadData = async () => {
@@ -128,7 +129,11 @@ export default function HeaderSearch({ className = '', onClose }: HeaderSearchPr
   const handleResultClick = (result: SearchResult) => {
     if (result.type === 'token') {
       const token = result.data as Token;
-      router.push(`/trade?destToken=${token.address}`);
+      if (pathname.includes('token')) {
+        router.push(`/token/${token.address}`);
+      } else {
+        router.push(`/trade?destToken=${token.address}`);
+      }
     } else {
       const pool = result.data as TopPool;
       router.push(`/explore/${pool.address}`);

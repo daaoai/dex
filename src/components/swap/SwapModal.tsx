@@ -134,8 +134,6 @@ export default function SwapModal({ initialSrcToken, initialDestToken, showLiveT
     setDestAmount('0');
   };
 
-  // useEffects
-
   // Update tokens when initial props change
   useEffect(() => {
     if (initialSrcToken && initialSrcToken.address !== srcToken?.address) {

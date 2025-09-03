@@ -8,7 +8,7 @@ type SentimentProps = {
 
 export const Sentiment = ({ coingeckoTokenDetails }: SentimentProps) => {
   return (
-    <div className="bg-gray-900 rounded-xl p-6">
+    <div className=" rounded-xl p-6">
       <h3 className="text-lg font-semibold mb-4">Sentiment</h3>
       <div className="text-center">
         <div className="relative w-24 h-24 mx-auto mb-4">

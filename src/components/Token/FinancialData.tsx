@@ -13,7 +13,7 @@ type FinancialDataProps = {
 
 export const FinancialData = ({ coingeckoTokenDetails, dexScreenerTokenDetails }: FinancialDataProps) => {
   return (
-    <div className="bg-gray-900 rounded-xl p-6">
+    <div className="rounded-xl p-6">
       <h3 className="text-lg font-semibold mb-4">Financial Data</h3>
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div>
