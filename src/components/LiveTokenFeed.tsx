@@ -81,7 +81,7 @@ export default function LiveTokenFeed({ chainId }: LiveTokenFeedProps) {
   }
 
   return (
-    <div className="flex flex-col gap-3 w-full">
+    <div className="flex flex-col w-full">
       <TokenRow
         label="MEMES"
         tokens={memeTokens}
@@ -112,30 +112,14 @@ function TokenRow({
 }) {
   return (
     <div className="flex items-center w-full h-[56px] relative">
-      {/* Fixed label on the left */}
-      <div className="z-10 flex-shrink-0 h-full flex items-center px-4 bg-gradient-to-r from-zinc-900 to-zinc-800 border-r border-white/10">
-        <span className="text-xs font-semibold uppercase tracking-wider text-zinc-300">{label}</span>
-      </div>
-
-      {/* Scrolling ticker */}
       <div className="relative flex-1 overflow-hidden h-full">
-        {/* left fade so tokens appear from behind label */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 z-10"
-          style={{
-            WebkitMaskImage: 'linear-gradient(to right, transparent, black)',
-            maskImage: 'linear-gradient(to right, transparent, black)',
-            background: 'linear-gradient(to right, rgba(0,0,0,1), rgba(0,0,0,1))',
-          }}
-        />
+        <div aria-hidden className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 z-10" />
         <TokenFeed tokens={tokens} pxPerSec={pxPerSec} onTokenClick={onTokenClick} />
       </div>
     </div>
   );
 }
 
-/** ===== Scrolling feed ===== */
 function TokenFeed({
   tokens,
   pxPerSec,
@@ -214,12 +198,8 @@ function FeedTokenItem({ item, onClick }: { item: LiveFeedToken; onClick: () => 
         group inline-flex items-center gap-3
         min-w-fit
         rounded-xl
-        bg-white/[0.06] backdrop-blur
-        hover:bg-white/[0.1] active:bg-white/[0.12]
-        border border-white/10
         px-4 py-1.5
         text-white text-sm
-        shadow-[0_0_0_1px_rgba(255,255,255,0.05)_inset,0_4px_12px_rgba(0,0,0,0.35)]
         transition-all
       "
     >

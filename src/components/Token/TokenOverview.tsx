@@ -28,13 +28,15 @@ export const TokenOverview = ({ token, coingeckoTokenDetails }: TokenOverviewPro
           )}
         </div>
         <div>
-          <div className="flex items-center space-x-2 mb-2">
+          <div className="flex flex-col items-start gap-4 mb-2">
             <h1 className="text-2xl font-bold">{token.name}</h1>
-            <span className="bg-blue-600 text-white px-2 py-1 rounded text-xs">Official</span>
-            <span className="bg-green-600 text-white px-2 py-1 rounded text-xs">Trending</span>
+            <div className="flex items-center gap-4">
+              <span className="bg-[#9066FB] text-white px-2 py-1 rounded text-xs">Official</span>
+              <span className="bg-[#9066FB] text-white px-2 py-1 rounded text-xs">Trending</span>
+            </div>
           </div>
           <div className="flex items-center space-x-2 text-gray-400">
-            <span className="text-sm">{getEllipsisTxt(token.address)}</span>
+            <span className="text-sm text-[#FAE170]">{getEllipsisTxt(token.address)}</span>
             <button onClick={() => copyToClipboard(token.address)} className="hover:text-white transition-colors">
               <Copy className="w-4 h-4" />
             </button>

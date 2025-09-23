@@ -24,7 +24,7 @@ export const ChartSection = ({
   };
 
   return (
-    <div className="bg-gray-900 rounded-xl p-6">
+    <div className="bg-[#0B0E11] rounded-xl p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex space-x-4">
           <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">Chart</button>
