@@ -24,26 +24,18 @@ export const TradingInterface = ({ token, coingeckoTokenDetails, dexScreenerToke
         {/* Buy Button */}
         <div className="bg-[#0B0E11] rounded-xl p-6">
           <div className="flex items-center space-x-2 mb-4">
-            <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-lg">↑</span>
-            </div>
+            <img src="/upArrow.svg" alt="Buy" className="w-8 h-8" />
             <h3 className="text-lg font-semibold">Buy {token.symbol}</h3>
           </div>
 
           <div className="space-y-4">
-            <p className="text-gray-400 text-sm">
-              Buy {token.symbol} tokens using other cryptocurrencies with the best rates available.
-            </p>
-
-            <div className="bg-gray-800 rounded-lg p-4">
-              <div className="text-center">
-                <p className="text-gray-400 text-xs mb-1">Current Price</p>
-                <p className="text-xl font-bold text-green-400">
-                  {dexScreenerTokenDetails?.priceUsd
-                    ? `$${parseFloat(dexScreenerTokenDetails.priceUsd).toFixed(6)}`
-                    : formatPrice(coingeckoTokenDetails?.currentPrice)}
-                </p>
-              </div>
+            <div className="flex p-4 items-center justify-between">
+              <p className="text-gray-400 text-xs mb-1">Current Price</p>
+              <p className="text-xl font-bold text-[#3CE3AB]">
+                {dexScreenerTokenDetails?.priceUsd
+                  ? `$${parseFloat(dexScreenerTokenDetails.priceUsd).toFixed(6)}`
+                  : formatPrice(coingeckoTokenDetails?.currentPrice)}
+              </p>
             </div>
 
             <SwapDialog
@@ -53,7 +45,10 @@ export const TradingInterface = ({ token, coingeckoTokenDetails, dexScreenerToke
                 console.log('Buy swap completed');
               }}
             >
-              <button className="w-full bg-gradient-to-r from-green-600 to-green-500 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center justify-center space-x-2">
+              <button
+                className="w-full bg-gradient-to-r from-[#492AFF] to-[#F49167] text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center justify-center space-x-2 shadow-inner"
+                style={{ boxShadow: 'inset 0 4px 24px 0 rgba(248, 242, 254, 0.12)' }}
+              >
                 <span>Buy {token.symbol}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
@@ -64,28 +59,20 @@ export const TradingInterface = ({ token, coingeckoTokenDetails, dexScreenerToke
         {/* Sell Button */}
         <div className="bg-[#0B0E11] rounded-xl p-6">
           <div className="flex items-center space-x-2 mb-4">
-            <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-lg">↓</span>
-            </div>
+            <img src="/downArrow.svg" alt="Sell" className="w-8 h-8" />
             <h3 className="text-lg font-semibold">Sell {token.symbol}</h3>
           </div>
 
           <div className="space-y-4">
-            <p className="text-gray-400 text-sm">
-              Sell your {token.symbol} tokens for other cryptocurrencies with minimal slippage.
-            </p>
-
-            <div className="bg-gray-800 rounded-lg p-4">
-              <div className="text-center">
-                <p className="text-gray-400 text-xs mb-1">24h Change</p>
-                <p
-                  className={`text-xl font-bold ${dexScreenerTokenDetails?.priceChange.h24 && dexScreenerTokenDetails.priceChange.h24 >= 0 ? 'text-green-400' : 'text-red-400'}`}
-                >
-                  {dexScreenerTokenDetails?.priceChange.h24
-                    ? `${dexScreenerTokenDetails.priceChange.h24 >= 0 ? '+' : ''}${dexScreenerTokenDetails.priceChange.h24.toFixed(2)}%`
-                    : 'N/A'}
-                </p>
-              </div>
+            <div className="flex p-4 items-center justify-between">
+              <p className="text-gray-400 text-xs mb-1">24h Change</p>
+              <p
+                className={`text-xl font-bold ${dexScreenerTokenDetails?.priceChange.h24 && dexScreenerTokenDetails.priceChange.h24 >= 0 ? 'text-[#3CE3AB]' : 'text-[#F23574]'}`}
+              >
+                {dexScreenerTokenDetails?.priceChange.h24
+                  ? `${dexScreenerTokenDetails.priceChange.h24 >= 0 ? '+' : ''}${dexScreenerTokenDetails.priceChange.h24.toFixed(2)}%`
+                  : 'N/A'}
+              </p>
             </div>
 
             <SwapDialog
@@ -95,7 +82,10 @@ export const TradingInterface = ({ token, coingeckoTokenDetails, dexScreenerToke
                 console.log('Sell swap completed');
               }}
             >
-              <button className="w-full bg-gradient-to-r from-red-600 to-red-500 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center justify-center space-x-2">
+              <button
+                className="w-full bg-gradient-to-r from-[#492AFF] to-[#F49167] text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center justify-center space-x-2 shadow-inner"
+                style={{ boxShadow: 'inset 0 4px 24px 0 rgba(248, 242, 254, 0.12)' }}
+              >
                 <span>Sell {token.symbol}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>

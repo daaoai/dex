@@ -10,7 +10,7 @@ export const Sentiment = ({ coingeckoTokenDetails }: SentimentProps) => {
   return (
     <div className=" rounded-xl p-6">
       <h3 className="text-lg font-semibold mb-4">Sentiment</h3>
-      <div className="text-center">
+      <div className="bg-[#0B0E11] border border-[#1F2530] rounded-xl p-6">
         <div className="relative w-24 h-24 mx-auto mb-4">
           <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="40" fill="none" stroke="#374151" strokeWidth="8" />

@@ -147,23 +147,23 @@ export const RecentTransactions = ({ transactions, transactionsLoading, chainId 
               {transactions.length > 0 ? (
                 transactions.slice(0, 10).map((tx, index) => {
                   const isBuy = tx.type === 'Buy';
-                  const rowColor = isBuy ? 'text-green-500' : 'text-red-500';
+                  const rowColor = isBuy ? 'text-[#3CE3AB]' : 'text-[#F23574]';
 
                   return (
                     <tr key={`${tx.id}-${index}`} className="hover:bg-gray-800/30 transition-colors">
                       <td className="py-3 text-sm text-gray-300">{tx.age}</td>
                       <td className="py-3">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            isBuy ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                          className={`px-3 py-1 rounded-sm text-xs font-medium ${
+                            isBuy ? 'bg-[#37CB9A1F] text-[#3CE3AB]' : 'bg-[#F235741F] text-[#F23574]'
                           }`}
                         >
                           {tx.type}
                         </span>
                       </td>
-                      <td className={`py-3 text-sm font-semibold ${rowColor}`}>{formatPrice(tx.price)}</td>
-                      <td className={`py-3 text-sm font-semibold ${rowColor}`}>{formatVolume(tx.usdAmount)}</td>
-                      <td className={`py-3 text-sm font-semibold ${rowColor}`}>
+                      <td className={`py-3 text-sm font-normal ${rowColor}`}>{formatPrice(tx.price)}</td>
+                      <td className={`py-3 text-sm font-normal ${rowColor}`}>{formatVolume(tx.usdAmount)}</td>
+                      <td className={`py-3 text-sm font-normal ${rowColor}`}>
                         {formatTokenAmount(tx.tokenAmount, tx.tokenSymbol)}
                       </td>
                       <td className="py-3 text-sm text-white">{truncateAddress(tx.trader)}</td>
