@@ -47,12 +47,6 @@ export const FinancialData = ({ coingeckoTokenDetails, dexScreenerTokenDetails }
     return `$${formatNumber(coingeckoTokenDetails?.currentPrice || 0)}`;
   };
 
-  const getTradingPair = () => {
-    if (dexScreenerTokenDetails?.baseToken.symbol && dexScreenerTokenDetails?.quoteToken.symbol) {
-      return `${dexScreenerTokenDetails.baseToken.symbol} / ${dexScreenerTokenDetails.quoteToken.symbol}`;
-    }
-    return 'N/A';
-  };
 
   const getPriceChange = (timeframe: string) => {
     if (!dexScreenerTokenDetails?.priceChange) return 0;
@@ -83,17 +77,6 @@ export const FinancialData = ({ coingeckoTokenDetails, dexScreenerTokenDetails }
     return 0;
   };
 
-  const getBuySellRatio = () => {
-    const txns = dexScreenerTokenDetails?.txns.h24;
-    if (txns && txns.buys + txns.sells > 0) {
-      const buyPercentage = (txns.buys / (txns.buys + txns.sells)) * 100;
-      return {
-        buy: Math.round(buyPercentage),
-        sell: Math.round(100 - buyPercentage),
-      };
-    }
-    return { buy: 58, sell: 42 }; // Default mock data
-  };
 
   return (
     <div className="rounded-xl p-6 bg-gray-900/50">

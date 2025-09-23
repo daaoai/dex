@@ -83,13 +83,11 @@ export default function LiveTokenFeed({ chainId }: LiveTokenFeedProps) {
   return (
     <div className="flex flex-col w-full">
       <TokenRow
-        label="MEMES"
         tokens={memeTokens}
         pxPerSec={pxPerSec}
         onTokenClick={(t) => router.push(`/token/${t.address}`)}
       />
       <TokenRow
-        label="ALTS"
         tokens={altTokens}
         pxPerSec={pxPerSec}
         onTokenClick={(t) => router.push(`/token/${t.address}`)}
@@ -100,12 +98,10 @@ export default function LiveTokenFeed({ chainId }: LiveTokenFeedProps) {
 
 /** ===== Row wrapper: fixed label left + scrolling track right ===== */
 function TokenRow({
-  label,
   tokens,
   pxPerSec,
   onTokenClick,
 }: {
-  label: string;
   tokens: LiveFeedToken[];
   pxPerSec: number;
   onTokenClick: (t: LiveFeedToken) => void;
