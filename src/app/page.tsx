@@ -8,7 +8,10 @@ const Home = () => {
   const chainId = supportedChainIds.bsc;
 
   return (
-    <main className="flex flex-col items-center justify-start min-h-[calc(100vh-4rem)] bg-black bg-cover bg-center">
+    <main
+      className="flex flex-col items-center justify-start h-[200vh] bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: 'url(/homeBg.png)' }}
+    >
       <LiveTokenFeed chainId={chainId} />
       <SwapModal />
     </main>
