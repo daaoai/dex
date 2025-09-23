@@ -223,7 +223,7 @@ export const TokenDetailsClient = ({ token, chainId }: TokenDetailsClientProps) 
         </div>
       </div>
       <div className="w-full md:w-[40%] ">
-        <SwapModal initialDestToken={token} showLiveTokenFee={false} />
+        <SwapModal initialDestToken={token} />
       </div>
     </main>
   );
