@@ -4,7 +4,6 @@ import { truncateNumber } from '@/utils/truncateNumber';
 import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import { formatUnits } from 'viem';
-import BalancePercentageButtons from '../ui/BalancePercentageButtons';
 import Text from '../ui/Text';
 
 type SelectTokenCardProps = {
@@ -32,21 +31,12 @@ export default function SelectTokenCard({
 
   return (
     <div
-      className={`group border border-stroke-3 rounded-lg p-4 transition-colors mb-4 ${isSell ? '-mb-3.5' : ''} ${token ? 'bg-background-8' : 'bg-background-17'}`}
+      className={`group border border-stroke-3 rounded-2xl p-4 transition-colors mb-4 ${isSell ? '-mb-3.5' : ''} ${token ? 'bg-[#131822]' : 'bg-[#0D1117]'}`}
     >
       <div className="flex justify-between items-center mb-3">
         <Text type="span" className="text-zinc-400 text-sm font-medium">
           {title}
         </Text>
-
-        {isSell && (
-          <BalancePercentageButtons
-            balance={balance || 0n}
-            decimals={token?.decimals || 18}
-            setAmount={setAmount}
-            disabled={!token || !balance || balance === 0n}
-          />
-        )}
       </div>
 
       <div className="flex justify-between items-start mb-3">

@@ -12,8 +12,6 @@ import { useEffect, useState } from 'react';
 import { BackButton } from './BackButton';
 import { TokenOverview } from './TokenOverview';
 import { FinancialData } from './FinancialData';
-import { PerformanceMetrics } from './PerformanceMetrics';
-import { VolumeAndTraders } from './VolumeAndTraders';
 import { TradingData } from './TradingData';
 import { Sentiment } from './Sentiment';
 import { ChartSection } from './ChartSection';
@@ -104,8 +102,6 @@ export const TokenPage = ({ token, chainId }: TokenPageProps) => {
               coingeckoTokenDetails={coingeckoTokenDetails}
               dexScreenerTokenDetails={dexScreenerTokenDetails}
             />
-            <PerformanceMetrics dexScreenerTokenDetails={dexScreenerTokenDetails} />
-            <VolumeAndTraders dexScreenerTokenDetails={dexScreenerTokenDetails} />
             <TradingData dexScreenerTokenDetails={dexScreenerTokenDetails} />
             <Sentiment coingeckoTokenDetails={coingeckoTokenDetails} />
           </div>

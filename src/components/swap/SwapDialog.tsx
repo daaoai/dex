@@ -20,7 +20,7 @@ export default function SwapDialog({ children, initialSrcToken, initialDestToken
       {/* Custom Overlay */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9998]"
+          className="fixed inset-0 backdrop-blur-sm z-[9998]"
           style={{
             position: 'fixed',
             top: 0,
@@ -37,7 +37,7 @@ export default function SwapDialog({ children, initialSrcToken, initialDestToken
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogContent
-          className="sm:max-w-md border-none bg-background-8 text-white z-[9999]"
+          className="sm:max-w-md border-none text-white z-[9999]"
           style={{
             position: 'fixed',
             left: '50%',
@@ -51,7 +51,7 @@ export default function SwapDialog({ children, initialSrcToken, initialDestToken
           }}
         >
           <DialogHeader>
-            <DialogTitle className="text-white text-center">Swap Tokens</DialogTitle>
+            <DialogTitle className="text-white text-center"></DialogTitle>
           </DialogHeader>
           <div className="w-full">
             <SwapContent

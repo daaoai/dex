@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 import { formatUnits, parseUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import Image from 'next/image';
-import Text from '../ui/Text';
+import BalancePercentageButtons from '../ui/BalancePercentageButtons';
 
 interface SwapContentProps {
   initialSrcToken?: Token | null;
@@ -181,11 +181,9 @@ export default function SwapContent({ initialSrcToken, initialDestToken, onSwapC
   return (
     <>
       <div className="text-white flex justify-between items-center mb-2">
-        <div className="relative flex justify-start w-full max-w-sm py-4">
-          <Text type="h2" className="text-md bg-background-16 px-4 py-2 rounded-3xl">
-            Swap
-          </Text>
-        </div>
+        {/* <div className="relative flex justify-start w-full max-w-sm py-4"> */}
+        <p className="text-2xl font-extrabold py-2 text-[#DAE4E3]">Swap</p>
+        {/* </div> */}
         <SettingsModal
           slippage={slippage}
           setSlippage={setSlippage}
@@ -214,49 +212,68 @@ export default function SwapContent({ initialSrcToken, initialDestToken, onSwapC
         isOpen={showSelector}
         selectedTokens={[srcToken, destToken]}
       />
-      <SelectTokenCard
-        title="Selling"
-        token={srcToken}
-        amount={srcAmount}
-        setAmount={(val: string) => setSrcAmount(isNaN(Number(val)) ? '' : val)}
-        onTokenClick={() => openSelector('src')}
-        balance={srcBalance}
-      />
-      <div className="flex justify-center -mt-8 -mb-6">
-        <button
-          onClick={handleToggle}
-          className={`bg-background hover:bg-background-2 p-3 rounded-full border-4 transition-all duration-300 hover:border-stroke-6 group ${
-            srcToken || destToken ? 'border-stroke-6' : 'border-black'
-          }`}
-          aria-label="Switch tokens"
-        >
-          <ArrowDown
-            className={`w-4 h-4 transition-all duration-300 group-hover:text-stroke-6 font-extrabold ${
-              srcToken && !destToken
-                ? 'text-stroke-6 rotate-0 group-hover:rotate-180'
-                : !srcToken && destToken
-                  ? 'text-stroke-6 rotate-180 group-hover:rotate-0'
-                  : srcToken && destToken
-                    ? 'text-grey rotate-0 group-hover:rotate-180'
-                    : 'text-grey rotate-0'
+      <div className="bg-[#07090C] p-6 rounded-2xl border-[#1F2530] border-2">
+        <SelectTokenCard
+          title="Selling"
+          token={srcToken}
+          amount={srcAmount}
+          setAmount={(val: string) => setSrcAmount(isNaN(Number(val)) ? '' : val)}
+          onTokenClick={() => openSelector('src')}
+          balance={srcBalance}
+        />
+        <div className="flex justify-center -mt-7 -mb-5">
+          <button
+            onClick={handleToggle}
+            className={`bg-background hover:bg-background-2 p-3 rounded-full border-4 transition-all duration-300 hover:border-stroke-6 group ${
+              srcToken || destToken ? 'border-stroke-6' : 'border-black'
             }`}
-          />
-        </button>
-      </div>
-      <SelectTokenCard
-        title="Buying"
-        token={destToken}
-        amount={destAmount}
-        setAmount={() => {}}
-        isDisabled
-        onTokenClick={() => openSelector('dest')}
-        balance={destBalance}
-        isLoading={quoteLoading}
-      />
-      <Button
-        onClick={handleSwap}
-        disabled={isButtonDisabled}
-        className={`
+            aria-label="Switch tokens"
+          >
+            <ArrowDown
+              className={`w-4 h-4 transition-all duration-300 group-hover:text-stroke-6 font-extrabold ${
+                srcToken && !destToken
+                  ? 'text-stroke-6 rotate-0 group-hover:rotate-180'
+                  : !srcToken && destToken
+                    ? 'text-stroke-6 rotate-180 group-hover:rotate-0'
+                    : srcToken && destToken
+                      ? 'text-grey rotate-0 group-hover:rotate-180'
+                      : 'text-grey rotate-0'
+              }`}
+            />
+          </button>
+        </div>
+        <SelectTokenCard
+          title="Buying"
+          token={destToken}
+          amount={destAmount}
+          setAmount={() => {}}
+          isDisabled
+          onTokenClick={() => openSelector('dest')}
+          balance={destBalance}
+          isLoading={quoteLoading}
+        />
+        <BalancePercentageButtons
+          balance={srcBalance || 0n}
+          decimals={srcToken?.decimals || 18}
+          setAmount={(val: string) => setSrcAmount(isNaN(Number(val)) ? '' : val)}
+          disabled={!srcToken || !srcBalance || srcBalance === 0n}
+        />
+        <div className="flex items-center justify-between py-6 border-b border-[#3F3F47]">
+          <p className="text-[#FFF7DF] font-normal text-base">Protocol</p>
+          <p className="text-[#8F97A6] font-normal text-base">Synthari Protocol</p>
+        </div>
+        <div className="flex items-center justify-between py-6 border-b border-[#3F3F47]">
+          <p className="text-[#FFF7DF] font-normal text-base">App</p>
+          <p className="text-[#8F97A6] font-normal text-base">Synthari</p>
+        </div>
+        <div className="flex items-center justify-between py-6">
+          <p className="text-[#FFF7DF] font-normal text-base">Transaction Fee</p>
+          <p className="text-[#8F97A6] font-normal text-base">NA</p>
+        </div>
+        <Button
+          onClick={handleSwap}
+          disabled={isButtonDisabled}
+          className={`
           w-full 
           bg-background-21
           text-white 
@@ -274,9 +291,10 @@ export default function SwapContent({ initialSrcToken, initialDestToken, onSwapC
           border border-stroke-8 -mt-2
           bg-gradient-to-r from-[#4021FC] to-[#926EF5] hover:opacity-90 transition-opacity
         `}
-      >
-        {loading ? 'Processing...' : 'Swap'}
-      </Button>
+        >
+          {loading ? 'Processing...' : 'Swap'}
+        </Button>
+      </div>
     </>
   );
 }

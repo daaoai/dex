@@ -8,10 +8,10 @@ type VolumeAndTradersProps = {
 
 export const VolumeAndTraders = ({ dexScreenerTokenDetails }: VolumeAndTradersProps) => {
   return (
-    <div className=" rounded-xl p-6">
+    <div className="mt-4">
       <h3 className="text-lg font-semibold mb-4">Volume & Traders</h3>
       <div className="space-y-4">
-        <div>
+        <div className="">
           <p className="text-gray-400 text-sm mb-2">24h Vol</p>
           <p className="text-lg font-semibold">
             {dexScreenerTokenDetails?.volume.h24 ? `$${dexScreenerTokenDetails.volume.h24.toLocaleString()}` : 'N/A'}

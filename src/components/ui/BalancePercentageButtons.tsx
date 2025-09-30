@@ -23,16 +23,16 @@ const BalancePercentageButtons: React.FC<BalancePercentageButtonsProps> = ({
   const PERCENTAGES = [25, 50, 75, 100];
 
   return (
-    <div className="flex gap-1">
+    <div className="flex w-full gap-3 mt-12 mb-6">
       {PERCENTAGES.map((percent) => (
         <button
           key={percent}
           type="button"
           onClick={() => handleClick(percent)}
           disabled={disabled}
-          className={`text-xs px-2 py-0.5 rounded-3xl transition-colors duration-200
-            ${selected === percent ? 'bg-background-24 text-white' : 'bg-background-13 text-grey hover:bg-background-16'}
-          `}
+          className={`flex-1 px-4 py-3 rounded-3xl transition-colors duration-200 border-[#1F2530] border-2 text-sm cursor-pointer
+          ${selected === percent ? 'bg-[#212121] text-[#DAE4E3]' : 'bg-[#000000] text-grey hover:bg-[#000000]'}
+        `}
         >
           {percent === 100 ? 'Max' : `${percent}%`}
         </button>
