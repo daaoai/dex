@@ -1,0 +1,19 @@
+// Uniswap V3 contracts on base chain:
+
+// UniswapV3Factory:  0xD2421b28D20031A09d9638586caF1f82D671aDc0
+//   NonfungibleTokenPositionDescriptor:  0x88c9a33b19472165359032553719458d4D9bB12d
+//   NonfungiblePositionManager:  0xE1CeA8014871e05EEDaCDf75a5794e0634116585
+//   SwapRouter:  0x5ecE8D665f4AE2f303E5643F0BcCb8Beabd70DF6
+//   QuoterV2:  0x2527bD20c7f05A4d514056D8Fc2e95905F5fE0e2
+//   TickLens:  0xa4c3eDA0E6C4Ad82Fa8962129010cC57d6e5198A
+//   UniswapInterfaceMulticall:  0xA53B2F4e131AE2eBb01a72a45F88d9417bAf9aA7
+
+export const baseAddresses = {
+  v3Factory: '0xD2421b28D20031A09d9638586caF1f82D671aDc0',
+  nftManager: '0xE1CeA8014871e05EEDaCDf75a5794e0634116585',
+  nftDescriptor: '0x88c9a33b19472165359032553719458d4D9bB12d',
+  swapRouter: '0x5ecE8D665f4AE2f303E5643F0BcCb8Beabd70DF6',
+  v2Quoter: '0x2527bD20c7f05A4d514056D8Fc2e95905F5fE0e2',
+  tickLens: '0xa4c3eDA0E6C4Ad82Fa8962129010cC57d6e5198A',
+  multicall2: '0xA53B2F4e131AE2eBb01a72a45F88d9417bAf9aA7',
+} as const;

@@ -43,7 +43,7 @@ export default function HeaderSearch({ className = '', onClose }: HeaderSearchPr
   useEffect(() => {
     const loadData = async () => {
       try {
-        const tokenList = Object.values(tokensByChainId[supportedChainIds.bsc]).filter(
+        const tokenList = Object.values(tokensByChainId[supportedChainIds.base]).filter(
           (token) => token.address !== zeroAddress,
         );
         setTokens(tokenList);

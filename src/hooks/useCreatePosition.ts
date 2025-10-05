@@ -42,6 +42,16 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     isInitialized: true,
   });
 
+  console.log({
+    lowerTick,
+    upperTick,
+    currentPrice,
+    lowerPrice,
+    upperPrice,
+    poolDetails,
+    sqrtPriceX96: currentPoolData.sqrtPriceX96,
+  });
+
   const [txnInProgress, setTxnInProgress] = useState(false);
   const [txnState, setTxnState] = useState<'approvingToken0' | 'approvingToken1' | 'waitingForConfirmation' | null>(
     null,
@@ -167,6 +177,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     });
     setToken0FormattedAmount('');
     setToken1FormattedAmount('');
+    updateCurrentPrice(sqrtPriceX96, poolDetails);
     setLowerTick(
       V3PoolUtils.nearestUsableTick({
         tick: currentTick - poolDetails.tickSpacing,

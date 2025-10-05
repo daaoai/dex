@@ -5,7 +5,8 @@ import { ChainsConfig } from '../types/chains';
 // const alchemyKey = process.env.NEXT_PUBLIC_ALCHEMY_KEY || 'eF4hCbU9Y8g1Mi_wXfz1zLaIKGLz5-V1';
 
 export const supportedChainIds = {
-  bsc: 56,
+  // bsc: 56,
+  base: 8453,
   // mode: 34443,
   // monad: 10143,
   // bera: 80094,
@@ -47,28 +48,51 @@ export const chainsData: {
   //   },
   //   geckoId: 'monad-testnet',
   // },
-  [supportedChainIds.bsc]: {
-    slug: 'bsc',
-    name: 'Binance Smart Chain',
-    rpcUrls: ['https://binance.llamarpc.com', 'wss://bsc-rpc.publicnode.com'],
-    blockExplorer: 'https://bscscan.com',
+  // [supportedChainIds.base]: {
+  //   slug: 'bsc',
+  //   name: 'Binance Smart Chain',
+  //   rpcUrls: ['https://binance.llamarpc.com', 'wss://bsc-rpc.publicnode.com'],
+  //   blockExplorer: 'https://bscscan.com',
+  //   networkType: 'mainnet',
+  //   logo: 'https://icons.llamao.fi/icons/chains/rsz_binance.jpg',
+  //   wnativeToken: {
+  //     address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+  //     decimals: 18,
+  //     symbol: 'WBNB',
+  //     name: 'Wrapped BNB',
+  //   },
+  //   nativeCurrency: {
+  //     address: zeroAddress,
+  //     name: 'Binance Coin',
+  //     symbol: 'BNB',
+  //     decimals: 18,
+  //   },
+  //   geckoId: 'binance-smart-chain',
+  //   dexScreenerId: 'bsc',
+  //   subgraphURL: 'https://gateway.thegraph.com/api/subgraphs/id/45H7CA13E85dPA1kFCYEj6A8h6gV6L48Tar7bfoQ3S5G',
+  // },
+  [supportedChainIds.base]: {
+    slug: 'base',
+    name: 'Base',
+    rpcUrls: ['https://base.llamarpc.com', 'https://mainnet.base.org', 'https://base.drpc.org'],
+    blockExplorer: 'https://basescan.org',
     networkType: 'mainnet',
-    logo: 'https://icons.llamao.fi/icons/chains/rsz_binance.jpg',
-    wnativeToken: {
-      address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
-      decimals: 18,
-      symbol: 'WBNB',
-      name: 'Wrapped BNB',
-    },
     nativeCurrency: {
       address: zeroAddress,
-      name: 'Binance Coin',
-      symbol: 'BNB',
+      name: 'Ether',
+      symbol: 'ETH',
       decimals: 18,
     },
-    geckoId: 'binance-smart-chain',
-    dexScreenerId: 'bsc',
-    subgraphURL: 'https://gateway.thegraph.com/api/subgraphs/id/45H7CA13E85dPA1kFCYEj6A8h6gV6L48Tar7bfoQ3S5G',
+    wnativeToken: {
+      address: '0x4200000000000000000000000000000000000006',
+      name: 'Wrapped Ether',
+      symbol: 'WETH',
+      decimals: 18,
+    },
+    logo: 'https://icons.llamao.fi/icons/chains/rsz_base.jpg',
+    subgraphURL: 'https://gateway.thegraph.com/api/subgraphs/id/AoG6LH99Wqa8jVbm6ai82UJZpDdsDfTJ5V9xjduJRvw1',
+    dexScreenerId: 'base',
+    geckoId: 'base',
   },
 };
 

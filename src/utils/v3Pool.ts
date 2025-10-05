@@ -31,7 +31,7 @@ export class V3PoolUtils {
     decimal1: number;
   }) => {
     const calculatedTick = Math.floor(
-      Math.log(price / (Math.pow(10, decimal0) / Math.pow(10, decimal1))) / Math.log(V3PoolUtils.tickMultiplier),
+      Math.log(price / Math.pow(10, decimal1 - decimal0)) / Math.log(V3PoolUtils.tickMultiplier),
     );
     return V3PoolUtils.nearestUsableTick({ tick: calculatedTick, tickSpacing });
   };
@@ -60,12 +60,10 @@ export class V3PoolUtils {
     decimal0: number;
     decimal1: number;
   }) => {
-    return new Decimal(sqrtPriceX96.toString())
-      .div(new Decimal(V3PoolUtils.Q96))
-      .pow(2)
-      .mul(new Decimal(10).pow(decimal0))
-      .div(new Decimal(10).pow(decimal1))
-      .toNumber();
+    const sqrtRatio = new Decimal(sqrtPriceX96.toString()).div(V3PoolUtils.Q96);
+    const priceRaw = sqrtRatio.pow(2);
+    const decimalAdjustment = new Decimal(10).pow(decimal1 - decimal0);
+    return priceRaw.mul(decimalAdjustment).toNumber();
   };
 
   public static getSqrtPriceX96FromTick = ({ tick }: { tick: number }) => {

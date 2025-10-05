@@ -37,7 +37,7 @@ export default function TokenSelectionModal({
     const fetchTokens = async () => {
       setLoading(true);
       try {
-        const fetchedTokens = Object.values(tokensByChainId[supportedChainIds.bsc]);
+        const fetchedTokens = Object.values(tokensByChainId[supportedChainIds.base]);
         setTokens(fetchedTokens);
         setFilteredTokens(fetchedTokens);
       } catch (error) {

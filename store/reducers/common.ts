@@ -5,7 +5,7 @@ import { reducerNames } from '../constants/names';
 import { CommonReducerState } from '../types/common';
 
 export const initialState: CommonReducerState = {
-  appChainId: supportedChainIds.bsc,
+  appChainId: supportedChainIds.base,
   memeTokens: {},
   altTokens: {},
 };

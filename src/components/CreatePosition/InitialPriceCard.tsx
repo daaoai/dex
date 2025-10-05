@@ -118,7 +118,7 @@ export default function InitialPriceCard({
                   width={10}
                   height={10}
                 />
-                <span className="font-semibold text-xs">{token1.symbol}</span>
+                <span className="font-semibold text-xs">{token0.symbol}</span>
               </button>
               <button
                 className={`flex items-center gap-2 px-3 py-1 rounded-2xl border transition-shadow duration-300 ${

@@ -1,8 +1,8 @@
 import { supportedChainIds } from '@/constants/chains';
 import { Token } from '@/types/tokens';
 import { Hex } from 'viem';
-import { bscTokens } from './bscTokens';
+import { baseTokens } from './baseTokens';
 
 export const tokensByChainId: { [chainId: number]: { [address: Hex]: Token } } = {
-  [supportedChainIds.bsc]: bscTokens,
+  [supportedChainIds.base]: baseTokens,
 };

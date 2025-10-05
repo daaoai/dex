@@ -21,7 +21,7 @@ const percentages = [25, 50, 75, 100];
 
 export default function RemoveLiquidityModal({ onClose, position }: Props) {
   const [selectedPercent, setSelectedPercent] = useState<number>(0);
-  const { decreaseLiquidity } = useRemoveLiquidity({ chainId: supportedChainIds.bsc });
+  const { decreaseLiquidity } = useRemoveLiquidity({ chainId: supportedChainIds.base });
 
   const handleRemove = async () => {
     if (!selectedPercent) return;

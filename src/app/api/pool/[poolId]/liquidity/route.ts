@@ -7,7 +7,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ error: 'Pool ID is required' }, { status: 400 });
   }
 
-  const SUBGRAPH_ENDPOINT = chainsData[supportedChainIds.bsc].subgraphURL;
+  const SUBGRAPH_ENDPOINT = chainsData[supportedChainIds.base].subgraphURL;
 
   const TICK_LIQUIDITY_QUERY = `
     query GetPoolTicks($poolId: ID!) {

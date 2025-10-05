@@ -25,7 +25,7 @@ export class CoinMarketCapService {
    */
   private static async getLiveTrendingTokens(chainId: number): Promise<LiveFeedToken[]> {
     // Only return data for BSC, empty for other chains
-    if (chainId !== supportedChainIds.bsc) {
+    if (chainId !== supportedChainIds.base) {
       return [];
     }
 

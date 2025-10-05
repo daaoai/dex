@@ -36,7 +36,7 @@ export default function SwapContent({ initialSrcToken, initialDestToken, onSwapC
   const [slippage, setSlippage] = useState(0.5);
   const [deadline, setDeadline] = useState(5);
 
-  const chainId = supportedChainIds.bsc;
+  const chainId = supportedChainIds.base;
   const { swap, getQuote } = useSwap({ chainId });
   const { address: account } = useAccount();
 

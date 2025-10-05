@@ -39,7 +39,7 @@ export default function PositionDetails() {
     positions.find((pos: V3Position) => pos.tokenId.toString() === id),
   );
 
-  const { fetchPositionWithId } = usePositions(supportedChainIds.bsc);
+  const { fetchPositionWithId } = usePositions(supportedChainIds.base);
 
   // Fetch price data for the position's pool
   const {

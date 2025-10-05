@@ -18,7 +18,7 @@ const TradeClient = () => {
       setLoading(true);
       const srcTokenParam = searchParams.get('srcToken');
       const destTokenParam = searchParams.get('destToken');
-      const chainId = supportedChainIds.bsc;
+      const chainId = supportedChainIds.base;
 
       let newSrcToken: Token | null = null;
       let newDestToken: Token | null = null;

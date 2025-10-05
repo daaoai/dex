@@ -10,7 +10,7 @@ type TokenPageParams = {
 
 export default async function TokenDetailPage({ params }: { params: Promise<TokenPageParams> }) {
   const { address } = await params;
-  const chainId = supportedChainIds.bsc;
+  const chainId = supportedChainIds.base;
 
   const [tokenRes, coingeckoIdRes] = await Promise.allSettled([
     getTokenDetails({
