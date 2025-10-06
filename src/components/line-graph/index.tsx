@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { LineGraph } from './line-graph';
-import Text from '../ui/Text';
 import { LineGraphViewProps } from '@/types/linegraph';
+import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
+import Text from '../ui/Text';
+import { LineGraph } from './line-graph';
 
-export const LineGraphView: React.FC<LineGraphViewProps> = ({
+const LineGraphView: React.FC<LineGraphViewProps> = ({
   tokenName,
   setTokenState,
   tokenState,
@@ -46,3 +46,5 @@ export const LineGraphView: React.FC<LineGraphViewProps> = ({
     </div>
   );
 };
+
+export default React.memo(LineGraphView);

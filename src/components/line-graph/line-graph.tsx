@@ -180,13 +180,11 @@ export const LineGraph: React.FC<LineGraphProps & { poolId?: string }> = ({
   const LiquidityOverlay = () => {
     const chartArea = getChartArea();
     if (!chartArea || liquidityData.length === 0) {
-      console.log('No chartArea or liquidityData for overlay', { chartArea, liquidityData });
       return null;
     }
     const maxLiquidity = Math.max(...liquidityData.map((l) => l.activeLiquidity));
     const priceMin = Math.min(...prices.map((p) => p.price));
     const priceMax = Math.max(...prices.map((p) => p.price));
-    console.log('Rendering LiquidityOverlay', { liquidityData, maxLiquidity, chartArea, priceMin, priceMax });
     return (
       <svg
         style={{
@@ -203,11 +201,9 @@ export const LineGraph: React.FC<LineGraphProps & { poolId?: string }> = ({
           if (l.price0 < priceMin || l.price0 > priceMax) return null;
           const y = getYPixel(l.price0);
           if (y === null || y < chartArea.top || y > chartArea.bottom) {
-            console.log('Skipping bar', { i, price0: l.price0, y });
             return null;
           }
           const barLength = Math.max(10, (l.activeLiquidity / maxLiquidity) * 36);
-          console.log('Drawing bar', { i, price0: l.price0, y, barLength });
           return (
             <rect
               key={i}

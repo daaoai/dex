@@ -8,10 +8,17 @@ import { LayoutGroup, motion } from 'framer-motion';
 import { RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import { LineGraphView } from '../line-graph';
+import LineGraphView from '../line-graph';
 import DynamicLogo from '../ui/logo/DynamicLogo';
 import Text from '../ui/Text';
-
+const tabs = [
+  { id: '1d', duration: 1 },
+  { id: '3d', duration: 3 },
+  { id: '1m', duration: 30 },
+  { id: '6m', duration: 1800 },
+  { id: '1y', duration: 365 },
+  { id: 'max', duration: 3650 },
+];
 interface RangeSelectorProps {
   selectedRange: 'full' | 'custom';
   srcTokenDetails: Token;
@@ -49,14 +56,6 @@ export default function RangeSelector({
   decreaseMaxPrice,
   hideTokenSwitchButtons = false,
 }: RangeSelectorProps) {
-  const tabs = [
-    { id: '1d', duration: 1 },
-    { id: '3d', duration: 3 },
-    { id: '1m', duration: 30 },
-    { id: '6m', duration: 1800 },
-    { id: '1y', duration: 365 },
-    { id: 'max', duration: 3650 },
-  ];
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [selectedTab, setSelectedTab] = useState<string>(activeTab.id || '1d');
   const chartRef = useRef<Line>({} as Line);
