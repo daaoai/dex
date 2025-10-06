@@ -87,6 +87,7 @@ export default function SwapContent({ initialSrcToken, initialDestToken, onSwapC
           deadline: deadline * 60,
           recipient: account,
           slippage,
+          chainId,
         });
 
         const formatted = formatUnits(quoted, destToken.decimals);

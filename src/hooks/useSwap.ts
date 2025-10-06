@@ -90,6 +90,7 @@ export const useSwap = ({ chainId }: { chainId: number }) => {
         recipient,
         slippage,
         tokenOut,
+        chainId,
       });
 
       if (!route) {

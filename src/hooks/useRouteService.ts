@@ -14,6 +14,7 @@ export const useRouteService = () => {
       recipient,
       slippage,
       deadline,
+      chainId,
     }: RouteParams): Promise<RouteApiResponse | null> => {
       setLoading(true);
       setError(null);
@@ -32,6 +33,7 @@ export const useRouteService = () => {
           recipient,
           slippage: slippage.toString(),
           deadline,
+          chainId,
         };
 
         const response = await RouteService.getBestRoute(request);

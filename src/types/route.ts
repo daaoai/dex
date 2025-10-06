@@ -13,6 +13,7 @@ export interface RouteRequest {
   recipient: string;
   slippage: string;
   deadline: number;
+  chainId: number;
 }
 
 export interface RouteQuote {
@@ -49,4 +50,5 @@ export interface RouteParams {
   recipient: Hex;
   slippage: number;
   deadline: number;
+  chainId: number;
 }

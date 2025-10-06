@@ -90,7 +90,7 @@ export const chainsData: {
       decimals: 18,
     },
     logo: 'https://icons.llamao.fi/icons/chains/rsz_base.jpg',
-    subgraphURL: 'https://gateway.thegraph.com/api/subgraphs/id/AoG6LH99Wqa8jVbm6ai82UJZpDdsDfTJ5V9xjduJRvw1',
+    subgraphURL: 'https://gateway.thegraph.com/api/subgraphs/id/2kjQ3FdfjqHqmzd6F92CnfZgJVJLBsHqdFpVQdfZcm14',
     dexScreenerId: 'base',
     geckoId: 'base',
   },
