@@ -2,21 +2,11 @@ import Decimal from 'decimal.js';
 import { formatUnits, parseUnits } from 'viem';
 
 export class V3PoolUtils {
-  private static Q96 = Math.pow(2, 96);
+  private static Q96 = 1n << 96n;
   private static tickMultiplier = 1.0001;
 
   public static nearestUsableTick = ({ tick, tickSpacing }: { tick: number; tickSpacing: number }) => {
     return Math.round(tick / tickSpacing) * tickSpacing;
-  };
-
-  public static getLowestUsableTick = ({ tickSpacing }: { tickSpacing: number }) => {
-    const minTick = -887272;
-    return Math.ceil(minTick / tickSpacing) * tickSpacing;
-  };
-
-  public static getHighestUsableTick = ({ tickSpacing }: { tickSpacing: number }) => {
-    const maxTick = 887272;
-    return Math.floor(maxTick / tickSpacing) * tickSpacing;
   };
 
   public static getTickFromPrice = ({
@@ -31,7 +21,7 @@ export class V3PoolUtils {
     decimal1: number;
   }) => {
     const calculatedTick = Math.floor(
-      Math.log(price / Math.pow(10, decimal1 - decimal0)) / Math.log(V3PoolUtils.tickMultiplier),
+      Math.log(price / (Math.pow(10, decimal0) / Math.pow(10, decimal1))) / Math.log(V3PoolUtils.tickMultiplier),
     );
     return V3PoolUtils.nearestUsableTick({ tick: calculatedTick, tickSpacing });
   };
@@ -47,7 +37,8 @@ export class V3PoolUtils {
   }) => {
     return new Decimal(V3PoolUtils.tickMultiplier)
       .pow(tick)
-      .mul(new Decimal(10).pow(decimal1 - decimal0))
+      .mul(new Decimal(10).pow(decimal0))
+      .div(new Decimal(10).pow(decimal1))
       .toNumber();
   };
 
@@ -60,18 +51,20 @@ export class V3PoolUtils {
     decimal0: number;
     decimal1: number;
   }) => {
-    const sqrtRatio = new Decimal(sqrtPriceX96.toString()).div(V3PoolUtils.Q96);
-    const priceRaw = sqrtRatio.pow(2);
-    const decimalAdjustment = new Decimal(10).pow(decimal1 - decimal0);
-    return priceRaw.mul(decimalAdjustment).toNumber();
+    return new Decimal(sqrtPriceX96.toString())
+      .div(new Decimal(V3PoolUtils.Q96.toString()))
+      .pow(2)
+      .mul(new Decimal(10).pow(decimal0))
+      .div(new Decimal(10).pow(decimal1))
+      .toNumber();
   };
 
   public static getSqrtPriceX96FromTick = ({ tick }: { tick: number }) => {
     return BigInt(
       new Decimal(V3PoolUtils.tickMultiplier)
         .pow(tick / 2)
-        .mul(V3PoolUtils.Q96)
-        .toFixed(0),
+        .mul(V3PoolUtils.Q96.toString())
+        .toFixed(0, Decimal.ROUND_DOWN),
     );
   };
 
@@ -143,7 +136,7 @@ export class V3PoolUtils {
     const minPrice = V3PoolUtils.getPriceFromTick({ tick: lowerTick, decimal0, decimal1 });
     const sqrtCurrentPrice = Math.sqrt(currentPrice);
     const sqrtMinPrice = Math.sqrt(minPrice);
-    return new Decimal(liquidityOfToken0 * (sqrtCurrentPrice - sqrtMinPrice)).toFixed(decimal1);
+    return new Decimal(liquidityOfToken0 * (sqrtCurrentPrice - sqrtMinPrice)).toFixed(decimal1, Decimal.ROUND_DOWN);
   };
 
   public static getToken0Amount = ({
@@ -176,11 +169,14 @@ export class V3PoolUtils {
     const maxPrice = V3PoolUtils.getPriceFromTick({ tick: upperTick, decimal0, decimal1 });
     const sqrtCurrentPrice = Math.sqrt(currentPrice);
     const sqrtMaxPrice = Math.sqrt(maxPrice);
-    return new Decimal(liquidityOfToken1 * (1 / sqrtCurrentPrice - 1 / sqrtMaxPrice)).toFixed(decimal0);
+    return new Decimal(liquidityOfToken1 * (1 / sqrtCurrentPrice - 1 / sqrtMaxPrice)).toFixed(
+      decimal0,
+      Decimal.ROUND_DOWN,
+    );
   };
 
   public static getTickAtSqrtPrice = ({ sqrtPriceX96 }: { sqrtPriceX96: bigint }) => {
-    const sqrtPrice = new Decimal(sqrtPriceX96.toString()).div(V3PoolUtils.Q96);
+    const sqrtPrice = new Decimal(sqrtPriceX96.toString()).div(V3PoolUtils.Q96.toString());
     const price = sqrtPrice.pow(2);
     const tick = new Decimal(Math.log(price.toNumber())).div(Math.log(V3PoolUtils.tickMultiplier));
     return Math.floor(tick.toNumber());
@@ -200,7 +196,7 @@ export class V3PoolUtils {
     const sqrtRatioA = new Decimal(Math.sqrt(Math.pow(V3PoolUtils.tickMultiplier, lowerTick)));
     const sqrtRatioB = new Decimal(Math.sqrt(Math.pow(V3PoolUtils.tickMultiplier, upperTick)));
 
-    const sqrtPrice = new Decimal(sqrtPriceX96.toString()).div(V3PoolUtils.Q96);
+    const sqrtPrice = new Decimal(sqrtPriceX96.toString()).div(V3PoolUtils.Q96.toString());
     const currentTick = V3PoolUtils.getTickAtSqrtPrice({ sqrtPriceX96 });
     let amount0InWei = new Decimal(0);
     let amount1InWei = new Decimal(0);
@@ -217,7 +213,84 @@ export class V3PoolUtils {
       amount1InWei = new Decimal(liquidity.toString()).mul(new Decimal(sqrtPrice).minus(sqrtRatioA));
     }
 
-    return { amount0: BigInt(amount0InWei.toFixed(0)), amount1: BigInt(amount1InWei.toFixed(0)) };
+    return {
+      amount0: BigInt(amount0InWei.toFixed(0, Decimal.ROUND_DOWN)),
+      amount1: BigInt(amount1InWei.toFixed(0, Decimal.ROUND_DOWN)),
+    };
+  };
+
+  public static maxLiquidityForAmount0 = ({
+    sqrtRatioAX96,
+    sqrtRatioBX96,
+    amount0,
+  }: {
+    sqrtRatioAX96: bigint;
+    sqrtRatioBX96: bigint;
+    amount0: bigint;
+  }): bigint => {
+    if (sqrtRatioAX96 > sqrtRatioBX96) {
+      [sqrtRatioAX96, sqrtRatioBX96] = [sqrtRatioBX96, sqrtRatioAX96];
+    }
+    const intermediate = (sqrtRatioAX96 * sqrtRatioBX96) / V3PoolUtils.Q96;
+    return (amount0 * intermediate) / (sqrtRatioBX96 - sqrtRatioAX96);
+  };
+
+  public static maxLiquidityForAmount1 = ({
+    sqrtRatioAX96,
+    sqrtRatioBX96,
+    amount1,
+  }: {
+    sqrtRatioAX96: bigint;
+    sqrtRatioBX96: bigint;
+    amount1: bigint;
+  }): bigint => {
+    if (sqrtRatioAX96 > sqrtRatioBX96) {
+      [sqrtRatioAX96, sqrtRatioBX96] = [sqrtRatioBX96, sqrtRatioAX96];
+    }
+    return (amount1 * V3PoolUtils.Q96) / (sqrtRatioBX96 - sqrtRatioAX96);
+  };
+
+  public static getLiquidityForAmounts = ({
+    sqrtPriceX96,
+    lowerTick,
+    upperTick,
+    amount0,
+    amount1,
+  }: {
+    sqrtPriceX96: bigint;
+    lowerTick: number;
+    upperTick: number;
+    amount0: bigint;
+    amount1: bigint;
+  }) => {
+    const sqrtRatioA = V3PoolUtils.getSqrtPriceX96FromTick({ tick: lowerTick });
+    const sqrtRatioB = V3PoolUtils.getSqrtPriceX96FromTick({ tick: upperTick });
+
+    if (sqrtPriceX96 <= BigInt(sqrtRatioA)) {
+      return V3PoolUtils.maxLiquidityForAmount0({
+        amount0,
+        sqrtRatioAX96: BigInt(sqrtRatioA),
+        sqrtRatioBX96: BigInt(sqrtRatioB),
+      });
+    } else if (sqrtPriceX96 < BigInt(sqrtRatioB)) {
+      const liquidity0 = V3PoolUtils.maxLiquidityForAmount0({
+        amount0,
+        sqrtRatioAX96: BigInt(sqrtPriceX96),
+        sqrtRatioBX96: BigInt(sqrtRatioB),
+      });
+      const liquidity1 = V3PoolUtils.maxLiquidityForAmount1({
+        amount1,
+        sqrtRatioAX96: BigInt(sqrtRatioA),
+        sqrtRatioBX96: BigInt(sqrtPriceX96),
+      });
+      return liquidity0 < liquidity1 ? liquidity0 : liquidity1;
+    } else {
+      return V3PoolUtils.maxLiquidityForAmount1({
+        amount1,
+        sqrtRatioAX96: BigInt(sqrtRatioA),
+        sqrtRatioBX96: BigInt(sqrtRatioB),
+      });
+    }
   };
 
   public static calculateAprByRange = ({
@@ -351,8 +424,31 @@ export class V3PoolUtils {
     );
 
     return {
-      feesEarnedToken0: BigInt(feesEarnedToken0.toFixed(0)),
-      feesEarnedToken1: BigInt(feesEarnedToken1.toFixed(0)),
+      feesEarnedToken0: BigInt(feesEarnedToken0.toFixed(0, Decimal.ROUND_DOWN)),
+      feesEarnedToken1: BigInt(feesEarnedToken1.toFixed(0, Decimal.ROUND_DOWN)),
+    };
+  };
+
+  public static getLowestUsableTick = ({ tickSpacing }: { tickSpacing: number }) => {
+    const minTick = -887272;
+    return Math.ceil(minTick / tickSpacing) * tickSpacing;
+  };
+
+  public static getHighestUsableTick = ({ tickSpacing }: { tickSpacing: number }) => {
+    const maxTick = 887272;
+    return Math.floor(maxTick / tickSpacing) * tickSpacing;
+  };
+
+  public static getDefaultTicks = ({ currentTick, tickSpacing }: { currentTick: number; tickSpacing: number }) => {
+    return {
+      lowerTick: V3PoolUtils.nearestUsableTick({
+        tick: currentTick - 2 * tickSpacing,
+        tickSpacing: tickSpacing,
+      }),
+      upperTick: V3PoolUtils.nearestUsableTick({
+        tick: currentTick + 2 * tickSpacing,
+        tickSpacing: tickSpacing,
+      }),
     };
   };
 }
