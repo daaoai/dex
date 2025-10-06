@@ -5,7 +5,7 @@ import LiveTokenFeed from '@/components/LiveTokenFeed';
 import { supportedChainIds } from '@/constants/chains';
 
 const Home = () => {
-  const chainId = supportedChainIds.bsc;
+  const chainId = supportedChainIds.base;
 
   return (
     <main

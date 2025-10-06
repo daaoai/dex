@@ -10,7 +10,7 @@ import { chainsData, supportedChainIds } from '@/constants/chains';
  * @returns Promise<PoolDetails | null> - Detailed pool data or null if not found
  */
 const fetchPoolDetailsFromGraph = async (poolId: string): Promise<PoolDetails | null> => {
-  const SUBGRAPH_ENDPOINT = chainsData[supportedChainIds.bsc].subgraphURL;
+  const SUBGRAPH_ENDPOINT = chainsData[supportedChainIds.base].subgraphURL;
 
   const POOL_DETAILS_QUERY = `
     query GetPoolDetails($poolId: ID!) {
@@ -229,8 +229,8 @@ const transformGraphPoolToPoolDetails = (graphPool: GraphPoolDetails): PoolDetai
   const token0Address = formatToken(graphPool.token0.id);
   const token1Address = formatToken(graphPool.token1.id);
 
-  const token0LocalInfo = getLocalTokenDetails({ address: token0Address, chainId: supportedChainIds.bsc });
-  const token1LocalInfo = getLocalTokenDetails({ address: token1Address, chainId: supportedChainIds.bsc });
+  const token0LocalInfo = getLocalTokenDetails({ address: token0Address, chainId: supportedChainIds.base });
+  const token1LocalInfo = getLocalTokenDetails({ address: token1Address, chainId: supportedChainIds.base });
 
   return {
     address: formatToken(graphPool.id),

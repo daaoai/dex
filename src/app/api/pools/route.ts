@@ -10,7 +10,7 @@ import { NextResponse } from 'next/server';
  * @returns Promise<TopPool[]> - Array of top pools ordered by volume
  */
 const fetchTopPoolsFromGraph = async (): Promise<TopPool[]> => {
-  const SUBGRAPH_ENDPOINT = chainsData[supportedChainIds.bsc].subgraphURL;
+  const SUBGRAPH_ENDPOINT = chainsData[supportedChainIds.base].subgraphURL;
 
   const POOLS_QUERY = `
     query GetTopPools {
@@ -101,8 +101,8 @@ const transformGraphPoolsToTopPools = (graphPools: GraphTopPool[]): TopPool[] =>
     const token0Address = formatToken(pool.token0.id);
     const token1Address = formatToken(pool.token1.id);
 
-    const token0LocalInfo = getLocalTokenDetails({ address: token0Address, chainId: supportedChainIds.bsc });
-    const token1LocalInfo = getLocalTokenDetails({ address: token1Address, chainId: supportedChainIds.bsc });
+    const token0LocalInfo = getLocalTokenDetails({ address: token0Address, chainId: supportedChainIds.base });
+    const token1LocalInfo = getLocalTokenDetails({ address: token1Address, chainId: supportedChainIds.base });
 
     return {
       address: formatToken(pool.id),

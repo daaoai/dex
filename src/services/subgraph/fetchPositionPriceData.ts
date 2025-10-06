@@ -12,7 +12,7 @@ export const fetchPositionPriceData = async (
   poolAddress: string,
   duration: HistoryDuration = 'WEEK',
 ): Promise<PositionPriceData | null> => {
-  const SUBGRAPH_ENDPOINT = chainsData[supportedChainIds.bsc].subgraphURL;
+  const SUBGRAPH_ENDPOINT = chainsData[supportedChainIds.base].subgraphURL;
 
   // Convert duration to days and data points
   const getDurationConfig = (duration: HistoryDuration) => {

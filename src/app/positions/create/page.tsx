@@ -20,7 +20,7 @@ export default async function NewPositionsPage({ searchParams }: CreatePositionP
   const params = await searchParams;
 
   const { token0: token0Address, token1: token1Address, fee: feeParam } = params;
-  const chainId = supportedChainIds.bsc;
+  const chainId = supportedChainIds.base;
 
   // Initialize tokens and fee
   let initialToken0: Token | null = null;

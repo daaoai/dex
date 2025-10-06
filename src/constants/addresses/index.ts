@@ -1,6 +1,6 @@
 import { Hex } from 'viem';
 import { supportedChainIds } from '../chains';
-import { bscAddresses } from './bsc';
+import { baseAddresses } from './base';
 
 export const contractAddresses: {
   [chainId: number]: {
@@ -13,5 +13,5 @@ export const contractAddresses: {
     multicall2: Hex;
   };
 } = {
-  [supportedChainIds.bsc]: bscAddresses,
+  [supportedChainIds.base]: baseAddresses,
 };

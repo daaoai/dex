@@ -42,6 +42,16 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     isInitialized: true,
   });
 
+  console.log({
+    lowerTick,
+    upperTick,
+    currentPrice,
+    lowerPrice,
+    upperPrice,
+    poolDetails,
+    sqrtPriceX96: currentPoolData.sqrtPriceX96,
+  });
+
   const [txnInProgress, setTxnInProgress] = useState(false);
   const [txnState, setTxnState] = useState<'approvingToken0' | 'approvingToken1' | 'waitingForConfirmation' | null>(
     null,
@@ -158,7 +168,9 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
       price,
       tickSpacing: poolDetails.tickSpacing,
     });
-    const sqrtPriceX96 = V3PoolUtils.getSqrtPriceX96FromTick({ tick: currentTick });
+    const sqrtPriceX96 = V3PoolUtils.getSqrtPriceX96FromTick({
+      tick: currentTick,
+    });
 
     setCurrentPoolData({
       tick: currentTick,
@@ -167,6 +179,11 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
     });
     setToken0FormattedAmount('');
     setToken1FormattedAmount('');
+    updateCurrentPrice(sqrtPriceX96, poolDetails);
+
+    if (selectedRange === 'full') {
+      return;
+    }
     setLowerTick(
       V3PoolUtils.nearestUsableTick({
         tick: currentTick - poolDetails.tickSpacing,
@@ -508,7 +525,7 @@ export const useCreatePosition = ({ chainId }: { chainId: number }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (isDataLoading || txnInProgress || !poolDetails?.address) return;
+      if (isDataLoading || txnInProgress || !poolDetails?.address || poolDetails.address === zeroAddress) return;
       updateCurrentPoolData(poolDetails.address, poolDetails);
     }, 30000);
     return () => clearInterval(interval);

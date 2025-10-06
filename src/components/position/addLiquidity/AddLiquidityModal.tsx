@@ -34,7 +34,7 @@ const IncreaseLiquidityModal: React.FC<IncreaseLiquidityModalProps> = ({ onClose
     isValidAddLiquidityRequest,
     loading,
   } = useAddLiquidity({
-    chainId: supportedChainIds.bsc,
+    chainId: supportedChainIds.base,
     position,
   });
 
