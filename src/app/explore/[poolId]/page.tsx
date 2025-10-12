@@ -1,24 +1,27 @@
 import { PoolVolumeChart } from '@/components/PoolVolumeChart';
+import DynamicLogo from '@/components/ui/logo/DynamicLogo';
 import PoolIcon from '@/components/ui/logo/PoolLogo';
 import Text from '@/components/ui/Text';
+import { supportedChainIds } from '@/constants/chains';
 import { positionContent } from '@/content/positionContent';
 import { Button } from '@/shadcn/components/ui/button';
 import { Transaction } from '@/types/pools';
+import { generateExplorerLink } from '@/utils/address';
+import ClickToCopy from '@/utils/copyToClipboard';
+import { getEllipsisTxt } from '@/utils/getEllipsisText';
 import { truncateNumber } from '@/utils/truncateNumber';
+import clsx from 'clsx';
 import { LineChart, LinkIcon, Plus, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import { fetchPoolDetails } from '../../../services/subgraph/fetchPoolDetails';
-import DynamicLogo from '@/components/ui/logo/DynamicLogo';
-import ClickToCopy from '@/utils/copyToClipboard';
-import clsx from 'clsx';
-import { getEllipsisTxt } from '@/utils/getEllipsisText';
-import { generateExplorerLink } from '@/utils/address';
 
 interface PoolDetailsPageProps {
   params: Promise<{
     poolId: string;
   }>;
 }
+
+const chainId = supportedChainIds.base;
 
 const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
   const resolvedParams = await params;
@@ -38,8 +41,6 @@ const PoolDetailsPage = async ({ params }: PoolDetailsPageProps) => {
       </main>
     );
   }
-
-  const chainId = 56; // BSC as default
 
   return (
     <main className="min-h-screen bg-black py-6 px-4">

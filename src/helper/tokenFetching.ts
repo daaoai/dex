@@ -24,8 +24,9 @@ export async function fetchTokenFromCoinGecko(address: string, chainId: number, 
     // Map chain IDs to CoinGecko platform names
     const platformMap: Record<number, string> = {
       1: 'ethereum',
-      56: 'binance-smart-chain',
+      // 56: 'binance-smart-chain',
       137: 'polygon-pos',
+      8453: 'base',
       // Add more chains as needed
     };
 
