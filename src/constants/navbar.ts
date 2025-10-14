@@ -5,5 +5,5 @@ export const navLinks = [
   { name: 'Token Analytics', href: '/token/0x4200000000000000000000000000000000000006' },
   // { name: 'Lending', href: 'https://lending.synthari.io/' },
   { name: 'Create Token', href: '/launch' },
-  { name: 'Trenches', href: '/trenches' },
+  // { name: 'Trenches', href: '/trenches' },
 ];
