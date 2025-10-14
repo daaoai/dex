@@ -81,7 +81,7 @@ export default function ImageUpload({ onImageSelect }: ImageUploadProps) {
       <label className="block text-sm font-medium text-white mb-2">Token Image</label>
 
       <div
-        className={`relative w-full h-32 bg-background-4 border-2 border-dashed border-stroke-3 rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${
+        className={`relative w-full h-32 bg-[#18191E] border-2 border-dashed border-stroke-3 rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${
           dragActive ? 'border-background-11 bg-background-5' : 'hover:border-stroke-2'
         }`}
         onDragEnter={handleDrag}
