@@ -3,7 +3,7 @@ export const navLinks = [
   { name: 'Explore Pools', href: '/explore' },
   { name: 'Positions', href: '/positions' },
   { name: 'Token Analytics', href: '/token/0x4200000000000000000000000000000000000006' },
-  { name: 'Lending', href: 'https://lending.synthari.io/' },
-
-  // { name: 'Trenches', href: '/trenches' },
+  // { name: 'Lending', href: 'https://lending.synthari.io/' },
+  { name: 'Create Token', href: '/launch' },
+  { name: 'Trenches', href: '/trenches' },
 ];

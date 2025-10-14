@@ -90,7 +90,7 @@ export const TokenPage = ({ token, chainId }: TokenPageProps) => {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <div className="container mx-auto px-4 py-6">
+      <div className="mx-auto px-4 py-6">
         <BackButton />
 
         {/* Main Content Grid */}

@@ -16,12 +16,7 @@ export const RecentTransactions = ({ transactions, transactionsLoading, chainId 
   const [sortField, setSortField] = useState('date');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
-  const tabs = [
-    { id: 'Transactions', label: 'Transactions' },
-    { id: 'Holders', label: 'Holders' },
-    { id: 'History', label: 'History' },
-    { id: 'Orders', label: 'Orders' },
-  ];
+  const tabs = [{ id: 'Transactions', label: 'Transactions' }];
 
   const handleSort = (field: string) => {
     if (sortField === field) {
