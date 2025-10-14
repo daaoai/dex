@@ -183,7 +183,7 @@ export default function SwapContent({ initialSrcToken, initialDestToken, onSwapC
     <>
       <div className="text-white flex justify-between items-center mb-2">
         {/* <div className="relative flex justify-start w-full max-w-sm py-4"> */}
-        <p className="text-2xl font-extrabold py-2 text-[#DAE4E3]">Swap</p>
+        <p className="text-2xl font-extrabold py-2 text-[#DAE4E3]">SWAP</p>
         {/* </div> */}
         <SettingsModal
           slippage={slippage}
@@ -276,7 +276,6 @@ export default function SwapContent({ initialSrcToken, initialDestToken, onSwapC
           disabled={isButtonDisabled}
           className={`
           w-full 
-          bg-background-21
           text-white 
           font-bold 
           text-base 
@@ -285,12 +284,12 @@ export default function SwapContent({ initialSrcToken, initialDestToken, onSwapC
           rounded-md
           disabled:opacity-50 disabled:cursor-not-allowed 
           duration-300
-          shadow-[0_2px_10px_rgba(98,58,255,0.35)] 
-          hover:shadow-[0_4px_16px_rgba(98,58,255,0.45)] 
+          shadow-[0_2px_10px_rgba(88,24,248,0.35)] 
+          hover:shadow-[0_4px_16px_rgba(88,24,248,0.45)] 
           active:scale-[0.97] 
           flex items-center justify-center
-          border border-stroke-8 -mt-2
-          bg-gradient-to-r from-[#4021FC] to-[#926EF5] hover:opacity-90 transition-opacity
+          border border-[#7F5FFA] -mt-2
+          bg-gradient-to-r from-[#5818F8] to-[#996FFF] hover:from-[#996FFF] hover:to-[#5818F8] transition-all
         `}
         >
           {loading ? 'Processing...' : 'Swap'}

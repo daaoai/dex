@@ -34,7 +34,7 @@ export default function Header() {
                   rel={isExternal ? 'noopener noreferrer' : undefined}
                   className={`font-semibold ${
                     pathname === href ? 'text-primary-6' : 'text-gray-400'
-                  } hover:text-white transition-colors`}
+                  } hover:text-white transition-colors cursor-pointer`}
                 >
                   {name}
                 </Link>

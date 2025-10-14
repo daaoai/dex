@@ -68,7 +68,7 @@ export default function SelectTokenCard({
         <Button
           onClick={onTokenClick}
           className={`flex items-center cursor-pointer gap-2 px-3 py-2 font-bold rounded-2xl w-fit text-gray-400 border border-stroke-7 hover:border-[#623AFF]
-            ${token?.symbol || token?.logo ? 'bg-black' : 'bg-background-19'}
+            ${token?.symbol || token?.logo ? 'bg-black' : 'bg-[#060708]'}
             hover:shadow-[0_4px_12px_0_#623AFF40,0_-4px_12px_0_#623AFF40]
             transition-shadow duration-300`}
         >
