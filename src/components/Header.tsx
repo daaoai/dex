@@ -133,7 +133,7 @@ export default function Header() {
 
         <div className="hidden md:block">
           <ConnectButton.Custom>
-            {({ account, chain, openChainModal, openConnectModal, openAccountModal, mounted }) => {
+            {({ account, chain, openConnectModal, openAccountModal, mounted }) => {
               const ready = mounted;
               const connected = ready && account && chain;
 
@@ -160,38 +160,8 @@ export default function Header() {
                       );
                     }
 
-                    const chainLabel =
-                      chain && (chain.name || typeof chain.id === 'number' || typeof chain.id === 'string')
-                        ? (chain.name ?? `Chain ${chain.id}`)
-                        : 'Chain';
-
                     return (
                       <div className="flex items-center gap-2">
-                        {/* Chain Info */}
-                        <button
-                          onClick={openChainModal}
-                          className="flex items-center gap-2 bg-black border border-[#1F2530] text-white px-2 py-3 rounded-full text-sm hover:border-white transition min-w-[120px] justify-center"
-                        >
-                          <span
-                            className="w-5 h-5 rounded-full overflow-hidden flex items-center justify-center"
-                            style={{ backgroundColor: chain.iconBackground || '#1f2937' }}
-                          >
-                            {chain.hasIcon && chain.iconUrl ? (
-                              <img
-                                alt={chain.name ?? 'Chain icon'}
-                                src={chain.iconUrl}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <span className="text-[10px] font-semibold uppercase text-white">
-                                {(chainLabel || '').slice(0, 2)}
-                              </span>
-                            )}
-                          </span>
-                          <span className="truncate max-w-[80px]">{chainLabel}</span>
-                          <ChevronDown className="w-4 h-4 text-gray-400" />
-                        </button>
-
                         <button
                           onClick={openAccountModal}
                           className="flex items-center gap-2 bg-black border border-[#1F2530] text-white px-3 py-3 rounded-full text-sm hover:border-white transition"

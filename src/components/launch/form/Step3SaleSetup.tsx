@@ -1,14 +1,15 @@
 'use client';
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shadcn/components/ui/select';
-import type { TokenFormData } from '@/types/launchForm';
+import type { LaunchTag, TokenFormData } from '@/types/launchForm';
 
 interface Step3SaleSetupProps {
   formData: TokenFormData;
   onInputChange: <K extends keyof TokenFormData>(field: K, value: TokenFormData[K]) => void;
+  tags: readonly LaunchTag[];
 }
 
-const Step3SaleSetup: React.FC<Step3SaleSetupProps> = ({ formData, onInputChange }) => (
+const Step3SaleSetup: React.FC<Step3SaleSetupProps> = ({ formData, onInputChange, tags }) => (
   <div>
     <h2 className="text-xl font-bold text-white mb-4">Step 3 - Sale Setup</h2>
 
@@ -211,6 +212,35 @@ const Step3SaleSetup: React.FC<Step3SaleSetupProps> = ({ formData, onInputChange
           </div>
         </>
       )}
+    </div>
+
+    <div className="mt-12 space-y-6">
+      <h3 className="text-lg font-semibold text-white mb-2">Token Presentation</h3>
+      <div>
+        <label className="block text-sm font-medium text-white mb-2">Tag</label>
+        <Select value={formData.tag} onValueChange={(value) => onInputChange('tag', value as LaunchTag)}>
+          <SelectTrigger className="w-full bg-[#0D1117] border border-stroke-3 text-white">
+            <SelectValue placeholder="Select tag" />
+          </SelectTrigger>
+          <SelectContent className="bg-[#0D1117] border border-stroke-3">
+            {tags.map((tag) => (
+              <SelectItem key={tag} value={tag} className="text-white hover:bg-background-5">
+                {tag}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-white mb-2">Description</label>
+        <textarea
+          value={formData.description}
+          onChange={(e) => onInputChange('description', e.target.value)}
+          className="w-full px-3 py-2 bg-[#0D1117] border border-stroke-3 rounded-md text-white placeholder-grey focus:outline-none focus:ring-2 focus:ring-background-11"
+          placeholder="Describe your token project..."
+          rows={4}
+        />
+      </div>
     </div>
 
     <div className="flex flex-col gap-6 mt-12">

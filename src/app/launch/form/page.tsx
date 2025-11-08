@@ -8,8 +8,7 @@ import LaunchDisclaimer from '@/components/launch/LaunchDisclaimer';
 import Step1Setup from '@/components/launch/form/Step1Setup';
 import Step2Tokenomics from '@/components/launch/form/Step2Tokenomics';
 import Step3SaleSetup from '@/components/launch/form/Step3SaleSetup';
-import Step4AdditionalDetails from '@/components/launch/form/Step4AdditionalDetails';
-import Step5Review from '@/components/launch/form/Step5Review';
+import Step4Review from '@/components/launch/form/Step4Review';
 import {
   distributionOptions,
   governanceModelOptions,
@@ -88,10 +87,9 @@ export default function LaunchTokenPage() {
   };
 
   const handleNext = () => {
-    if (currentFormStep < 5) {
+    if (currentFormStep < 4) {
       setCurrentFormStep(currentFormStep + 1);
     } else {
-      // Final step - launch token
       handleLaunch();
     }
   };
@@ -129,17 +127,15 @@ export default function LaunchTokenPage() {
           />
         );
       case 3:
-        return <Step3SaleSetup formData={formData} onInputChange={(field, value) => handleInputChange(field, value)} />;
-      case 4:
         return (
-          <Step4AdditionalDetails
+          <Step3SaleSetup
             formData={formData}
-            tags={launchTagOptions}
             onInputChange={(field, value) => handleInputChange(field, value)}
+            tags={launchTagOptions}
           />
         );
-      case 5:
-        return <Step5Review formData={formData} />;
+      case 4:
+        return <Step4Review formData={formData} />;
       default:
         return null;
     }
@@ -185,7 +181,7 @@ export default function LaunchTokenPage() {
               disabled={isLaunching || !formData.tokenName || !formData.tickerSymbol}
               className="bg-gradient-to-r from-[#7036FF] to-[#AE8DFF] border border-[#7F5FFA] hover:from-[#AE8DFF] hover:to-[#7036FF] text-white font-bold py-3 px-8 rounded-md text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLaunching ? 'LAUNCHING...' : currentFormStep === 5 ? 'LAUNCH TOKEN' : 'Next'}
+              {isLaunching ? 'LAUNCHING...' : currentFormStep === 4 ? 'Launch Token' : 'Next'}
             </Button>
           </div>
         </div>
