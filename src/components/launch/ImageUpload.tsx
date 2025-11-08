@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FileIcon, X } from 'lucide-react';
 
 interface ImageUploadProps {
   onImageSelect: (file: File | null) => void;
-  selectedImage: File | null;
+  selectedImage?: File | null;
 }
 
-export default function ImageUpload({ onImageSelect }: ImageUploadProps) {
+export default function ImageUpload({ onImageSelect, selectedImage }: ImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
@@ -76,14 +76,24 @@ export default function ImageUpload({ onImageSelect }: ImageUploadProps) {
     fileInputRef.current?.click();
   };
 
-  return (
-    <div>
-      <label className="block text-sm font-medium text-white mb-2">Token Image</label>
+  useEffect(() => {
+    if (selectedImage) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(selectedImage);
+    } else {
+      setPreview(null);
+    }
+  }, [selectedImage]);
 
+  return (
+    <div className="flex">
       <div
-        className={`relative w-full h-32 bg-[#18191E] border-2 border-dashed border-stroke-3 rounded-lg flex flex-col items-center justify-center cursor-pointer transition-colors ${
-          dragActive ? 'border-background-11 bg-background-5' : 'hover:border-stroke-2'
-        }`}
+        className={`relative w-64 h-60 bg-[#18191E] border border-[#2C2F36] rounded-3xl flex flex-col items-center justify-center cursor-pointer transition-colors ${
+          dragActive ? 'border-[#403E4D] bg-[#1F2027]' : 'hover:border-[#403E4D]'
+        } shadow-[0_20px_45px_rgba(0,0,0,0.35)]`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
@@ -100,23 +110,23 @@ export default function ImageUpload({ onImageSelect }: ImageUploadProps) {
 
         {preview ? (
           <div className="relative w-full h-full">
-            <img src={preview} alt="Token preview" className="w-full h-2 object-cover rounded-lg" />
+            <img src={preview} alt="Token preview" className="w-full h-full object-cover rounded-[32px]" />
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 handleRemoveImage();
               }}
-              className="absolute top-2 right-2 bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-1 transition-all"
+              className="absolute top-3 right-3 bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-1 transition-all"
             >
               <X className="w-4 h-4 text-white" />
             </button>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center text-center p-4">
-            <FileIcon className="w-6 h-6 text-grey mb-3" />
-            <p className="text-white text-xs font-medium mb-1">Upload Token Image</p>
-            <p className="text-xs text-grey mb-2">PNG-JPEG-WEBP-GIF</p>
-            <p className="text-xs text-grey">Max size: 5MB</p>
+          <div className="flex flex-col items-center justify-center text-center px-8 py-6">
+            <p className="text-2xl font-semibold text-[#8F97A6] mb-3">Add Logo</p>
+            <FileIcon className="w-8 h-8 text-[#8E94A2] mb-5" />
+            <p className="text-sm italic text-[#8E94A2] mb-2 tracking-wide">PNG-JPEG-WEBP-GIF</p>
+            <p className="text-sm text-[#8E94A2]">Max size: 5MB</p>
           </div>
         )}
       </div>
